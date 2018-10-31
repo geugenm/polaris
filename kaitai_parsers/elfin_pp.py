@@ -21,13 +21,13 @@ class ElfinPp:
     def decode(self, bindata):
         i = 0
         binlen = len(bindata)
-        out = b''
+        out = bytearray(b'')
         while i < binlen:
-            ch = ord(bindata[i])
+            ch = bindata[i]
             if ch == 0x27 and i + 1 < binlen:
-                next_ch = ord(bindata[i + 1])
+                next_ch = bindata[i + 1]
                 if next_ch == 0x27 or next_ch == 0x5e or next_ch == 0x9e:
                     i += 1
-            out += bindata[i]
-            i += 1
+        out.append(bindata[i])
+        i += 1
         return out
