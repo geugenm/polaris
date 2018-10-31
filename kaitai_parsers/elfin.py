@@ -330,6 +330,3 @@ class Elfin(KaitaiStruct):
         def _read(self):
             self._raw_src_callsign = self._io.read_bytes(6)
             self.src_callsign = KaitaiStream.process_rotate_left(self._raw_src_callsign, 8 - (1), 1)
-
-
-
