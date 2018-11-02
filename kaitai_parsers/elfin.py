@@ -2,7 +2,7 @@
 
 from pkg_resources import parse_version
 from kaitaistruct import __version__ as ks_version, KaitaiStruct, KaitaiStream, BytesIO
-from elfin_pp import ElfinPp
+from .elfin_pp import ElfinPp
 
 
 if parse_version(ks_version) < parse_version('0.7'):
@@ -330,6 +330,3 @@ class Elfin(KaitaiStruct):
         def _read(self):
             self._raw_src_callsign = self._io.read_bytes(6)
             self.src_callsign = KaitaiStream.process_rotate_left(self._raw_src_callsign, 8 - (1), 1)
-
-
-
