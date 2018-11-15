@@ -1,3 +1,6 @@
 kaitaistruct
-matplotlib
 pandas
+matplotlib
+jupyter
+scikit-learn
+xgboost
