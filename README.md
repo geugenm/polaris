@@ -4,14 +4,22 @@ The goal of this project is to analyze data from the [SatNOGS Network](https://n
 
 ## Installation of dependencies
 
-For developpers
+For developers:
 ```bash
 pip install -r requirements-dev.txt
 ```
 
-For users
+For users:
 ```bash
 pip install -r requirements.txt
+```
+
+## Running notebooks
+
+Run in the top level of this repo:
+
+```bash
+jupyter notebook
 ```
 
 ## What it does
