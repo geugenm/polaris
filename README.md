@@ -1,8 +1,10 @@
-# Polaris
+Polaris
+=======
 
 The goal of this project is to analyze data from the [SatNOGS Network](https://network.satnogs.org/).
 
-## Installation of dependencies
+Installation of dependencies
+----------------------------
 
 For developers:
 ```bash
@@ -14,7 +16,8 @@ For users:
 pip install -r requirements.txt
 ```
 
-## Running notebooks
+Running notebooks
+-----------------
 
 Run in the top level of this repo:
 
@@ -22,7 +25,16 @@ Run in the top level of this repo:
 jupyter notebook
 ```
 
-## What it does
+What it does
+------------
 
  * Parse data from SatNOGS using Kaitai struct
  * Analyze dependencies in satellite telemetry
+
+More info for developers
+-------------------------
+
+Building the package
+```bash
+python setup.py bdist_wheel
+```
