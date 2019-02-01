@@ -47,70 +47,85 @@ def decode(binary):
     except Exception as e:
         pass
 
-df_data = pd.read_csv('./data/43617-482-20181022T023205Z-month.csv', index_col=0, names=['date', 'binary'], sep='|')
+def decode_file(file_path):
+    """ Decode a SatNOGs file
 
-# Decode and print progress bar
-tqdm.pandas()
-df_data['pkt'] = df_data['binary'].progress_apply(decode)
+        :param file_path: input file path of a csv extracted from SatNOGS
+        for instance './data/43617-482-20181022T023205Z-month.csv'
+        :return: decoded pandas dataframe
+    """
+    df_data = pd.read_csv(file_path, index_col=0, names=['date', 'binary'], sep='|')
 
-# Filter out non-telemetry data
-df_data['pkt_type'] = df_data['pkt'].apply(lambda pkt: type(pkt))
-df_data = df_data[df_data['pkt_type'] == Elfin.ElfinTlmData]
+    # Decode and print progress bar
+    tqdm.pandas()
+    df_data['pkt'] = df_data['binary'].progress_apply(decode)
 
-# Telemetry timestamp
-df_data['tlm_time'] = df_data['pkt'].apply(get_date)
+    # Filter out non-telemetry data
+    df_data['pkt_type'] = df_data['pkt'].apply(lambda pkt: type(pkt))
+    df_data = df_data[df_data['pkt_type'] == Elfin.ElfinTlmData]
 
-# Battery temperature
-df_data['tlm_pwr1_bat1_temp'] = df_data['pkt'].apply(lambda pkt: get_bat_temp_celsius(pkt.elfin_hskp_pwr1_bat_mon_1_temperature_register))
-df_data['tlm_pwr2_bat1_temp'] = df_data['pkt'].apply(lambda pkt: get_bat_temp_celsius(pkt.elfin_hskp_pwr1_bat_mon_2_temperature_register))
+    # Telemetry timestamp
+    df_data['tlm_time'] = df_data['pkt'].apply(get_date)
 
-# Battery voltage
-df_data['tlm_bat_mon_1_vol'] = df_data['pkt'].apply(lambda pkt: get_bat_volt(pkt.elfin_hskp_pwr1_bat_mon_1_volt_reg))
-df_data['tlm_bat_mon_2_vol'] = df_data['pkt'].apply(lambda pkt: get_bat_volt(pkt.elfin_hskp_pwr1_bat_mon_2_volt_reg))
+    # Battery temperature
+    df_data['tlm_pwr1_bat1_temp'] = df_data['pkt'].apply(lambda pkt: get_bat_temp_celsius(pkt.elfin_hskp_pwr1_bat_mon_1_temperature_register))
+    df_data['tlm_pwr2_bat1_temp'] = df_data['pkt'].apply(lambda pkt: get_bat_temp_celsius(pkt.elfin_hskp_pwr1_bat_mon_2_temperature_register))
 
-# Instant current
-df_data['tlm_bat_mon_1_curr'] = df_data['pkt'].apply(lambda pkt: get_bat_curr_ma(pkt.elfin_hskp_pwr1_bat_mon_1_cur_reg))
-df_data['tlm_bat_mon_2_curr'] = df_data['pkt'].apply(lambda pkt: get_bat_curr_ma(pkt.elfin_hskp_pwr1_bat_mon_1_cur_reg))
+    # Battery voltage
+    df_data['tlm_bat_mon_1_vol'] = df_data['pkt'].apply(lambda pkt: get_bat_volt(pkt.elfin_hskp_pwr1_bat_mon_1_volt_reg))
+    df_data['tlm_bat_mon_2_vol'] = df_data['pkt'].apply(lambda pkt: get_bat_volt(pkt.elfin_hskp_pwr1_bat_mon_2_volt_reg))
 
-# Average current
-df_data['tlm_bat_mon_1_avg_curr'] = df_data['pkt'].apply(lambda pkt: get_bat_curr_ma(pkt.elfin_hskp_pwr1_bat_mon_1_avg_cur_reg))
-df_data['tlm_bat_mon_2_avg_curr'] = df_data['pkt'].apply(lambda pkt: get_bat_curr_ma(pkt.elfin_hskp_pwr1_bat_mon_2_avg_cur_reg))
+    # Instant current
+    df_data['tlm_bat_mon_1_curr'] = df_data['pkt'].apply(lambda pkt: get_bat_curr_ma(pkt.elfin_hskp_pwr1_bat_mon_1_cur_reg))
+    df_data['tlm_bat_mon_2_curr'] = df_data['pkt'].apply(lambda pkt: get_bat_curr_ma(pkt.elfin_hskp_pwr1_bat_mon_1_cur_reg))
 
-# Accumulated current
-df_data['tlm_bat_mon_1_acc_curr'] = df_data['pkt'].apply(lambda pkt: get_bat_curr_ma(pkt.elfin_hskp_pwr1_bat_mon_1_acc_curr_reg))
-df_data['tlm_bat_mon_2_acc_curr'] = df_data['pkt'].apply(lambda pkt: get_bat_curr_ma(pkt.elfin_hskp_pwr1_bat_mon_2_acc_curr_reg))
+    # Average current
+    df_data['tlm_bat_mon_1_avg_curr'] = df_data['pkt'].apply(lambda pkt: get_bat_curr_ma(pkt.elfin_hskp_pwr1_bat_mon_1_avg_cur_reg))
+    df_data['tlm_bat_mon_2_avg_curr'] = df_data['pkt'].apply(lambda pkt: get_bat_curr_ma(pkt.elfin_hskp_pwr1_bat_mon_2_avg_cur_reg))
 
-# Bus voltage
-# TODO
+    # Accumulated current
+    df_data['tlm_bat_mon_1_acc_curr'] = df_data['pkt'].apply(lambda pkt: get_bat_curr_ma(pkt.elfin_hskp_pwr1_bat_mon_1_acc_curr_reg))
+    df_data['tlm_bat_mon_2_acc_curr'] = df_data['pkt'].apply(lambda pkt: get_bat_curr_ma(pkt.elfin_hskp_pwr1_bat_mon_2_acc_curr_reg))
 
-# Battery voltage (from ADC)
-df_data['tlm_adc_bat_1_vol'] = df_data['pkt'].apply(lambda pkt: get_adc_volt(pkt.elfin_hskp_pwr1_adc_data_bat_1_volt))
-df_data['tlm_adc_bat_2_vol'] = df_data['pkt'].apply(lambda pkt: get_adc_volt(pkt.elfin_hskp_pwr1_adc_data_bat_2_volt))
+    # Bus voltage
+    # TODO
 
-# Solar array voltages
-df_data['tlm_adc_sa_12_vol'] = df_data['pkt'].apply(lambda pkt: get_adc_volt(pkt.elfin_hskp_pwr1_adc_data_adc_sa_volt_12))
-df_data['tlm_adc_sa_34_vol'] = df_data['pkt'].apply(lambda pkt: get_adc_volt(pkt.elfin_hskp_pwr1_adc_data_adc_sa_volt_34))
-df_data['tlm_adc_sa_56_vol'] = df_data['pkt'].apply(lambda pkt: get_adc_volt(pkt.elfin_hskp_pwr1_adc_data_adc_sa_volt_56))
+    # Battery voltage (from ADC)
+    df_data['tlm_adc_bat_1_vol'] = df_data['pkt'].apply(lambda pkt: get_adc_volt(pkt.elfin_hskp_pwr1_adc_data_bat_1_volt))
+    df_data['tlm_adc_bat_2_vol'] = df_data['pkt'].apply(lambda pkt: get_adc_volt(pkt.elfin_hskp_pwr1_adc_data_bat_2_volt))
 
-df_data['tlm_adc_reg_sa_1_vol'] = df_data['pkt'].apply(lambda pkt: get_adc_volt(pkt.elfin_hskp_pwr1_adc_data_reg_sa_volt_1))
-df_data['tlm_adc_reg_sa_2_vol'] = df_data['pkt'].apply(lambda pkt: get_adc_volt(pkt.elfin_hskp_pwr1_adc_data_reg_sa_volt_2))
-df_data['tlm_adc_reg_sa_3_vol'] = df_data['pkt'].apply(lambda pkt: get_adc_volt(pkt.elfin_hskp_pwr1_adc_data_reg_sa_volt_3))
+    # Solar array voltages
+    df_data['tlm_adc_sa_12_vol'] = df_data['pkt'].apply(lambda pkt: get_adc_volt(pkt.elfin_hskp_pwr1_adc_data_adc_sa_volt_12))
+    df_data['tlm_adc_sa_34_vol'] = df_data['pkt'].apply(lambda pkt: get_adc_volt(pkt.elfin_hskp_pwr1_adc_data_adc_sa_volt_34))
+    df_data['tlm_adc_sa_56_vol'] = df_data['pkt'].apply(lambda pkt: get_adc_volt(pkt.elfin_hskp_pwr1_adc_data_adc_sa_volt_56))
 
-# Power bus current
-df_data['tlm_adc_pb_1_curr'] = df_data['pkt'].apply(lambda pkt: get_adc_bus_curr(pkt.elfin_hskp_pwr1_adc_data_power_bus_current_1))
-df_data['tlm_adc_pb_2_curr'] = df_data['pkt'].apply(lambda pkt: get_adc_bus_curr(pkt.elfin_hskp_pwr1_adc_data_power_bus_current_2))
+    df_data['tlm_adc_reg_sa_1_vol'] = df_data['pkt'].apply(lambda pkt: get_adc_volt(pkt.elfin_hskp_pwr1_adc_data_reg_sa_volt_1))
+    df_data['tlm_adc_reg_sa_2_vol'] = df_data['pkt'].apply(lambda pkt: get_adc_volt(pkt.elfin_hskp_pwr1_adc_data_reg_sa_volt_2))
+    df_data['tlm_adc_reg_sa_3_vol'] = df_data['pkt'].apply(lambda pkt: get_adc_volt(pkt.elfin_hskp_pwr1_adc_data_reg_sa_volt_3))
 
-# Temperatures
-df_data['tlm_tmps_1'] = df_data['pkt'].apply(lambda pkt: get_temps_cels(pkt.elfin_hskp_pwr1_tmps_tmp1))
-df_data['tlm_tmps_2'] = df_data['pkt'].apply(lambda pkt: get_temps_cels(pkt.elfin_hskp_pwr1_tmps_tmp2))
-df_data['tlm_tmps_3'] = df_data['pkt'].apply(lambda pkt: get_temps_cels(pkt.elfin_hskp_pwr1_tmps_tmp3))
-df_data['tlm_tmps_4'] = df_data['pkt'].apply(lambda pkt: get_temps_cels(pkt.elfin_hskp_pwr1_tmps_tmp4))
+    # Power bus current
+    df_data['tlm_adc_pb_1_curr'] = df_data['pkt'].apply(lambda pkt: get_adc_bus_curr(pkt.elfin_hskp_pwr1_adc_data_power_bus_current_1))
+    df_data['tlm_adc_pb_2_curr'] = df_data['pkt'].apply(lambda pkt: get_adc_bus_curr(pkt.elfin_hskp_pwr1_adc_data_power_bus_current_2))
 
-# Battery capacity
-df_data['tlm_acc_curr_bat1_rarc'] = df_data['pkt'].apply(lambda pkt: pkt.elfin_hskp_pwr1_accumulated_curr_bat1_rarc)
-df_data['tlm_acc_curr_bat2_rarc'] = df_data['pkt'].apply(lambda pkt: pkt.elfin_hskp_pwr1_accumulated_curr_bat2_rarc)
+    # Temperatures
+    df_data['tlm_tmps_1'] = df_data['pkt'].apply(lambda pkt: get_temps_cels(pkt.elfin_hskp_pwr1_tmps_tmp1))
+    df_data['tlm_tmps_2'] = df_data['pkt'].apply(lambda pkt: get_temps_cels(pkt.elfin_hskp_pwr1_tmps_tmp2))
+    df_data['tlm_tmps_3'] = df_data['pkt'].apply(lambda pkt: get_temps_cels(pkt.elfin_hskp_pwr1_tmps_tmp3))
+    df_data['tlm_tmps_4'] = df_data['pkt'].apply(lambda pkt: get_temps_cels(pkt.elfin_hskp_pwr1_tmps_tmp4))
 
-df_data['tlm_acc_curr_bat1_rsrc'] = df_data['pkt'].apply(lambda pkt: pkt.elfin_hskp_pwr1_accumulated_curr_bat1_rsrc)
-df_data['tlm_acc_curr_bat2_rsrc'] = df_data['pkt'].apply(lambda pkt: pkt.elfin_hskp_pwr1_accumulated_curr_bat2_rsrc)
+    # Battery capacity
+    df_data['tlm_acc_curr_bat1_rarc'] = df_data['pkt'].apply(lambda pkt: pkt.elfin_hskp_pwr1_accumulated_curr_bat1_rarc)
+    df_data['tlm_acc_curr_bat2_rarc'] = df_data['pkt'].apply(lambda pkt: pkt.elfin_hskp_pwr1_accumulated_curr_bat2_rarc)
 
-df_data = df_data.drop(['binary', 'pkt', 'pkt_type'], axis=1)
+    df_data['tlm_acc_curr_bat1_rsrc'] = df_data['pkt'].apply(lambda pkt: pkt.elfin_hskp_pwr1_accumulated_curr_bat1_rsrc)
+    df_data['tlm_acc_curr_bat2_rsrc'] = df_data['pkt'].apply(lambda pkt: pkt.elfin_hskp_pwr1_accumulated_curr_bat2_rsrc)
+
+    df_data = df_data.drop(['binary', 'pkt', 'pkt_type'], axis=1)
+
+    return df_data
+
+if __name__ == "__main__":
+
+    df = decode_file('./data/43617-482-20181022T023205Z-month.csv')
+    print(" --- head(3) of the decoded data which has {} features/columns and {} data points/rows".format(len(df.columns), df.shape[0]))
+    print(df.head(3))
