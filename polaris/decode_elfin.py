@@ -1,3 +1,4 @@
+import sys, getopt
 import pandas as pd
 from tqdm import tqdm
 import binascii
@@ -124,8 +125,41 @@ def decode_file(file_path):
 
     return df_data
 
-if __name__ == "__main__":
 
-    df = decode_file('./data/43617-482-20181022T023205Z-month.csv')
+def main(argv):
+    usage_str = "usage: python -m decode_elfin.py <inputfile>"
+    # file path to be decoded
+    input_file_path = ""
+
+    try:
+        opts, args = getopt.getopt(argv,"h")
+    except getopt.GetoptError:
+        print(usage_str)
+        sys.exit(2)
+
+    for opt, arg in opts:
+        if opt == "-h":
+            print(usage_str)
+            sys.exit()
+        else:
+            pass
+
+    # rest of the options
+    if len(args) > 0:
+        input_file_path = args[0]
+
+    # using default file if not set
+    if len(input_file_path) == 0:
+        input_file_path = "./data/43617-482-20181022T023205Z-month.csv"
+        print("Using default input file: {}".format(input_file_path))
+    else:
+        print("Using input file: {}".format(input_file_path))
+
+    # Running the decoder
+    df = decode_file(input_file_path)
     print(" --- head(3) of the decoded data which has {} features/columns and {} data points/rows".format(len(df.columns), df.shape[0]))
     print(df.head(3))
+
+if __name__ == "__main__":
+
+    main(sys.argv[1:])
