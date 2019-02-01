@@ -25,6 +25,13 @@ Run in the top level of this repo:
 jupyter notebook
 ```
 
+Running source
+--------------
+
+```bash
+python -m polaris.decode_elfin
+```
+
 What it does
 ------------
 
