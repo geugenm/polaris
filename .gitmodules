@@ -1,0 +1,3 @@
+[submodule "utils/glouton-satnogs-data-downloader"]
+	path = utils/glouton-satnogs-data-downloader
+	url = https://github.com/deckbsd/glouton-satnogs-data-downloader.git
