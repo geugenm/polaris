@@ -13,14 +13,14 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    version="0.0.0",
+    version="0.1.0",
     name="polaris",
     description="",
     long_description=long_description,
     url="https://gitlab.com/crespum/polaris",
     license="",
     author="",
-    install_requires=[""],
+    install_requires=["pandas", "scikit-learn", "xgboost", "kaitaistruct"],
     python_requires='>=3',
     extras_require={
         "test": ["pytest"]
@@ -31,7 +31,7 @@ setup(
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: "
+        "License :: OSI Approved :: LGPL"
     ], 
 )
 
