@@ -1,4 +1,2 @@
--r requirements.txt
-jupyter
-jupyter_contrib_nbextensions
-jupyter_nbextensions_configurator
+flake8
+autopep8

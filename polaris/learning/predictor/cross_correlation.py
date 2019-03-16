@@ -69,7 +69,8 @@ class XCorr(BaseEstimator, TransformerMixin):
         """
         # Create and train a XGBoost regressor
         M = XGBRegressor(**self.model_params)
-        M.fit(df_in, target_series)  # , early_stopping_rounds=self.early_stopping_rounds)
+        # , early_stopping_rounds=self.early_stopping_rounds)
+        M.fit(df_in, target_series)
 
         # indices = np.argsort(M.feature_importances_)[::-1]
         # After the model is trained
@@ -85,8 +86,8 @@ class XCorr(BaseEstimator, TransformerMixin):
 
         # Concatenating new information about feature importances
         if self.importances_map is not None:
-            self.importances_map = pd.concat([self.importances_map,
-                                          pd.DataFrame(index=[target_series.name], data=new_row)])
+            self.importances_map = pd.concat(
+                [self.importances_map, pd.DataFrame(index=[target_series.name], data=new_row)])
         return M
 
     def reset_importance_map(self, columns):
@@ -96,4 +97,3 @@ class XCorr(BaseEstimator, TransformerMixin):
                 data={},
                 columns=columns
             )
-

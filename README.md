@@ -1,79 +1,61 @@
-Polaris
-=======
+# Polaris
 
-The goal of this project is to analyze data from the [SatNOGS Network](https://network.satnogs.org/).
+Python3 tool to analyze a satellite set of telemetry to understand links/dependencies among different subsystems. The telemetry is currently retrieved from the [SatNOGS Network](https://network.satnogs.org/).
 
-Cloning
--------
-
-To clone this repo for the first time, run:
+## Project structure
 
 ```
-git clone --recurse-submodules https://gitlab.com/crespum/polaris.git
+polaris/               - Project source code
+    data_fetch/        - Module to fetch and prepare data for the analysis
+    data_viz/          - Module to visualize the analysis results
+    learn/             - Module to perform the data analysis
+    polaris.py         - Polaris entry point
+
+playground/            - Exploratory tests
 ```
 
-Installation of dependencies
-----------------------------
+## Installation
 
-For developers:
 ```bash
+# Clone the repo
+git clone --recurse-submodules https://gitlab.com/crespum/polaris.git
+
+# Create virtual environment
+python3 -m venv .venv
+source .venv/bin/activate
+
+# Install project dependencies
+pip install -r requirements.txt
+
+# (devs) Install dependencies for development
 pip install -r requirements-dev.txt
 ```
 
-For users:
-```bash
-pip install -r requirements.txt
+## Running the code
+```
+$ python polaris.py -h
+usage: polaris [-h] {data_fetch,learning,data_viz} ...
+
+Tool for analyzing satellite telemetry
+
+optional arguments:
+  -h, --help            show this help message and exit
+
+subcommands:
+  valid subcommands
+
+  {data_fetch,learning,data_viz}
+    data_fetch          data-fetch help
+    learning            learning help
+    data_viz            data-viz help
+
 ```
 
-Running notebooks
------------------
-
-Run in the top level of this repo:
-
-```bash
-jupyter notebook
-```
-
-Running source
---------------
-
-```bash
-python -m polaris.decode_elfin
-```
-
-What it does
-------------
-
- * Parse data from SatNOGS using Kaitai struct
- * Analyze dependencies in satellite telemetry
-
-More info for developers
--------------------------
+### More info for developers
 
 Building the package
 ```bash
 python setup.py bdist_wheel
 ```
 
-How-to
-------
-
-### Predictor: XCorr
-
-Cross Correlation finder.
-
-```python
-import pandas as pd
-from polaris.learning import XCorr
-
-correlator = XCorr()
-
-# df = load_my_data(whatever, function, of, yours)
-
-correlator.fit(df)
-
-print(correlator.importances_map)
-
-```
-
-The XCorr class can be incorporated into a Scikit-learn pipeline.
+If you want to **know more**, join our [Matrix room](https://riot.im/app/#/room/#polaris:matrix.org)
