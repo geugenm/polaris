@@ -3,6 +3,15 @@ Polaris
 
 The goal of this project is to analyze data from the [SatNOGS Network](https://network.satnogs.org/).
 
+Cloning
+-------
+
+To clone this repo for the first time, run:
+
+```
+git clone --recurse-submodules https://gitlab.com/crespum/polaris.git
+```
+
 Installation of dependencies
 ----------------------------
 
