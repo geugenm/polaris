@@ -8,9 +8,10 @@ Python3 tool to analyze a satellite set of telemetry to understand links/depende
 polaris/               - Project source code
     data_fetch/        - Module to fetch and prepare data for the analysis
     data_viz/          - Module to visualize the analysis results
-    learn/             - Module to perform the data analysis
+    learning/          - Module to perform the data analysis
     polaris.py         - Polaris entry point
 
+tests/                 - Project unit tests
 playground/            - Exploratory tests
 ```
 
