@@ -34,3 +34,11 @@ jupyter notebook
 
  * Parse data from SatNOGS using Kaitai struct
  * Analyze dependencies in satellite telemetry
+
+## InfluxDB and Grafana
+
+InfluxDB and Grafana have been configured to run with
+`docker-compose`.  (At the moment these are not configured to do much,
+but they will be useful for future development.)
+
+For more details, see `InfluxDB.md`.
