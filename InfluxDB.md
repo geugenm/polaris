@@ -16,7 +16,7 @@ InfluxDB and Grafana will save files at `docker/influxdb/data` and
 added, or Grafana dashboards should persist and be available the next
 time the environment is started.
 
-To clean those files, see `Cleaning`(#Cleaning).
+To clean those files, see [Cleaning](#cleaning).
 
 # Configuration
 
