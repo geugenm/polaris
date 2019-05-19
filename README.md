@@ -41,4 +41,4 @@ InfluxDB and Grafana have been configured to run with
 `docker-compose`.  (At the moment these are not configured to do much,
 but they will be useful for future development.)
 
-For more details, see `InfluxDB.md`.
+For more details, see [docs/InfluxDB.md](docs/InfluxDB.md).
