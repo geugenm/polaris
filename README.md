@@ -2,6 +2,8 @@
 
 Python3 tool to analyze a satellite set of telemetry to understand links/dependencies among different subsystems. The telemetry is currently retrieved from the [SatNOGS Network](https://network.satnogs.org/).
 
+If you want to **know more**, join our [Matrix room](https://riot.im/app/#/room/#polaris:matrix.org)
+
 ## Project structure
 
 ```
@@ -59,4 +61,11 @@ Building the package
 python setup.py bdist_wheel
 ```
 
-If you want to **know more**, join our [Matrix room](https://riot.im/app/#/room/#polaris:matrix.org)
+## InfluxDB and Grafana
+
+InfluxDB and Grafana have been configured to run with
+`docker-compose`.  (At the moment these are not configured to do much,
+but they will be useful for future development.)
+
+For more details, see [docs/InfluxDB.md](docs/InfluxDB.md).
+

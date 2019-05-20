@@ -6,3 +6,4 @@ untracked/
 /venv
 .venv
 .vscode
+/docker/*/data/*
