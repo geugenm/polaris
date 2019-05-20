@@ -4,4 +4,6 @@ __pycache__
 untracked/
 *.pickle
 /venv
+.venv
+.vscode
 /docker/*/data/*
