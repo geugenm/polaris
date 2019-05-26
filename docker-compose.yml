@@ -24,3 +24,4 @@ services:
       - influxdb
     volumes:
       - ./docker/grafana/data:/var/lib/grafana:Z
+      - ./docker/grafana/provisioning:/var/lib/grafana_provisioning:Z

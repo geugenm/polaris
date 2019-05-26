@@ -29,6 +29,14 @@ here:
 - [InfluxDB](https://hub.docker.com/_/influxdb/)
 - [Grafana](https://grafana.com/docs/installation/docker/)
 
+Grafana is *also* configured by provisioning files stored in
+`docker/grafana/provisioning`.  Currently, there is a provisioning
+file to set up InfluxDB as a data source; in the future, there may be
+other files as well.  Information on Grafana provisioning can be found
+at:
+
+- [Provisioning Grafana](https://grafana.com/docs/administration/provisioning/)
+
 # Starting
 
 ```
@@ -51,6 +59,16 @@ make influxdb-shell
 
 Grafana can be reached at http://127.0.0.1:3000.  The username and
 password are both "admin" (no quotes).
+
+# InfluxDB data source in Grafana
+
+To verify that InfluxDB has been set up as a data source for Grafana,
+go to:
+
+* http://127.0.0.1:3000/datasources/edit/1/
+
+and click the "Test" button at the bottom of the page.  You should see
+a green box show up that says "Data source is working".
 
 # Stopping
 
