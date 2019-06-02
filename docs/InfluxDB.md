@@ -84,3 +84,22 @@ for a clean start...but you will not get your data back.
 ```
 make docker-compose-clean
 ```
+
+# Other commands
+
+The usual `docker-compose` commands will work.  You may notice a
+message about `CURRENT_ID` not being set:
+
+```
+$ docker-compose ps
+WARNING: The CURRENT_ID variable is not set. Defaulting to a blank string.
+  Name            Command           State                                   Ports
+------------------------------------------------------------------------------------------------------------------
+grafana    /run.sh                  Up      0.0.0.0:3000->3000/tcp
+influxdb   /entrypoint.sh influxd   Up      0.0.0.0:8083->8083/tcp, 0.0.0.0:8086->8086/tcp, 0.0.0.0:8090->8090/tcp
+```
+
+This is fine, and you can ignore the message.  Further background can
+be found
+[here](https://gitlab.com/crespum/polaris/merge_requests/14#note_176910451)
+and [here](https://github.com/docker/compose/issues/4725).
