@@ -1,3 +1,9 @@
 [submodule "utils/glouton-satnogs-data-downloader"]
 	path = utils/glouton-satnogs-data-downloader
 	url = https://github.com/deckbsd/glouton-satnogs-data-downloader.git
+[submodule "polaris/glouton"]
+	path = polaris/glouton
+	url = https://github.com/deckbsd/glouton-satnogs-data-downloader
+[submodule "polaris/satnogs-decoders"]
+	path = polaris/satnogs-decoders
+	url = https://gitlab.com/librespacefoundation/satnogs/satnogs-decoders
