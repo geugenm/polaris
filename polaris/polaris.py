@@ -1,13 +1,8 @@
 from argparse import ArgumentParser
-import argparse
-import subprocess
 from data_fetch.data_fetch_decoder import *
 import data_viz
 import learning
 
-class Fetch(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        data_fetch_decode()
 if __name__ == "__main__":
     parser = ArgumentParser(
         prog='polaris', description="Tool for analyzing satellite telemetry")
