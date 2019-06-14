@@ -18,14 +18,14 @@ def data_fetch_decode():
     start_date = '2019-05-01T00:00:00'
     end_date = '2019-05-10T00:00:00'
     data_directory = '../data'
-    fetch_cmd = 'python3 ./glouton.py --wdir'+data_directory+' -s '+start_date+' -e '+end_date+' -n 43617 --demoddata --demodm CSV'
+    fetch_cmd = 'python3 ./glouton.py --wdir '+data_directory+' -s '+start_date+' -e '+end_date+' -n 43617 --demoddata --demodm CSV'
     try:
         subprocess.Popen(fetch_cmd, shell=True, cwd='../utils/glouton-satnogs-data-downloader')
     except subprocess.CalledProcessError as err:
         print('ERROR:', err)
     output_directory = get_output_directory()
     print('Saving the dataframes in directory: '+output_directory)
-    path_to_output_directory = data_directory+output_directory
+    path_to_output_directory = data_directory+'/'+output_directory
     merge_cmd = 'sed 1d *.csv > ../merged_frames.csv'
     try:
         subprocess.Popen(merge_cmd, shell=True, cwd=path_to_output_directory)
