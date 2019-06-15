@@ -38,11 +38,14 @@ def data_fetch_decode():
     path_to_output_directory = data_directory+'/'+output_directory
     print('Merging all the csv files into one CSV file.')
     merged_file = 'merged_frames_'+output_directory+'.csv'
-    # Command to merge all the csv files from the output directory into a single CSV file.
+    # Command to merge all the csv files from the output directory
+    # into a single CSV file.
     merge_cmd = 'sed 1d *.csv > ../'+merged_file
     try:
         # Using subprocess package to execute merge command to merge CSV files.
-        p2 = subprocess.Popen(merge_cmd, shell=True, cwd=path_to_output_directory)
+        p2 = subprocess.Popen(merge_cmd,
+                              shell=True,
+                              cwd=path_to_output_directory)
         p2.wait()
     except subprocess.CalledProcessError as err:
         print('ERROR:', err)
@@ -50,7 +53,8 @@ def data_fetch_decode():
     print('Storing merged CSV file: '+merged_file)
     print('Starting decoding of the data')
     decoded_file = 'decoded_frames_'+output_directory+'.json'
-    # Using satnogs-decoders to decode the CSV files containing multiple dataframes as a JSON objects.
+    # Using satnogs-decoders to decode the CSV files containing
+    # multiple dataframes as a JSON objects.
     # decode-multiple.py is not present in satnogs-decoders repository
     # You can download the script from the code snippets [https://gitlab.com/librespacefoundation/satnogs/satnogs-decoders/snippets/1795023]
     # Put that script in polaris/utils/satnogs-decoders and you're good to go!
@@ -58,7 +62,9 @@ def data_fetch_decode():
     try:
         absolute_file_directory = os.path.dirname(os.path.abspath(__file__))
         os.chdir(absolute_file_directory)
-        p3 = subprocess.Popen(decode_cmd, shell=True, cwd='../../utils/satnogs-decoders')
+        p3 = subprocess.Popen(decode_cmd,
+                              shell=True,
+                              cwd='../../utils/satnogs-decoders')
         p3.wait()
     except subprocess.CalledProcessError as err:
         print('ERROR:', err)
