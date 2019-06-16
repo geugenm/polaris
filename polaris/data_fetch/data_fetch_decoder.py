@@ -3,6 +3,9 @@ import os
 import argparse
 
 
+data_directory = '/tmp/polaris'
+
+
 class Fetch(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         data_fetch_decode()
@@ -11,11 +14,8 @@ class Fetch(argparse.Action):
 # Utility function for getting last modified directory.
 
 
-def get_output_directory():
-    data_directory_name = '/tmp/polaris/'
-    if not os.path.exists(data_directory_name):
-        os.makedirs(data_directory_name)
-    os.chdir(data_directory_name)
+def get_output_directory(data_directory=data_directory):
+    os.chdir(data_directory)
     all_directories = [d for d in os.listdir('.') if os.path.isdir(d)]
     output_directory = max(all_directories, key=os.path.getmtime)
     return output_directory
@@ -24,8 +24,9 @@ def get_output_directory():
 def data_fetch_decode():
     start_date = '2019-05-01T00:00:00'  # Start timestamp
     end_date = '2019-05-10T00:00:00'  # End timestamp
-    data_directory = '/tmp/polaris'
     # Shell command for executing glouton in order to download the dataframes from SatNOGS network based on NORAD ID of the satellite and start and end timestamps
+    if not os.path.exists(data_directory):
+        os.makedirs(data_directory)
     fetch_cmd = 'python3 ./glouton.py --wdir '+data_directory+' -s '+start_date+' -e '+end_date+' -n 43617 --demoddata --demodm CSV'
     try:
         # Using subprocess package to execute fetch command by passing current working directory as an argument
