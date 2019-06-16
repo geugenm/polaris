@@ -11,10 +11,13 @@ class Fetch(argparse.Action):
         data_fetch_decode()
 
 
-# Utility function for getting last modified directory.
-
-
 def get_output_directory(data_directory=data_directory):
+    """
+    Utility function for getting the output directory.
+
+    Currently it looks for the last-modified directory within
+    the data_directory argument.
+    """
     os.chdir(data_directory)
     all_directories = [d for d in os.listdir('.') if os.path.isdir(d)]
     output_directory = max(all_directories, key=os.path.getmtime)
