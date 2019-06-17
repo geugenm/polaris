@@ -1,5 +1,5 @@
 from argparse import ArgumentParser
-from data_fetch.data_fetch_decoder import *
+from data_fetch.data_fetch_decoder import data_fetch_decode
 import data_viz
 import learning
 
@@ -11,9 +11,9 @@ if __name__ == "__main__":
 
     # parser for 'data-fetch' subcommand
     parser_fetch = subparsers.add_parser('data_fetch', help='data-fetch help')
-    parser_fetch.add_argument(
-        'foo', type=int, help='subcommand argument example',action=Fetch)
-    # parser_fetch.set_defaults(func=data_fetch_decode)
+    # parser_fetch.add_argument(
+    #     'foo', type=int, help='subcommand argument example',action=Fetch)
+    parser_fetch.set_defaults(func=data_fetch_decode())
 
     # parser for 'learning' subommand
     parser_learning = subparsers.add_parser('learning', help='learning help')
