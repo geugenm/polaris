@@ -32,11 +32,23 @@ pip install -r requirements.txt
 
 # (devs) Install dependencies for development
 pip install -r requirements-dev.txt
+
+# Change directory to the /utils/satnogs-decoders
+cd utils/satnogs-decoders/
+
+# Run docker-ksc script to compile KSY to Python code (Requires Docker)
+# The following command will output the compiled files under satnogsdecoders/decoder directory.
+./contrib/docker-ksc.sh
+
+# Install the package from source code directory using following command
+pip install -e .
+
+
 ```
 
 ## Running the code
 ```
-$ python polaris.py -h
+$ python3 polaris.py -h
 usage: polaris [-h] {data_fetch,learning,data_viz} ...
 
 Tool for analyzing satellite telemetry
@@ -51,6 +63,9 @@ subcommands:
     data_fetch          data-fetch help
     learning            learning help
     data_viz            data-viz help
+
+# To fetch and decode the data from the SatNOGS network, use follwing command
+$ python3 polaris.py data_fetch
 
 ```
 
