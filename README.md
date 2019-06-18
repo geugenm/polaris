@@ -64,7 +64,7 @@ subcommands:
     learning            learning help
     data_viz            data-viz help
 
-# To fetch and decode the data from the SatNOGS network, use follwing command
+# To fetch and decode the data from the SatNOGS network, use the following command
 $ python3 polaris.py data_fetch
 
 ```
