@@ -1,22 +1,16 @@
 import subprocess
 import os
-import argparse
 
 
-data_directory = '/tmp/polaris'
+DATA_DIRECTORY = '/tmp/polaris'
 
 
-class Fetch(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        data_fetch_decode()
-
-
-def get_output_directory(data_directory=data_directory):
+def get_output_directory(data_directory=DATA_DIRECTORY):
     """
     Utility function for getting the output directory.
 
     Currently it looks for the last-modified directory within
-    the data_directory argument.
+    the DATA_DIRECTORY argument.
     """
     os.chdir(data_directory)
     all_directories = [d for d in os.listdir('.') if os.path.isdir(d)]
@@ -27,12 +21,12 @@ def get_output_directory(data_directory=data_directory):
 def build_decode_cmd(src, dest):
     """Build command to decode downloaded into JSON
     """
-    decode_multiple = 'python decode-multiple.py'
+    decode_multiple = 'decode_multiple'
     decoder_module = 'Elfin'
-    decode_cmd = '{decode_multiple} -d {decoder_module} -p -x {src} > ../../{dest}'.format(
+    decode_cmd = '{decode_multiple} --filename {src} --format csv {decoder_module}'.format(
         decode_multiple=decode_multiple,
         decoder_module=decoder_module,
-        src=src,
+        src='/tmp/polaris/'+src,
         dest=dest,
     )
     return decode_cmd
@@ -43,13 +37,13 @@ def build_fetch_cmd():
     satellite
     """
     start_date = '2019-05-01T00:00:00'  # Start timestamp
-    end_date = '2019-05-10T00:00:00'  # End timestamp
+    end_date = '2019-05-05T00:00:00'  # End timestamp
     glouton = 'python3 ./glouton.py'
     demod_args = '--demoddata --demodm CSV'
-    sat = '43617'  # Elfin-B
+    sat = '43617'  # Elfin-A
     cmd = '{glouton} --wdir {data_dir} -s {start_date} -e {end_date} -n {sat} {demod_args}'.format(
         glouton=glouton,
-        data_dir=data_directory,
+        data_dir=DATA_DIRECTORY,
         start_date=start_date,
         end_date=end_date,
         sat=sat,
@@ -60,8 +54,8 @@ def build_fetch_cmd():
 
 def data_fetch_decode():
     """Main function to download and decode satellite telemetry"""
-    if not os.path.exists(data_directory):
-        os.makedirs(data_directory)
+    if not os.path.exists(DATA_DIRECTORY):
+        os.makedirs(DATA_DIRECTORY)
     # Shell command for executing glouton in order to download the
     # dataframes from SatNOGS network based on NORAD ID of the
     # satellite and start and end timestamps
@@ -77,7 +71,7 @@ def data_fetch_decode():
         print('ERROR:', err)
     output_directory = get_output_directory()
     print('Saving the dataframes in directory: '+output_directory)
-    path_to_output_directory = data_directory+'/'+output_directory
+    path_to_output_directory = DATA_DIRECTORY+'/'+output_directory
     print('Merging all the csv files into one CSV file.')
     merged_file = 'merged_frames_'+output_directory+'.csv'
     # Command to merge all the csv files from the output directory
@@ -98,7 +92,8 @@ def data_fetch_decode():
     # Using satnogs-decoders to decode the CSV files containing
     # multiple dataframes as a JSON objects.
     # decode-multiple.py is not present in satnogs-decoders repository
-    # You can download the script from the code snippets [https://gitlab.com/librespacefoundation/satnogs/satnogs-decoders/snippets/1795023]
+    # You can download the script from the code snippets
+    # [https://gitlab.com/librespacefoundation/satnogs/satnogs-decoders/snippets/1795023]
     # Put that script in polaris/utils/satnogs-decoders and you're good to go!
     decode_cmd = build_decode_cmd(merged_file, decoded_file)
     try:
@@ -114,4 +109,7 @@ def data_fetch_decode():
     except subprocess.CalledProcessError as err:
         print('ERROR:', err)
     print('Decoding of data finished.')
-    print('Storing the decoded data JSON file in root directory :'+decoded_file)
+    print(
+        'Storing the decoded data JSON file in root directory :'
+        + decoded_file
+        )
