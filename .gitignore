@@ -7,3 +7,5 @@ untracked/
 .venv
 .vscode
 /docker/*/data/*
+.tox/
+polaris.egg-info/
