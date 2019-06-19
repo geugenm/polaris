@@ -48,6 +48,8 @@ pip install -e .
 
 ## Running the code
 ```
+# Go to the polaris directory within this repo
+cd polaris
 $ python3 polaris.py -h
 usage: polaris [-h] {data_fetch,learning,data_viz} ...
 
