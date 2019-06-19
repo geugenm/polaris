@@ -23,10 +23,12 @@ def build_decode_cmd(src, dest):
     """
     decode_multiple = 'decode_multiple'
     decoder_module = 'Elfin'
-    decode_cmd = '{decode_multiple} --filename {src} --format csv {decoder_module}'.format(
+    input_format = 'csv'
+    decode_cmd = '{decode_multiple} --filename {src} --format {input_format} {decoder_module} > ../../{dest}'.format(
         decode_multiple=decode_multiple,
         decoder_module=decoder_module,
         src='/tmp/polaris/'+src,
+        input_format=input_format,
         dest=dest,
     )
     return decode_cmd
