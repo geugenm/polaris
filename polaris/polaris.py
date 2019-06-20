@@ -1,7 +1,9 @@
 from argparse import ArgumentParser
 
 import data_fetch
+
 import data_viz
+
 import learning
 
 if __name__ == "__main__":
