@@ -7,13 +7,14 @@ import learning
 if __name__ == "__main__":
     parser = ArgumentParser(
         prog='polaris', description="Tool for analyzing satellite telemetry")
-    subparsers = parser.add_subparsers(
-        title='subcommands', description='valid subcommands')
+    subparsers = parser.add_subparsers(title='subcommands',
+                                       description='valid subcommands')
 
     # parser for 'data-fetch' subcommand
     parser_fetch = subparsers.add_parser('data_fetch', help='data-fetch help')
-    parser_fetch.add_argument(
-        'foo', type=int, help='subcommand argument example')
+    parser_fetch.add_argument('foo',
+                              type=int,
+                              help='subcommand argument example')
     parser_fetch.set_defaults(func=data_fetch)
 
     # parser for 'learning' subommand
