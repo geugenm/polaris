@@ -1,4 +1,4 @@
-from argparse import ArgumentParser
+import click
 
 from data_fetch.data_fetch_decoder import data_fetch_decode
 
@@ -6,24 +6,39 @@ import data_viz
 
 import learning
 
+
+# TODO: See
+# https://github.com/pallets/click/blob/master/examples/repo/repo.py
+# for some cool options
+@click.group()
+def cli():
+    """Tool for analyzing satellite telemetry
+    """
+    pass
+
+
+@click.command('data_fetch', short_help='Download data set(s)')
+def cli_data_fetch():
+    data_fetch_decode()
+
+
+@click.command('learning', short_help='learning help')
+def cli_learning():
+    print('[FIXME] Learning goes here')
+    learning()
+
+
+@click.command('data_viz', short_help='data-viz help')
+def cli_data_viz():
+    print('[FIXME] Data visualization goes here')
+    data_viz()
+
+
+# click doesn't automagically add the commands to the group
+# (and thus to the help output); you have to do it manually.
+cli.add_command(cli_data_fetch)
+cli.add_command(cli_learning)
+cli.add_command(cli_data_viz)
+
 if __name__ == "__main__":
-    parser = ArgumentParser(
-        prog='polaris', description="Tool for analyzing satellite telemetry")
-    subparsers = parser.add_subparsers(title='subcommands',
-                                       description='valid subcommands')
-
-    # parser for 'data-fetch' subcommand
-    parser_fetch = subparsers.add_parser('data_fetch', help='data-fetch help')
-    # parser_fetch.add_argument(
-    #     'foo', type=int, help='subcommand argument example',action=Fetch)
-    parser_fetch.set_defaults(func=data_fetch_decode())
-
-    # parser for 'learning' subommand
-    parser_learning = subparsers.add_parser('learning', help='learning help')
-    parser_learning.set_defaults(func=learning)
-
-    # parser for 'data-viz' subcommand
-    parser_viz = subparsers.add_parser('data_viz', help='data-viz help')
-    parser_viz.set_defaults(func=data_viz)
-
-    args = parser.parse_args()
+    cli()
