@@ -1,10 +1,10 @@
 import pandas as pd
 
-# eXtreme Gradient Boost algorithm
-from xgboost import XGBRegressor
-
 # Used for the pipeline interface of scikit learn
 from sklearn.base import BaseEstimator, TransformerMixin
+
+# eXtreme Gradient Boost algorithm
+from xgboost import XGBRegressor
 
 
 class XCorr(BaseEstimator, TransformerMixin):
@@ -14,7 +14,7 @@ class XCorr(BaseEstimator, TransformerMixin):
     def __init__(self, model_params=None):
         """
             :param models: list of tuples (target column, model)
-            :param importances_map: dataframe representing the heatmap of correlations
+            :param importances_map: dataframe representing the heatmap of corrs
             :param model_params: parameters for each model
         """
         self.models = None
@@ -51,9 +51,7 @@ class XCorr(BaseEstimator, TransformerMixin):
         self.reset_importance_map(X.columns)
 
         for c in X.columns:
-            self.models.append(
-                self.regression(X.drop([c], axis=1), X[c])
-            )
+            self.models.append(self.regression(X.drop([c], axis=1), X[c]))
 
     def transform(self):
         """ Unused method in this predictor """
@@ -86,14 +84,13 @@ class XCorr(BaseEstimator, TransformerMixin):
 
         # Concatenating new information about feature importances
         if self.importances_map is not None:
-            self.importances_map = pd.concat(
-                [self.importances_map, pd.DataFrame(index=[target_series.name], data=new_row)])
+            self.importances_map = pd.concat([
+                self.importances_map,
+                pd.DataFrame(index=[target_series.name], data=new_row)
+            ])
         return M
 
     def reset_importance_map(self, columns):
         # Creating an empty importance map
         if self.importances_map is None:
-            self.importances_map = pd.DataFrame(
-                data={},
-                columns=columns
-            )
+            self.importances_map = pd.DataFrame(data={}, columns=columns)

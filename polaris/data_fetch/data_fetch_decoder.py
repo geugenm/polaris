@@ -1,5 +1,5 @@
-import subprocess
 import os
+import subprocess
 
 
 DATA_DIRECTORY = '/tmp/polaris'

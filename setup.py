@@ -9,7 +9,7 @@ from os import path
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
-with open(path.join(here, 'README.md'), encoding='utf-8') as f: 
+with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
@@ -22,16 +22,12 @@ setup(
     author="",
     install_requires=["pandas", "scikit-learn", "xgboost", "kaitaistruct"],
     python_requires='>=3',
-    extras_require={
-        "test": ["pytest"]
-    }, 
+    extras_require={"test": ["pytest"]},
     packages=find_packages(exclude=["tests", "docs"]),
     keywords="telemetry, satellite, machine learning",
     classifiers=[
-        "Development Status :: 3 - Alpha",
-        "Intended Audience :: Developers",
+        "Development Status :: 3 - Alpha", "Intended Audience :: Developers",
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: LGPL"
-    ], 
+    ],
 )
-

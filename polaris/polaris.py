@@ -1,13 +1,16 @@
 from argparse import ArgumentParser
+
 from data_fetch.data_fetch_decoder import data_fetch_decode
+
 import data_viz
+
 import learning
 
 if __name__ == "__main__":
     parser = ArgumentParser(
         prog='polaris', description="Tool for analyzing satellite telemetry")
-    subparsers = parser.add_subparsers(
-        title='subcommands', description='valid subcommands')
+    subparsers = parser.add_subparsers(title='subcommands',
+                                       description='valid subcommands')
 
     # parser for 'data-fetch' subcommand
     parser_fetch = subparsers.add_parser('data_fetch', help='data-fetch help')
