@@ -15,6 +15,7 @@ polaris/               - Project source code
 
 tests/                 - Project unit tests
 playground/            - Exploratory tests
+utils/                 - Dependencies that are submodules for this repo
 ```
 
 ## Installation
@@ -32,11 +33,29 @@ pip install -r requirements.txt
 
 # (devs) Install dependencies for development
 pip install -r requirements-dev.txt
+
+# Change directory to utils/satnogs-decoders
+cd utils/satnogs-decoders/
+
+# Run docker-ksc script to compile KSY to Python code (Requires Docker)
+# The following command will output the compiled files under satnogsdecoders/decoder directory.
+./contrib/docker-ksc.sh
+
+# Install the package from source code directory using following command
+pip install -e .
+
+# Change directory to utils/glouton-satnogs-data-downloader
+cd ../../utils/glouton-satnogs-data-downloader
+
+# Install dependencies
+pip install -r requirements.txt
 ```
 
 ## Running the code
 ```
-$ python polaris.py -h
+# Go to the polaris directory within this repo
+cd polaris
+$ python3 polaris.py -h
 usage: polaris [-h] {data_fetch,learning,data_viz} ...
 
 Tool for analyzing satellite telemetry
@@ -51,6 +70,9 @@ subcommands:
     data_fetch          data-fetch help
     learning            learning help
     data_viz            data-viz help
+
+# To fetch and decode the data from the SatNOGS network, use the following command
+$ python3 polaris.py data_fetch
 
 ```
 
@@ -68,4 +90,3 @@ InfluxDB and Grafana have been configured to run with
 but they will be useful for future development.)
 
 For more details, see [docs/InfluxDB.md](docs/InfluxDB.md).
-
