@@ -1,5 +1,7 @@
 from argparse import ArgumentParser
+
 from data_fetch.data_fetch_decoder import data_fetch_decode
+
 import data_viz
 
 import learning
