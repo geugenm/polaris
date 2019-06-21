@@ -15,6 +15,7 @@ polaris/               - Project source code
 
 tests/                 - Project unit tests
 playground/            - Exploratory tests
+utils/                 - Dependencies that are submodules for this repo
 ```
 
 ## Installation
@@ -33,7 +34,7 @@ pip install -r requirements.txt
 # (devs) Install dependencies for development
 pip install -r requirements-dev.txt
 
-# Change directory to the /utils/satnogs-decoders
+# Change directory to utils/satnogs-decoders
 cd utils/satnogs-decoders/
 
 # Run docker-ksc script to compile KSY to Python code (Requires Docker)
@@ -43,7 +44,11 @@ cd utils/satnogs-decoders/
 # Install the package from source code directory using following command
 pip install -e .
 
+# Change directory to utils/glouton-satnogs-data-downloader
+cd ../../utils/glouton-satnogs-data-downloader
 
+# Install dependencies
+pip install -r requirements.txt
 ```
 
 ## Running the code
@@ -85,4 +90,3 @@ InfluxDB and Grafana have been configured to run with
 but they will be useful for future development.)
 
 For more details, see [docs/InfluxDB.md](docs/InfluxDB.md).
-
