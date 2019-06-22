@@ -1,4 +1,5 @@
 import datetime
+
 import click
 
 from data_fetch.data_fetch_decoder import data_fetch_decode
@@ -12,26 +13,33 @@ import learning
 # https://github.com/pallets/click/blob/master/examples/repo/repo.py
 # for some cool options
 @click.group()
-def cli():
+@click.pass_context
+def cli(ctx):
     """Tool for analyzing satellite telemetry
     """
     pass
 
 
-@click.command('fetch', short_help='Download data set(s)')
+@click.command('fetch',
+               context_settings={"ignore_unknown_options": True},
+               short_help='Download data set(s)')
 @click.argument('sat_name', nargs=-1, required=True)
-@click.argument('output_dir',
-                nargs=1,
+@click.argument('output_directory',
                 required=False,
-                default="/tmp/",
+                default="/tmp",
                 type=click.Path(exists=True, resolve_path=True))
 @click.option('--start_date', '-s', is_flag=False,
-              default=(datetime.datetime.utcnow()-datetime.timedelta(seconds=3600)),
-              help='Start date of the fetching period. default: set to 1h ago from now.')
+              default=(datetime.datetime.utcnow()
+                       - datetime.timedelta(seconds=3600)),
+              help='Start date of the fetching period.'
+                   ' Default: set to 1h ago from now.')
 @click.option('--end_date', '-e', is_flag=False,
-              help='End date of fetching period. default: 1h period from start date.')
-def cli_data_fetch(sat_name, start_date, end_date, output_dir):
-    data_fetch_decode()
+              help='End date of fetching period.'
+                   ' Default: 1h period from start date.')
+@click.pass_context
+def cli_data_fetch(ctx, sat_name, start_date, end_date, output_directory):
+    print("DEBUG output dir: "+output_directory)
+    data_fetch_decode(sat_name, output_directory, start_date, end_date)
 
 
 @click.command('learning', short_help='learning help')

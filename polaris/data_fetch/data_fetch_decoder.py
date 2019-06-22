@@ -36,10 +36,10 @@ def build_decode_cmd(src, dest):
     decoder_module = 'Elfin'
     input_format = 'csv'
     decode_cmd = '{decode_multiple} --filename {src} --format {input_format}'\
-        ' {decoder_module} > ../../{dest}'.format(
+        ' {decoder_module} > {dest}'.format(
                                     decode_multiple=decode_multiple,
                                     decoder_module=decoder_module,
-                                    src='/tmp/polaris/'+src,
+                                    src=src,
                                     input_format=input_format,
                                     dest=dest,
                                     )
@@ -67,14 +67,19 @@ def build_fetch_cmd():
     return cmd
 
 
-def data_fetch_decode():
-    """Main function to download and decode satellite telemetry"""
+def data_fetch_decode(sat_name, output_directory, start_date, end_date):
+    """Main function to download and decode satellite telemetry
+
+    :param output_directory: only used parameter for now.
+    """
     if not os.path.exists(DATA_DIRECTORY):
         os.makedirs(DATA_DIRECTORY)
+
     # Shell command for executing glouton in order to download the
     # dataframes from SatNOGS network based on NORAD ID of the
     # satellite and start and end timestamps
     fetch_cmd = build_fetch_cmd()
+
     try:
         # Using subprocess package to execute fetch command by passing
         # current working directory as an argument
@@ -84,29 +89,38 @@ def data_fetch_decode():
         p1.wait()
     except subprocess.CalledProcessError as err:
         print('ERROR:', err)
-    output_directory = get_output_directory()
+
+    # not used anymore:
+    # output_directory = get_output_directory()
     print('Saving the dataframes in directory: '+output_directory)
-    path_to_output_directory = DATA_DIRECTORY+'/'+output_directory
+    # path_to_output_directory = DATA_DIRECTORY+'/'+output_directory
     print('Merging all the csv files into one CSV file.')
-    merged_file = 'merged_frames_'+output_directory+'.csv'
+    merged_file = os.path.join(output_directory, 'merged_frames.csv')
+    print("DEBUG    "+merged_file)
     # Command to merge all the csv files from the output directory
     # into a single CSV file.
-    merge_cmd = 'sed 1d *.csv > ../'+merged_file
+    merge_cmd = 'sed 1d ' \
+                + os.path.join(output_directory, '*.csv') \
+                + ' > ' + merged_file
+    print("DEBUG   "+merge_cmd)
+
     try:
         # Using subprocess package to execute merge command to merge CSV files.
         p2 = subprocess.Popen(merge_cmd,
                               shell=True,
-                              cwd=path_to_output_directory)
+                              cwd=output_directory)
         p2.wait()
         print('Merge Completed')
         print('Storing merged CSV file: '+merged_file)
     except subprocess.CalledProcessError as err:
         print('ERROR:', err)
+
     print('Starting decoding of the data')
-    decoded_file = 'decoded_frames_'+output_directory+'.json'
+    decoded_file = os.path.join(output_directory, 'decoded_frames.csv')
     # Using satnogs-decoders to decode the CSV files containing
     # multiple dataframes and store them as JSON objects.
     decode_cmd = build_decode_cmd(merged_file, decoded_file)
+
     try:
         absolute_file_directory = os.path.dirname(os.path.abspath(__file__))
         os.chdir(absolute_file_directory)
