@@ -1,3 +1,4 @@
+import datetime
 import click
 
 from data_fetch.data_fetch_decoder import data_fetch_decode
@@ -17,8 +18,19 @@ def cli():
     pass
 
 
-@click.command('data_fetch', short_help='Download data set(s)')
-def cli_data_fetch():
+@click.command('fetch', short_help='Download data set(s)')
+@click.argument('sat_name', nargs=-1, required=True)
+@click.argument('output_dir',
+                nargs=1,
+                required=False,
+                default="/tmp/",
+                type=click.Path(exists=True, resolve_path=True))
+@click.option('--start_date', '-s', is_flag=False,
+              default=(datetime.datetime.utcnow()-datetime.timedelta(seconds=3600)),
+              help='Start date of the fetching period. default: set to 1h ago from now.')
+@click.option('--end_date', '-e', is_flag=False,
+              help='End date of fetching period. default: 1h period from start date.')
+def cli_data_fetch(sat_name, start_date, end_date, output_dir):
     data_fetch_decode()
 
 
@@ -28,7 +40,7 @@ def cli_learning():
     learning()
 
 
-@click.command('data_viz', short_help='data-viz help')
+@click.command('viz', short_help='data-viz help')
 def cli_data_viz():
     print('[FIXME] Data visualization goes here')
     data_viz()
