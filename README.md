@@ -1,5 +1,7 @@
 # Polaris
 
+[![pipeline status](https://gitlab.com/crespum/polaris/badges/master/pipeline.svg)](https://gitlab.com/crespum/polaris/commits/master)
+
 Python3 tool to analyze a satellite set of telemetry to understand links/dependencies among different subsystems. The telemetry is currently retrieved from the [SatNOGS Network](https://network.satnogs.org/).
 
 If you want to **know more**, join our [Matrix room](https://riot.im/app/#/room/#polaris:matrix.org)
