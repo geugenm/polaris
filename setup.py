@@ -24,6 +24,7 @@ setup(
     python_requires='>=3',
     extras_require={"test": ["pytest"]},
     packages=find_packages(exclude=["tests", "docs"]),
+    scripts=["bin/polaris"],
     keywords="telemetry, satellite, machine learning",
     classifiers=[
         "Development Status :: 3 - Alpha", "Intended Audience :: Developers",

@@ -1,12 +1,14 @@
+import datetime
 import os
 import subprocess
-import datetime
+
+# import glouton dependencies
+from glouton.domain.parameters.programCmd \
+     import ProgramCmd
+from glouton.services.observation.observationsService \
+     import ObservationsService
 
 import pandas as pd
-
-# import glouton
-from glouton.domain.parameters.programCmd import ProgramCmd
-from glouton.services.observation.observationsService import ObservationsService
 
 DATA_DIRECTORY = '/tmp/polaris'
 
@@ -101,8 +103,13 @@ def data_fetch_decode(sat_name, output_directory, start_date, end_date):
     elif not isinstance(end_date, datetime.datetime):
         end_date = start_date + datetime.timedelta(seconds=3600)
 
-    # TODO create a new subdirectory to output directory
-    # to collect glouton's data
+    # Creating a new subdirectory to output directory
+    # to collect glouton's data. Using start date to name it.
+    cwd_path = os.path.join(output_directory,
+                            "data_"
+                            + str(start_date.timestamp()).replace('.', '_'))
+    if not os.path.exists(cwd_path):
+        os.mkdir(cwd_path)
 
     # Preparing glouton command configuration
     # glouton_conf = glouton.domain.parameters.programCmd.ProgramCmd(
@@ -112,7 +119,7 @@ def data_fetch_decode(sat_name, output_directory, start_date, end_date):
             start_date=start_date,
             end_date=end_date,
             observation_status=None,
-            working_dir=output_directory,
+            working_dir=cwd_path,
             payloads=False,
             waterfalls=False,
             demoddata=True,
@@ -126,8 +133,8 @@ def data_fetch_decode(sat_name, output_directory, start_date, end_date):
 
     # Running glouton data collection
     # try:
-        # obs = glouton.services.observation.observationsService \
-        #      .ObservationsService(glouton_conf)
+    #    obs = glouton.services.observation.observationsService \
+    #          .ObservationsService(glouton_conf)
     obs = ObservationsService(glouton_conf)
     obs.extract()
     # except Exception as eee:
@@ -154,11 +161,12 @@ def data_fetch_decode(sat_name, output_directory, start_date, end_date):
     # path_to_output_directory = DATA_DIRECTORY+'/'+output_directory
     print('Merging all the csv files into one CSV file.')
     merged_file = os.path.join(output_directory, 'merged_frames.csv')
+    print("DEBUG    "+cwd_path)
     print("DEBUG    "+merged_file)
     # Command to merge all the csv files from the output directory
     # into a single CSV file.
     merge_cmd = 'sed 1d ' \
-                + os.path.join(output_directory, '*.csv') \
+                + os.path.join(cwd_path, '*.csv') \
                 + ' > ' + merged_file
     print("DEBUG   "+merge_cmd)
 
@@ -173,23 +181,25 @@ def data_fetch_decode(sat_name, output_directory, start_date, end_date):
     except subprocess.CalledProcessError as err:
         print('ERROR:', err)
 
-    print('Starting decoding of the data')
-    decoded_file = os.path.join(output_directory, 'decoded_frames.csv')
     # Using satnogs-decoders to decode the CSV files containing
     # multiple dataframes and store them as JSON objects.
+    print('Starting decoding of the data')
+    decoded_file = os.path.join(output_directory, 'decoded_frames.csv')
     decode_cmd = build_decode_cmd(merged_file, decoded_file)
 
     try:
-        absolute_file_directory = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(absolute_file_directory)
+        # absolute_file_directory = os.path.dirname(os.path.abspath(__file__))
+        # os.chdir(absolute_file_directory)
         p3 = subprocess.Popen(decode_cmd,
                               shell=True,
-                              cwd='../../utils/satnogs-decoders')
+                              cwd=output_directory)
         p3.wait()
         print('Decoding of data finished.')
     except subprocess.CalledProcessError as err:
         print('ERROR:', err)
+
     truncate_cmd = build_truncate_first_line_cmd(decoded_file)
+
     try:
         p4 = subprocess.Popen(truncate_cmd,
                               shell=True,
