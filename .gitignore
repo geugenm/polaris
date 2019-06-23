@@ -9,3 +9,4 @@ untracked/
 /docker/*/data/*
 .tox/
 polaris.egg-info/
+*.log
