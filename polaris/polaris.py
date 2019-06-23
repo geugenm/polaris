@@ -1,6 +1,5 @@
-import datetime
-
 import click
+import logging
 
 from data_fetch.data_fetch_decoder import data_fetch_decode
 
@@ -8,6 +7,15 @@ import data_viz
 
 import learning
 
+
+# Logger configuration
+logger = logging.getLogger(__name__)
+# logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 
 # TODO: See
 # https://github.com/pallets/click/blob/master/examples/repo/repo.py
@@ -29,8 +37,6 @@ def cli(ctx):
                 default="/tmp",
                 type=click.Path(exists=True, resolve_path=True))
 @click.option('--start_date', '-s', is_flag=False,
-              default=(datetime.datetime.utcnow()
-                       - datetime.timedelta(seconds=3600)),
               help='Start date of the fetching period.'
                    ' Default: set to 1h ago from now.')
 @click.option('--end_date', '-e', is_flag=False,
@@ -38,19 +44,19 @@ def cli(ctx):
                    ' Default: 1h period from start date.')
 @click.pass_context
 def cli_data_fetch(ctx, sat_name, start_date, end_date, output_directory):
-    print("DEBUG output dir: "+output_directory)
+    logger.info("output dir: "+output_directory)
     data_fetch_decode(sat_name, output_directory, start_date, end_date)
 
 
 @click.command('learning', short_help='learning help')
 def cli_learning():
-    print('[FIXME] Learning goes here')
+    logger.debug('[FIXME] Learning goes here')
     learning()
 
 
 @click.command('viz', short_help='data-viz help')
 def cli_data_viz():
-    print('[FIXME] Data visualization goes here')
+    logger.debug('[FIXME] Data visualization goes here')
     data_viz()
 
 
