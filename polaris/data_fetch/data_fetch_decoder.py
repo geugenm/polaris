@@ -1,6 +1,7 @@
 import datetime
 import os
 import subprocess
+# import logging
 
 # import glouton dependencies
 from glouton.domain.parameters.programCmd \
@@ -96,12 +97,14 @@ def data_fetch_decode(sat_name, output_directory, start_date, end_date):
     elif not isinstance(start_date, datetime.datetime):
         start_date = (datetime.datetime.utcnow()
                       - datetime.timedelta(seconds=3600))
+    print("INFO: Fetch start date: {}".format(start_date))
 
     # Converting start date info into datetime object
     if isinstance(end_date, str):
         end_date = pd.to_datetime(end_date).to_pydatetime()
     elif not isinstance(end_date, datetime.datetime):
         end_date = start_date + datetime.timedelta(seconds=3600)
+    print("INFO: Fetch end date: {}".format(end_date))
 
     # Creating a new subdirectory to output directory
     # to collect glouton's data. Using start date to name it.
@@ -112,7 +115,6 @@ def data_fetch_decode(sat_name, output_directory, start_date, end_date):
         os.mkdir(cwd_path)
 
     # Preparing glouton command configuration
-    # glouton_conf = glouton.domain.parameters.programCmd.ProgramCmd(
     glouton_conf = ProgramCmd(
             norad_id=sat_name,
             ground_station_id=None,
@@ -132,13 +134,11 @@ def data_fetch_decode(sat_name, output_directory, start_date, end_date):
             transmitter_type=None)
 
     # Running glouton data collection
-    # try:
-    #    obs = glouton.services.observation.observationsService \
-    #          .ObservationsService(glouton_conf)
-    obs = ObservationsService(glouton_conf)
-    obs.extract()
-    # except Exception as eee:
-    #     print("ERROR, data collection: ", eee)
+    try:
+        obs = ObservationsService(glouton_conf)
+        obs.extract()
+    except Exception as eee:
+        print("ERROR, data collection: ", eee)
 
     #  # Shell command for executing glouton in order to download the
     #  # dataframes from SatNOGS network based on NORAD ID of the
@@ -166,7 +166,7 @@ def data_fetch_decode(sat_name, output_directory, start_date, end_date):
     # Command to merge all the csv files from the output directory
     # into a single CSV file.
     merge_cmd = 'sed 1d ' \
-                + os.path.join(cwd_path, '*.csv') \
+                + os.path.join(cwd_path, 'demod*/*.csv') \
                 + ' > ' + merged_file
     print("DEBUG   "+merge_cmd)
 
