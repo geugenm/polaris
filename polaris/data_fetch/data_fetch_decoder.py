@@ -1,7 +1,7 @@
 import datetime
 import os
 import subprocess
-# import logging
+
 
 # import glouton dependencies
 from glouton.domain.parameters.programCmd \
@@ -139,26 +139,7 @@ def data_fetch_decode(sat_name, output_directory, start_date, end_date):
         obs.extract()
     except Exception as eee:
         print("ERROR, data collection: ", eee)
-
-    #  # Shell command for executing glouton in order to download the
-    #  # dataframes from SatNOGS network based on NORAD ID of the
-    #  # satellite and start and end timestamps
-    #  fetch_cmd = build_fetch_cmd()
-
-    #  try:
-    #      # Using subprocess package to execute fetch command by passing
-    #      # current working directory as an argument
-    #      p1 = subprocess.Popen(fetch_cmd,
-    #                            shell=True,
-    #                            cwd='../utils/glouton-satnogs-data-downloader')
-    #      p1.wait()
-    #  except subprocess.CalledProcessError as err:
-    #      print('ERROR:', err)
-
-    # not used anymore:
-    # output_directory = get_output_directory()
     print('Saving the dataframes in directory: '+output_directory)
-    # path_to_output_directory = DATA_DIRECTORY+'/'+output_directory
     print('Merging all the csv files into one CSV file.')
     merged_file = os.path.join(output_directory, 'merged_frames.csv')
     print("DEBUG    "+cwd_path)
@@ -188,8 +169,6 @@ def data_fetch_decode(sat_name, output_directory, start_date, end_date):
     decode_cmd = build_decode_cmd(merged_file, decoded_file)
 
     try:
-        # absolute_file_directory = os.path.dirname(os.path.abspath(__file__))
-        # os.chdir(absolute_file_directory)
         p3 = subprocess.Popen(decode_cmd,
                               shell=True,
                               cwd=output_directory)
