@@ -20,7 +20,7 @@ def cli():
 
 
 @click.command('fetch', short_help='Download data set(s)')
-@click.argument('sat_name', nargs=-1, required=True)
+@click.argument('sat_name', nargs=1, required=True)
 @click.argument('output_dir',
                 nargs=1,
                 required=False,
