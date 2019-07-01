@@ -88,8 +88,14 @@ def data_fetch_decode(sat_name, output_directory, start_date, end_date):
     # Filter or transform input arguments
     demod_module = ["CSV"]
 
-    # TODO transform sat_name into norad id if not a norad id
-    sat_name = '43617'  # Elfin-A
+    # TODO search sat_name to get corresponding norad id if not a norad id
+    # Elfin-A nora id = 43617
+    try:
+        sat_id = int(sat_name)
+        if str(sat_id) != sat_name:
+            sat_name = '43617'
+    except Exception:
+        sat_name = '43617'
 
     # Converting start date info into datetime object
     if isinstance(start_date, str):
