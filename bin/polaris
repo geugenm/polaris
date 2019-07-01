@@ -19,6 +19,7 @@ formatter = logging.Formatter(log_format)
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
+
 @click.group()
 @click.pass_context
 def cli(ctx):
