@@ -148,14 +148,11 @@ def data_fetch_decode(sat_name, output_directory, start_date, end_date):
     print('Saving the dataframes in directory: '+output_directory)
     print('Merging all the csv files into one CSV file.')
     merged_file = os.path.join(output_directory, 'merged_frames.csv')
-    print("DEBUG    "+cwd_path)
-    print("DEBUG    "+merged_file)
     # Command to merge all the csv files from the output directory
     # into a single CSV file.
     merge_cmd = 'sed 1d ' \
                 + os.path.join(cwd_path, 'demod*/*.csv') \
                 + ' > ' + merged_file
-    print("DEBUG   "+merge_cmd)
 
     try:
         # Using subprocess package to execute merge command to merge CSV files.
