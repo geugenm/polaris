@@ -1,5 +1,5 @@
 kaitaistruct
-git+https://github.com/deckbsd/glouton-satnogs-data-downloader.git
+glouton
 pandas
 matplotlib
 scikit-learn
