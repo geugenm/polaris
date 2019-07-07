@@ -55,27 +55,6 @@ def build_decode_cmd(src, dest):
     return decode_cmd
 
 
-def build_fetch_cmd():
-    """Build command to fetch data from SatNOGS for a particular
-    satellite
-    """
-    start_date = '2019-05-05T00:00:00'  # Start timestamp
-    end_date = '2019-05-10T00:00:00'  # End timestamp
-    glouton = 'python3 ./glouton.py'
-    demod_args = '--demoddata --demodm CSV'
-    sat = '43617'  # Elfin-A
-    cmd = '{glouton} --wdir {data_dir} -s {start_date} -e {end_date} -n'\
-        ' {sat} {demod_args}'.format(
-                    glouton=glouton,
-                    data_dir=DATA_DIRECTORY,
-                    start_date=start_date,
-                    end_date=end_date,
-                    sat=sat,
-                    demod_args=demod_args
-                    )
-    return cmd
-
-
 def data_fetch_decode(sat_name, output_directory, start_date, end_date):
     """Main function to download and decode satellite telemetry
 
