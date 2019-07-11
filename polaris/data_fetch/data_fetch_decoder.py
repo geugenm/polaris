@@ -3,7 +3,6 @@ import os
 import subprocess
 
 import pandas as pd
-
 # import glouton dependencies
 from glouton.domain.parameters.programCmd import ProgramCmd
 from glouton.services.observation.observationsService import \
