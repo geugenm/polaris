@@ -2,9 +2,10 @@
 
 """
 
-from setuptools import setup, find_packages
 from codecs import open
 from os import path
+
+from setuptools import find_packages, setup
 
 here = path.abspath(path.dirname(__file__))
 
@@ -20,9 +21,10 @@ setup(
     url="https://gitlab.com/crespum/polaris",
     license="",
     author="",
-    install_requires=["kaitaistruct", "glouton",
-                      "click", "tqdm",
-                      "pandas", "scikit-learn", "xgboost"],
+    install_requires=[
+        "kaitaistruct", "glouton", "click", "tqdm", "pandas", "scikit-learn",
+        "xgboost"
+    ],
     python_requires='>=3',
     extras_require={"test": ["pytest"]},
     packages=find_packages(exclude=["tests", "docs"]),

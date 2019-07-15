@@ -25,5 +25,5 @@ before_script:
 
 pep8:
   script:
-    - pip install tox flake8  # you can also use tox
-    - tox -e pep8
+    - pip install tox
+    - tox

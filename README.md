@@ -86,10 +86,17 @@ Building the package
 python setup.py bdist_wheel
 ```
 
+Format the code before commiting, otherwise the CI engine will fail:
+```bash
+# Auto-format the code
+tox -e yapf-apply -e isort-apply
+
+# Verify CI test passes
+tox
+```
+
 ## InfluxDB and Grafana
 
-InfluxDB and Grafana have been configured to run with
-`docker-compose`.  (At the moment these are not configured to do much,
-but they will be useful for future development.)
+InfluxDB and Grafana have been configured to run with `docker-compose`. (At the moment these are not configured to do much, but they will be useful for future development.)
 
 For more details, see [docs/InfluxDB.md](docs/InfluxDB.md).

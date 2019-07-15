@@ -2,14 +2,11 @@ import datetime
 import os
 import subprocess
 
-
-# import glouton dependencies
-from glouton.domain.parameters.programCmd \
-     import ProgramCmd
-from glouton.services.observation.observationsService \
-     import ObservationsService
-
 import pandas as pd
+# import glouton dependencies
+from glouton.domain.parameters.programCmd import ProgramCmd
+from glouton.services.observation.observationsService import \
+    ObservationsService
 
 DATA_DIRECTORY = '/tmp/polaris'
 
@@ -32,9 +29,7 @@ def build_truncate_first_line_cmd(src):
     which is 'Input file' line resulting from decode_multiple script
     from satnogs-decoders.
     """
-    truncate_cmd = 'sed -i {src} -e \'1d;\''.format(
-        src=src,
-        )
+    truncate_cmd = 'sed -i {src} -e \'1d;\''.format(src=src, )
     return truncate_cmd
 
 
@@ -80,8 +75,8 @@ def data_fetch_decode(sat_name, output_directory, start_date, end_date):
     if isinstance(start_date, str):
         start_date = pd.to_datetime(start_date).to_pydatetime()
     elif not isinstance(start_date, datetime.datetime):
-        start_date = (datetime.datetime.utcnow()
-                      - datetime.timedelta(seconds=3600))
+        start_date = (datetime.datetime.utcnow() -
+                      datetime.timedelta(seconds=3600))
     print("INFO: Fetch start date: {}".format(start_date))
 
     # Converting start date info into datetime object
@@ -93,30 +88,29 @@ def data_fetch_decode(sat_name, output_directory, start_date, end_date):
 
     # Creating a new subdirectory to output directory
     # to collect glouton's data. Using start date to name it.
-    cwd_path = os.path.join(output_directory,
-                            "data_"
-                            + str(start_date.timestamp()).replace('.', '_'))
+    cwd_path = os.path.join(
+        output_directory,
+        "data_" + str(start_date.timestamp()).replace('.', '_'))
     if not os.path.exists(cwd_path):
         os.mkdir(cwd_path)
 
     # Preparing glouton command configuration
-    glouton_conf = ProgramCmd(
-            norad_id=sat_name,
-            ground_station_id=None,
-            start_date=start_date,
-            end_date=end_date,
-            observation_status=None,
-            working_dir=cwd_path,
-            payloads=False,
-            waterfalls=False,
-            demoddata=True,
-            payload_modules=None,
-            demoddata_modules=demod_module,
-            waterfall_modules=None,
-            user=None,
-            transmitter_uuid=None,
-            transmitter_mode=None,
-            transmitter_type=None)
+    glouton_conf = ProgramCmd(norad_id=sat_name,
+                              ground_station_id=None,
+                              start_date=start_date,
+                              end_date=end_date,
+                              observation_status=None,
+                              working_dir=cwd_path,
+                              payloads=False,
+                              waterfalls=False,
+                              demoddata=True,
+                              payload_modules=None,
+                              demoddata_modules=demod_module,
+                              waterfall_modules=None,
+                              user=None,
+                              transmitter_uuid=None,
+                              transmitter_mode=None,
+                              transmitter_type=None)
 
     # Running glouton data collection
     try:
@@ -124,7 +118,7 @@ def data_fetch_decode(sat_name, output_directory, start_date, end_date):
         obs.extract()
     except Exception as eee:
         print("ERROR, data collection: ", eee)
-    print('Saving the dataframes in directory: '+output_directory)
+    print('Saving the dataframes in directory: ' + output_directory)
     print('Merging all the csv files into one CSV file.')
     merged_file = os.path.join(output_directory, 'merged_frames.csv')
     # Command to merge all the csv files from the output directory
@@ -135,12 +129,10 @@ def data_fetch_decode(sat_name, output_directory, start_date, end_date):
 
     try:
         # Using subprocess package to execute merge command to merge CSV files.
-        p2 = subprocess.Popen(merge_cmd,
-                              shell=True,
-                              cwd=output_directory)
+        p2 = subprocess.Popen(merge_cmd, shell=True, cwd=output_directory)
         p2.wait()
         print('Merge Completed')
-        print('Storing merged CSV file: '+merged_file)
+        print('Storing merged CSV file: ' + merged_file)
     except subprocess.CalledProcessError as err:
         print('ERROR:', err)
 
@@ -151,9 +143,7 @@ def data_fetch_decode(sat_name, output_directory, start_date, end_date):
     decode_cmd = build_decode_cmd(merged_file, decoded_file)
 
     try:
-        p3 = subprocess.Popen(decode_cmd,
-                              shell=True,
-                              cwd=output_directory)
+        p3 = subprocess.Popen(decode_cmd, shell=True, cwd=output_directory)
         p3.wait()
         print('Decoding of data finished.')
     except subprocess.CalledProcessError as err:
@@ -162,13 +152,9 @@ def data_fetch_decode(sat_name, output_directory, start_date, end_date):
     truncate_cmd = build_truncate_first_line_cmd(decoded_file)
 
     try:
-        p4 = subprocess.Popen(truncate_cmd,
-                              shell=True,
-                              cwd='../../')
+        p4 = subprocess.Popen(truncate_cmd, shell=True, cwd='../../')
         p4.wait()
-        print(
-            'Storing the decoded data JSON file in root directory :'
-            + decoded_file
-        )
+        print('Storing the decoded data JSON file in root directory :' +
+              decoded_file)
     except subprocess.CalledProcessError as err:
         print('ERROR:', err)

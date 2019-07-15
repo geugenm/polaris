@@ -1,8 +1,6 @@
 import pandas as pd
-
 # Used for the pipeline interface of scikit learn
 from sklearn.base import BaseEstimator, TransformerMixin
-
 # eXtreme Gradient Boost algorithm
 from xgboost import XGBRegressor
 
