@@ -10,3 +10,5 @@ untracked/
 .tox/
 polaris.egg-info/
 *.log
+/build/
+/dist/
