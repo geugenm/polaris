@@ -25,74 +25,59 @@ utils/                 - Dependencies that are submodules for this repo
 
 ```bash
 # Clone the repo
-git clone --recurse-submodules https://gitlab.com/crespum/polaris.git
+$ git clone --recurse-submodules https://gitlab.com/crespum/polaris.git
 
-# Create virtual environment
-python3 -m venv .venv
-source .venv/bin/activate
+# Run `make setup` -- this will:
+# - Create virtual environment
+# - Install project dependencies
+# - Run docker-ksc script to compile KSY to Python code (requires Docker)
+# - Install polaris into your virtual environment
+$ make setup
 
-# Install project dependencies
-pip install -r requirements.txt
-
-# (devs) Install dependencies for development
-pip install -r requirements-dev.txt
-
-# Change directory to utils/satnogs-decoders
-cd utils/satnogs-decoders/
-
-# Run docker-ksc script to compile KSY to Python code (Requires Docker)
-# The following command will output the compiled files under satnogsdecoders/decoder directory.
-./contrib/docker-ksc.sh
-
-# Install the package from source code directory using following command
-pip install -e .
-
-# Change directory to utils/glouton-satnogs-data-downloader
-cd ../../utils/glouton-satnogs-data-downloader
-
-# Install dependencies
-pip install -r requirements.txt
+# To use the virtual environment:
+$ source .venv/bin/activate
 ```
 
 ## Running the code
 ```
-# Go to the polaris directory within this repo
-cd polaris
-$ python3 polaris.py -h
-usage: polaris [-h] {data_fetch,learning,data_viz} ...
+# Activate the virtual environment:
+$ source .venv/bin/activate
 
+# Go to the bin directory within this repo and run the command
+$ cd bin
+$ python3 polaris -h
 Tool for analyzing satellite telemetry
 
-optional arguments:
-  -h, --help            show this help message and exit
+Options:
+  --help  Show this message and exit.
 
-subcommands:
-  valid subcommands
-
-  {data_fetch,learning,data_viz}
-    data_fetch          data-fetch help
-    learning            learning help
-    data_viz            data-viz help
+Commands:
+  fetch     Download data set(s)
+  learning  learning help
+  viz       data-viz help
 
 # To fetch and decode the data from the SatNOGS network, use the following command
-$ python3 polaris.py data_fetch
-
+$ python bin/polaris fetch -s 2019-06-01 -e 2019-06-07 2019-elfin-a
 ```
 
 ### More info for developers
 
 Building the package
 ```bash
-python setup.py bdist_wheel
+# Activate the virtual environment:
+$ source .venv/bin/activate
+
+# Build and install the package
+$ python setup.py install
 ```
 
 Format the code before commiting, otherwise the CI engine will fail:
 ```bash
 # Auto-format the code
-tox -e yapf-apply -e isort-apply
+$ tox -e yapf-apply -e isort-apply
 
 # Verify CI test passes
-tox
+$ tox
 ```
 
 ## InfluxDB and Grafana
