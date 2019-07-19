@@ -5,7 +5,7 @@ from sklearn.pipeline import Pipeline
 sys.path.insert(
     0,
     os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from polaris.learning import XCorr
+from polaris.learning.predictor.cross_correlation import XCorr
 
 
 def test_xcorr():
