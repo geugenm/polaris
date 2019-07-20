@@ -1,6 +1,7 @@
 stages:
   - static
   - build
+  - test
 static:
   stage: static
   image: python:latest
@@ -21,3 +22,10 @@ build:
     when: always
     paths:
       - dist
+test:
+  stage: test
+  image: python:latest
+  before_script:
+    - pip install tox~=3.8.0
+  script:
+    - tox -e "pytest"
