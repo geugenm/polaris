@@ -10,3 +10,15 @@ docker-compose-clean:
 
 influxdb-shell:
 	docker exec -it influxdb influx
+
+setup:
+	( \
+		python3 -m venv .venv ; \
+		source .venv/bin/activate ; \
+		pip install -r requirements-dev.txt ; \
+		cd utils/satnogs-decoders ; \
+		./contrib/docker-ksc.sh ; \
+		pip install -e . ; \
+		cd ../.. ; \
+		python3 setup.py install ; \
+	)
