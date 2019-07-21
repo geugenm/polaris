@@ -24,15 +24,6 @@ def get_output_directory(data_directory=DATA_DIRECTORY):
     return output_directory
 
 
-def build_truncate_first_line_cmd(src):
-    """ Build command to truncate the first line from the output JSON file
-    which is 'Input file' line resulting from decode_multiple script
-    from satnogs-decoders.
-    """
-    truncate_cmd = 'sed -i {src} -e \'1d;\''.format(src=src, )
-    return truncate_cmd
-
-
 def build_decode_cmd(src, dest):
     """Build command to decode downloaded into JSON
     """
@@ -149,12 +140,5 @@ def data_fetch_decode(sat_name, output_directory, start_date, end_date):
     except subprocess.CalledProcessError as err:
         print('ERROR:', err)
 
-    truncate_cmd = build_truncate_first_line_cmd(decoded_file)
-
-    try:
-        p4 = subprocess.Popen(truncate_cmd, shell=True, cwd='../../')
-        p4.wait()
-        print('Storing the decoded data JSON file in root directory :' +
-              decoded_file)
-    except subprocess.CalledProcessError as err:
-        print('ERROR:', err)
+    print('Stored the decoded data JSON file in root directory: ' +
+          decoded_file)
