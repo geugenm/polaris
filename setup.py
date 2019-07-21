@@ -23,7 +23,7 @@ setup(
     author="",
     install_requires=[
         "kaitaistruct", "glouton", "click", "tqdm", "pandas", "scikit-learn",
-        "xgboost"
+        "xgboost", "satnogsdecoders"
     ],
     python_requires='>=3',
     extras_require={"test": ["pytest"]},
