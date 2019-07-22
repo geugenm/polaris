@@ -23,15 +23,14 @@ logger.addHandler(ch)
 @click.group()
 @click.pass_context
 def cli(ctx):
-    """Tool for analyzing satellite telemetry
-    """
+    """ Tool for analyzing satellite telemetry """
     pass
 
 
 @click.command('fetch',
                context_settings={"ignore_unknown_options": True},
                short_help='Download data set(s)')
-@click.argument('sat_name', nargs=1, required=True)
+@click.argument('sat', nargs=1, required=True)
 @click.argument('output_directory',
                 required=False,
                 default="/tmp",
@@ -47,9 +46,11 @@ def cli(ctx):
               help='End date of fetching period.'
               ' Default: 1h period from start date.')
 @click.pass_context
-def cli_data_fetch(ctx, sat_name, start_date, end_date, output_directory):
+def cli_data_fetch(ctx, sat, start_date, end_date, output_directory):
+    """ Retrieve and decode the telemetry corresponding to SAT (satellite name
+     or NORAD ID) """
     logger.info("output dir: " + output_directory)
-    data_fetch_decode(sat_name, output_directory, start_date, end_date)
+    data_fetch_decode(sat, output_directory, start_date, end_date)
 
 
 @click.command('learning', short_help='learning help')

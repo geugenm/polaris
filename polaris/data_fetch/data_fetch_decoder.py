@@ -65,8 +65,7 @@ def get_output_directory(data_directory=DATA_DIRECTORY):
 
 
 def build_decode_cmd(src, dest, decoder):
-    """Build command to decode downloaded into JSON
-    """
+    """ Build command to decode downloaded into JSON """
     decode_multiple = 'decode_multiple'
     decoder_module = decoder
     input_format = 'csv'
@@ -81,10 +80,11 @@ def build_decode_cmd(src, dest, decoder):
     return decode_cmd
 
 
-def data_fetch_decode(sat_name, output_directory, start_date, end_date):
-    """Main function to download and decode satellite telemetry
+def data_fetch_decode(sat, output_directory, start_date, end_date):
+    """
+    Main function to download and decode satellite telemetry.
 
-    :param sat_name: must be a NORAD ID, else TODO transform it into norad id.
+    :param sat: a NORAD ID or a satellite name.
     :param output_directory: only used parameter for now.
     """
     if not os.path.exists(DATA_DIRECTORY):
@@ -95,13 +95,13 @@ def data_fetch_decode(sat_name, output_directory, start_date, end_date):
 
     try:
         for satellite in _SATELLITES:
-            if satellite[0] == sat_name or satellite[1] == sat_name:
+            if satellite[0] == sat or satellite[1] == sat:
                 print('INFO: Satellite: id={} name={} decoder={}'.format(
                     satellite[0], satellite[1], satellite[2]))
                 decoder = satellite[2]
-                sat_name = satellite[0]
+                sat = satellite[0]
     except Exception:
-        print('Error: Satellite {} not supported!'.format(sat_name))
+        print('Error: Satellite {} not supported!'.format(sat))
 
     # Converting start date info into datetime object
     if isinstance(start_date, str):
@@ -127,7 +127,7 @@ def data_fetch_decode(sat_name, output_directory, start_date, end_date):
         os.mkdir(cwd_path)
 
     # Preparing glouton command configuration
-    glouton_conf = ProgramCmd(norad_id=sat_name,
+    glouton_conf = ProgramCmd(norad_id=sat,
                               ground_station_id=None,
                               start_date=start_date,
                               end_date=end_date,
