@@ -1,3 +1,6 @@
+"""
+Tool for analyzing satellite telemetry
+"""
 import logging
 
 import click
@@ -5,24 +8,23 @@ import click
 from polaris.data_fetch.data_fetch_decoder import data_fetch_decode
 
 # Logger configuration
-logger = logging.getLogger(__name__)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-formatter = logging.Formatter(log_format)
-ch.setFormatter(formatter)
-logger.addHandler(ch)
+LOGGER = logging.getLogger(__name__)
+CH = logging.StreamHandler()
+CH.setLevel(logging.DEBUG)
+LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+FORMATTER = logging.Formatter(LOG_FORMAT)
+CH.setFormatter(FORMATTER)
+LOGGER.addHandler(CH)
 
-# TODO: Uncomment these imports when we're ready to start using them
+# Uncomment these imports when we're ready to start using them
 # import data_viz
 # import learning
 
 
 @click.group()
 @click.pass_context
-def cli(ctx):
-    """ Tool for analyzing satellite telemetry """
-    pass
+def cli():
+    """ Entry point """
 
 
 @click.command('fetch',
@@ -44,25 +46,29 @@ def cli(ctx):
               help='End date of fetching period.'
               ' Default: 1h period from start date.')
 @click.pass_context
-def cli_data_fetch(ctx, sat, start_date, end_date, output_directory):
+def cli_data_fetch(sat, start_date, end_date, output_directory):
     """ Retrieve and decode the telemetry corresponding to SAT (satellite name
      or NORAD ID) """
-    logger.info("output dir: " + output_directory)
+    LOGGER.info("output dir: %s", output_directory)
     data_fetch_decode(sat, output_directory, start_date, end_date)
 
 
 @click.command('learning', short_help='learning help')
 def cli_learning():
-    logger.debug('[FIXME] Learning goes here')
+    """
+    Enter learning module
+    """
+    LOGGER.debug('[FIXME] Learning goes here')
     # learning()
-    pass
 
 
 @click.command('viz', short_help='data-viz help')
 def cli_data_viz():
-    logger.debug('[FIXME] Data visualization goes here')
+    """
+    Enter visualization module
+    """
+    LOGGER.debug('[FIXME] Data visualization goes here')
     # data_viz()
-    pass
 
 
 # click doesn't automagically add the commands to the group

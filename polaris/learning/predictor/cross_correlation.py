@@ -1,3 +1,6 @@
+"""
+Cross Correlation module
+"""
 import pandas as pd
 # Used for the pipeline interface of scikit learn
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -32,24 +35,25 @@ class XCorr(BaseEstimator, TransformerMixin):
         if model_params is not None:
             self.model_params = model_params
 
-    def fit(self, X):
+    def fit(self, frame):
         """ Train on a dataframe
 
             The input dataframe will be split column by column considering each
             one as a prediction target.
 
-            :param X: input dataframe
+            :param frame: input dataframe
         """
-        if not isinstance(X, pd.DataFrame):
-            raise TypeError("Input X should be a DataFrame")
+        if not isinstance(frame, pd.DataFrame):
+            raise TypeError("Input frame should be a DataFrame")
 
         if self.models is None:
             self.models = []
 
-        self.reset_importance_map(X.columns)
+        self.reset_importance_map(frame.columns)
 
-        for c in X.columns:
-            self.models.append(self.regression(X.drop([c], axis=1), X[c]))
+        for column in frame.columns:
+            self.models.append(
+                self.regression(frame.drop([column], axis=1), frame[column]))
 
     def transform(self):
         """ Unused method in this predictor """
@@ -64,15 +68,15 @@ class XCorr(BaseEstimator, TransformerMixin):
             the same indexes as the df_in dataframe.
         """
         # Create and train a XGBoost regressor
-        M = XGBRegressor(**self.model_params)
+        regr_m = XGBRegressor(**self.model_params)
         # , early_stopping_rounds=self.early_stopping_rounds)
-        M.fit(df_in, target_series)
+        regr_m.fit(df_in, target_series)
 
-        # indices = np.argsort(M.feature_importances_)[::-1]
+        # indices = np.argsort(regr_m.feature_importances_)[::-1]
         # After the model is trained
         new_row = {}
-        for c, fi in zip(df_in.columns, M.feature_importances_):
-            new_row[c] = [fi]
+        for column, fit in zip(df_in.columns, regr_m.feature_importances_):
+            new_row[column] = [fit]
 
         # Current target is not in df_in, so manually adding it
         new_row[target_series.name] = [0.0]
@@ -86,9 +90,11 @@ class XCorr(BaseEstimator, TransformerMixin):
                 self.importances_map,
                 pd.DataFrame(index=[target_series.name], data=new_row)
             ])
-        return M
+        return regr_m
 
     def reset_importance_map(self, columns):
-        # Creating an empty importance map
+        """
+        Creating an empty importance map
+        """
         if self.importances_map is None:
             self.importances_map = pd.DataFrame(data={}, columns=columns)

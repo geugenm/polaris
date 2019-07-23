@@ -1,3 +1,6 @@
+"""
+Module for fetching and decoding telemetry data
+"""
 import datetime
 import os
 import subprocess
@@ -70,17 +73,17 @@ def build_decode_cmd(src, dest, decoder):
     decoder_module = decoder
     input_format = 'csv'
     decode_cmd = '{decode_multiple} --filename {src} --format {input_format}'\
-        ' {decoder_module} > {dest}'.format(
-                                    decode_multiple=decode_multiple,
-                                    decoder_module=decoder_module,
-                                    src=src,
-                                    input_format=input_format,
-                                    dest=dest,
-                                    )
-    return decode_cmd
+                 ' {decoder_module} > {dest}'.format(
+                     decode_multiple=decode_multiple,
+                     decoder_module=decoder_module,
+                     src=src,
+                     input_format=input_format,
+                     dest=dest,
+                 )
+    return decode_cmd  # pylint: disable=R0914
 
 
-def data_fetch_decode(sat, output_directory, start_date, end_date):
+def data_fetch_decode(sat, output_directory, start_date, end_date):  # pylint: disable=R0914,R0915 # noqa: E501
     """
     Main function to download and decode satellite telemetry.
 
@@ -93,14 +96,14 @@ def data_fetch_decode(sat, output_directory, start_date, end_date):
     # Filter or transform input arguments
     demod_module = ["CSV"]
 
-    try:
-        for satellite in _SATELLITES:
-            if satellite[0] == sat or satellite[1] == sat:
-                print('INFO: Satellite: id={} name={} decoder={}'.format(
-                    satellite[0], satellite[1], satellite[2]))
-                decoder = satellite[2]
-                sat = satellite[0]
-    except Exception:
+    for satellite in _SATELLITES:
+        decoder = ''
+        if sat in (satellite[0], satellite[1]):
+            print('INFO: Satellite: id={} name={} decoder={}'.format(
+                satellite[0], satellite[1], satellite[2]))
+            decoder = satellite[2]
+            sat = satellite[0]
+    if decoder == '':
         print('Error: Satellite {} not supported!'.format(sat))
 
     # Converting start date info into datetime object
@@ -148,7 +151,7 @@ def data_fetch_decode(sat, output_directory, start_date, end_date):
     try:
         obs = ObservationsService(glouton_conf)
         obs.extract()
-    except Exception as eee:
+    except Exception as eee:  # pylint: disable=W0703
         print("ERROR, data collection: ", eee)
     print('Saving the dataframes in directory: ' + output_directory)
     print('Merging all the csv files into one CSV file.')
@@ -161,8 +164,8 @@ def data_fetch_decode(sat, output_directory, start_date, end_date):
 
     try:
         # Using subprocess package to execute merge command to merge CSV files.
-        p2 = subprocess.Popen(merge_cmd, shell=True, cwd=output_directory)
-        p2.wait()
+        proc2 = subprocess.Popen(merge_cmd, shell=True, cwd=output_directory)
+        proc2.wait()
         print('Merge Completed')
         print('Storing merged CSV file: ' + merged_file)
     except subprocess.CalledProcessError as err:
@@ -175,8 +178,8 @@ def data_fetch_decode(sat, output_directory, start_date, end_date):
     decode_cmd = build_decode_cmd(merged_file, decoded_file, decoder)
 
     try:
-        p3 = subprocess.Popen(decode_cmd, shell=True, cwd=output_directory)
-        p3.wait()
+        proc3 = subprocess.Popen(decode_cmd, shell=True, cwd=output_directory)
+        proc3.wait()
         print('Decoding of data finished.')
     except subprocess.CalledProcessError as err:
         print('ERROR:', err)
