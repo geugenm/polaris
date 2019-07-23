@@ -1,14 +1,8 @@
-#!/usr/bin/env python3
-
 import logging
 
 import click
 
 from polaris.data_fetch.data_fetch_decoder import data_fetch_decode
-
-# TODO: Uncomment these imports when we're ready to start using them
-# import data_viz
-# import learning
 
 # Logger configuration
 logger = logging.getLogger(__name__)
@@ -18,6 +12,10 @@ log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 formatter = logging.Formatter(log_format)
 ch.setFormatter(formatter)
 logger.addHandler(ch)
+
+# TODO: Uncomment these imports when we're ready to start using them
+# import data_viz
+# import learning
 
 
 @click.group()
@@ -72,6 +70,3 @@ def cli_data_viz():
 cli.add_command(cli_data_fetch)
 cli.add_command(cli_learning)
 cli.add_command(cli_data_viz)
-
-if __name__ == "__main__":
-    cli()
