@@ -8,7 +8,7 @@ static:
   before_script:
     - pip install tox~=3.8.0
   script:
-    - tox -e "flake8,isort,yapf"
+    - tox -e "flake8,isort,yapf,pylint"
 build:
   stage: build
   image: python:latest
