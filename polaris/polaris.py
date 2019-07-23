@@ -5,6 +5,7 @@ import logging
 
 import click
 
+from polaris import __version__
 from polaris.data_fetch.data_fetch_decoder import data_fetch_decode
 
 # Logger configuration
@@ -21,10 +22,13 @@ LOGGER.addHandler(CH)
 # import learning
 
 
+@click.version_option(version=__version__)
 @click.group()
 @click.pass_context
 def cli():
-    """ Entry point """
+    """
+    Tool for analyzing satellite telemetry
+    """
 
 
 @click.command('fetch',
