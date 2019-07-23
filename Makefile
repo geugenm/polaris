@@ -1,3 +1,4 @@
+SHELL := /bin/bash
 docker-compose-start:
 	./run_docker_compose.sh
 
@@ -15,6 +16,5 @@ setup:
 	( \
 		python3 -m venv .venv ; \
 		source .venv/bin/activate ; \
-		pip install -r requirements-dev.txt ; \
 		python3 setup.py install ; \
 	)
