@@ -24,11 +24,11 @@ LOGGER.addHandler(CH)
 
 @click.version_option(version=__version__)
 @click.group()
-@click.pass_context
 def cli():
     """
     Tool for analyzing satellite telemetry
     """
+    return
 
 
 @click.command('fetch',
@@ -49,7 +49,6 @@ def cli():
               is_flag=False,
               help='End date of fetching period.'
               ' Default: 1h period from start date.')
-@click.pass_context
 def cli_data_fetch(sat, start_date, end_date, output_directory):
     """ Retrieve and decode the telemetry corresponding to SAT (satellite name
      or NORAD ID) """
