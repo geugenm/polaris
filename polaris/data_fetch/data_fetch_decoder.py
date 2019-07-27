@@ -96,15 +96,17 @@ def data_fetch_decode(sat, output_directory, start_date, end_date):  # pylint: d
     # Filter or transform input arguments
     demod_module = ["CSV"]
 
+    decoder = None
     for satellite in _SATELLITES:
-        decoder = ''
         if sat in (satellite[0], satellite[1]):
             print('INFO: Satellite: id={} name={} decoder={}'.format(
                 satellite[0], satellite[1], satellite[2]))
             decoder = satellite[2]
             sat = satellite[0]
-    if decoder == '':
+            print('INFO: selected decoder={}'.format(decoder))
+    if decoder is None:
         print('Error: Satellite {} not supported!'.format(sat))
+        return
 
     # Converting start date info into datetime object
     if isinstance(start_date, str):
