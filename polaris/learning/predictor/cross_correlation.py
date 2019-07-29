@@ -35,25 +35,25 @@ class XCorr(BaseEstimator, TransformerMixin):
         if model_params is not None:
             self.model_params = model_params
 
-    def fit(self, frame):
+    def fit(self, X):
         """ Train on a dataframe
 
             The input dataframe will be split column by column considering each
             one as a prediction target.
 
-            :param frame: input dataframe
+            :param X: input dataframe
         """
-        if not isinstance(frame, pd.DataFrame):
-            raise TypeError("Input frame should be a DataFrame")
+        if not isinstance(X, pd.DataFrame):
+            raise TypeError("Input data should be a DataFrame")
 
         if self.models is None:
             self.models = []
 
-        self.reset_importance_map(frame.columns)
+        self.reset_importance_map(X.columns)
 
-        for column in frame.columns:
+        for column in X.columns:
             self.models.append(
-                self.regression(frame.drop([column], axis=1), frame[column]))
+                self.regression(X.drop([column], axis=1), X[column]))
 
     def transform(self):
         """ Unused method in this predictor """
@@ -75,8 +75,9 @@ class XCorr(BaseEstimator, TransformerMixin):
         # indices = np.argsort(regr_m.feature_importances_)[::-1]
         # After the model is trained
         new_row = {}
-        for column, fit in zip(df_in.columns, regr_m.feature_importances_):
-            new_row[column] = [fit]
+        for column, feat_imp in zip(df_in.columns,
+                                    regr_m.feature_importances_):
+            new_row[column] = [feat_imp]
 
         # Current target is not in df_in, so manually adding it
         new_row[target_series.name] = [0.0]
