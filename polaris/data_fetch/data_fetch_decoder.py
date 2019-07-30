@@ -177,7 +177,7 @@ def data_fetch_decode(sat, output_directory, start_date, end_date):  # pylint: d
     # Using satnogs-decoders to decode the CSV files containing
     # multiple dataframes and store them as JSON objects.
     print('Starting decoding of the data')
-    decoded_file = os.path.join(output_directory, 'decoded_frames.csv')
+    decoded_file = os.path.join(output_directory, 'decoded_frames.json')
     decode_cmd = build_decode_cmd(merged_file, decoded_file, decoder)
 
     try:
