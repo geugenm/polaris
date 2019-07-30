@@ -1,30 +1,34 @@
-#!/usr/bin/env python3
-
+"""
+Tool for analyzing satellite telemetry
+"""
 import logging
 
 import click
 
+from polaris import __version__
 from polaris.data_fetch.data_fetch_decoder import data_fetch_decode
 
-# TODO: Uncomment these imports when we're ready to start using them
+# Logger configuration
+LOGGER = logging.getLogger(__name__)
+CH = logging.StreamHandler()
+CH.setLevel(logging.DEBUG)
+LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+FORMATTER = logging.Formatter(LOG_FORMAT)
+CH.setFormatter(FORMATTER)
+LOGGER.addHandler(CH)
+
+# Uncomment these imports when we're ready to start using them
 # import data_viz
 # import learning
 
-# Logger configuration
-logger = logging.getLogger(__name__)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-formatter = logging.Formatter(log_format)
-ch.setFormatter(formatter)
-logger.addHandler(ch)
 
-
+@click.version_option(version=__version__)
 @click.group()
-@click.pass_context
-def cli(ctx):
-    """ Tool for analyzing satellite telemetry """
-    pass
+def cli():
+    """
+    Tool for analyzing satellite telemetry
+    """
+    return
 
 
 @click.command('fetch',
@@ -45,26 +49,29 @@ def cli(ctx):
               is_flag=False,
               help='End date of fetching period.'
               ' Default: 1h period from start date.')
-@click.pass_context
-def cli_data_fetch(ctx, sat, start_date, end_date, output_directory):
+def cli_data_fetch(sat, start_date, end_date, output_directory):
     """ Retrieve and decode the telemetry corresponding to SAT (satellite name
      or NORAD ID) """
-    logger.info("output dir: " + output_directory)
+    LOGGER.info("output dir: %s", output_directory)
     data_fetch_decode(sat, output_directory, start_date, end_date)
 
 
 @click.command('learning', short_help='learning help')
 def cli_learning():
-    logger.debug('[FIXME] Learning goes here')
+    """
+    Enter learning module
+    """
+    LOGGER.debug('[FIXME] Learning goes here')
     # learning()
-    pass
 
 
 @click.command('viz', short_help='data-viz help')
 def cli_data_viz():
-    logger.debug('[FIXME] Data visualization goes here')
+    """
+    Enter visualization module
+    """
+    LOGGER.debug('[FIXME] Data visualization goes here')
     # data_viz()
-    pass
 
 
 # click doesn't automagically add the commands to the group
@@ -72,6 +79,3 @@ def cli_data_viz():
 cli.add_command(cli_data_fetch)
 cli.add_command(cli_learning)
 cli.add_command(cli_data_viz)
-
-if __name__ == "__main__":
-    cli()

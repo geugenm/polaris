@@ -1,6 +1,10 @@
+"""
+Module for fetching and decoding telemetry data
+"""
 import datetime
 import os
 import subprocess
+from collections import namedtuple
 
 import pandas as pd
 # import glouton dependencies
@@ -8,46 +12,46 @@ from glouton.domain.parameters.programCmd import ProgramCmd
 from glouton.services.observation.observationsService import \
     ObservationsService
 
+Satellite = namedtuple('Satellite', ['norad_id', 'name', 'decoder'])
+
 DATA_DIRECTORY = '/tmp/polaris'
 _SATELLITES = [
-    # norad_id, name, decoder
-    # ('43616', 'ELFIN-B', 'Elfin'),
-    ('41460', 'AAUSAT 4', 'Aausat4'),
-    ('99964', 'ACRUX-1', 'Acrux1'),
-    ('44352', 'ARMADILLO', 'Armadillo'),
-    ('40968', 'BISONSAT', 'Bisonsat'),
-    ('40014', 'BUGSAT-1', 'Bugsat1'),
-    ('42759', 'CAS-4B', 'Cas4'),
-    ('42761', 'CAS-4A', 'Cas4'),
-    ('43855', 'CHOMPTT', 'Chomptt'),
-    ('43666', 'CubeBel-1', 'Cubebel1'),
-    ('99999', 'CubeSatSim', 'Cubesatsim'),
-    ('43793', 'CSIM-FD', 'Csim'),
-    ('43616', 'ELFIN-B', 'Elfin'),
-    ('43617', 'ELFIN-A', 'Elfin'),
-    ('44431', 'EntrySat', 'Entrysat'),
-    ('43700', 'QO-100', 'Eshail2'),
-    ('43552', 'EQUiSat', 'Equisat'),
-    ('40967', 'FOX-1A', 'Fox'),
-    ('43017', 'FOX-1B', 'Fox'),
-    ('43770', 'FOX-1C', 'Fox'),
-    ('43137', 'FOX-1D', 'Fox'),
-    ('43468', 'IRAZU', 'Irazu'),
-    ('43693', 'IRVINE-01', 'Irvine'),
-    ('99915', 'IRVINE-02', 'Irvine'),
-    ('44420', 'LightSail-2', 'Lightsail2'),
-    ('41474', 'MINXSS', 'Minxss'),
-    ('43758', 'MinXSS 2', 'Minxss'),
-    ('44045', 'MySat-1', 'Mysat'),
-    ('43933', 'OrigamiSat-1', 'Origamisat1'),
-    ('43814', 'PW-Sat2', 'Pwsat2'),
-    ('42708', 'QBEE', 'Qbee'),
-    ('43595', 'SiriusSat-1', 'Siriussat'),
-    ('43596', 'SiriusSat-2', 'Siriussat'),
-    ('42789', 'SKCUBE', 'Skcube'),
-    ('39090', 'STRAND-1', 'Strand'),
-    ('40012', 'UNISAT-6', 'Us6'),
-    ('43880', 'UWE-4', 'Uwe4'),
+    Satellite('41460', 'AAUSAT 4', 'Aausat4'),
+    Satellite('99964', 'ACRUX-1', 'Acrux1'),
+    Satellite('44352', 'ARMADILLO', 'Armadillo'),
+    Satellite('40968', 'BISONSAT', 'Bisonsat'),
+    Satellite('40014', 'BUGSAT-1', 'Bugsat1'),
+    Satellite('42759', 'CAS-4B', 'Cas4'),
+    Satellite('42761', 'CAS-4A', 'Cas4'),
+    Satellite('43855', 'CHOMPTT', 'Chomptt'),
+    Satellite('43666', 'CubeBel-1', 'Cubebel1'),
+    Satellite('99999', 'CubeSatSim', 'Cubesatsim'),
+    Satellite('43793', 'CSIM-FD', 'Csim'),
+    Satellite('43616', 'ELFIN-B', 'Elfin'),
+    Satellite('43617', 'ELFIN-A', 'Elfin'),
+    Satellite('44431', 'EntrySat', 'Entrysat'),
+    Satellite('43700', 'QO-100', 'Eshail2'),
+    Satellite('43552', 'EQUiSat', 'Equisat'),
+    Satellite('40967', 'FOX-1A', 'Fox'),
+    Satellite('43017', 'FOX-1B', 'Fox'),
+    Satellite('43770', 'FOX-1C', 'Fox'),
+    Satellite('43137', 'FOX-1D', 'Fox'),
+    Satellite('43468', 'IRAZU', 'Irazu'),
+    Satellite('43693', 'IRVINE-01', 'Irvine'),
+    Satellite('99915', 'IRVINE-02', 'Irvine'),
+    Satellite('44420', 'LightSail-2', 'Lightsail2'),
+    Satellite('41474', 'MINXSS', 'Minxss'),
+    Satellite('43758', 'MinXSS 2', 'Minxss'),
+    Satellite('44045', 'MySat-1', 'Mysat'),
+    Satellite('43933', 'OrigamiSat-1', 'Origamisat1'),
+    Satellite('43814', 'PW-Sat2', 'Pwsat2'),
+    Satellite('42708', 'QBEE', 'Qbee'),
+    Satellite('43595', 'SiriusSat-1', 'Siriussat'),
+    Satellite('43596', 'SiriusSat-2', 'Siriussat'),
+    Satellite('42789', 'SKCUBE', 'Skcube'),
+    Satellite('39090', 'STRAND-1', 'Strand'),
+    Satellite('40012', 'UNISAT-6', 'Us6'),
+    Satellite('43880', 'UWE-4', 'Uwe4'),
 ]
 
 
@@ -70,17 +74,17 @@ def build_decode_cmd(src, dest, decoder):
     decoder_module = decoder
     input_format = 'csv'
     decode_cmd = '{decode_multiple} --filename {src} --format {input_format}'\
-        ' {decoder_module} > {dest}'.format(
-                                    decode_multiple=decode_multiple,
-                                    decoder_module=decoder_module,
-                                    src=src,
-                                    input_format=input_format,
-                                    dest=dest,
-                                    )
-    return decode_cmd
+                 ' {decoder_module} > {dest}'.format(
+                     decode_multiple=decode_multiple,
+                     decoder_module=decoder_module,
+                     src=src,
+                     input_format=input_format,
+                     dest=dest,
+                 )
+    return decode_cmd  # pylint: disable=R0914
 
 
-def data_fetch_decode(sat, output_directory, start_date, end_date):
+def data_fetch_decode(sat, output_directory, start_date, end_date):  # pylint: disable=R0914,R0915 # noqa: E501
     """
     Main function to download and decode satellite telemetry.
 
@@ -93,15 +97,17 @@ def data_fetch_decode(sat, output_directory, start_date, end_date):
     # Filter or transform input arguments
     demod_module = ["CSV"]
 
-    try:
-        for satellite in _SATELLITES:
-            if satellite[0] == sat or satellite[1] == sat:
-                print('INFO: Satellite: id={} name={} decoder={}'.format(
-                    satellite[0], satellite[1], satellite[2]))
-                decoder = satellite[2]
-                sat = satellite[0]
-    except Exception:
+    decoder = None
+    for satellite in _SATELLITES:
+        if sat in (satellite.name, satellite.norad_id):
+            print('INFO: Satellite: id={} name={} decoder={}'.format(
+                satellite.norad_id, satellite.name, satellite.decoder))
+            decoder = satellite.decoder
+            sat = satellite.norad_id
+            print('INFO: selected decoder={}'.format(decoder))
+    if decoder is None:
         print('Error: Satellite {} not supported!'.format(sat))
+        return
 
     # Converting start date info into datetime object
     if isinstance(start_date, str):
@@ -148,7 +154,7 @@ def data_fetch_decode(sat, output_directory, start_date, end_date):
     try:
         obs = ObservationsService(glouton_conf)
         obs.extract()
-    except Exception as eee:
+    except Exception as eee:  # pylint: disable=W0703
         print("ERROR, data collection: ", eee)
     print('Saving the dataframes in directory: ' + output_directory)
     print('Merging all the csv files into one CSV file.')
@@ -161,8 +167,8 @@ def data_fetch_decode(sat, output_directory, start_date, end_date):
 
     try:
         # Using subprocess package to execute merge command to merge CSV files.
-        p2 = subprocess.Popen(merge_cmd, shell=True, cwd=output_directory)
-        p2.wait()
+        proc2 = subprocess.Popen(merge_cmd, shell=True, cwd=output_directory)
+        proc2.wait()
         print('Merge Completed')
         print('Storing merged CSV file: ' + merged_file)
     except subprocess.CalledProcessError as err:
@@ -175,8 +181,8 @@ def data_fetch_decode(sat, output_directory, start_date, end_date):
     decode_cmd = build_decode_cmd(merged_file, decoded_file, decoder)
 
     try:
-        p3 = subprocess.Popen(decode_cmd, shell=True, cwd=output_directory)
-        p3.wait()
+        proc3 = subprocess.Popen(decode_cmd, shell=True, cwd=output_directory)
+        proc3.wait()
         print('Decoding of data finished.')
     except subprocess.CalledProcessError as err:
         print('ERROR:', err)
