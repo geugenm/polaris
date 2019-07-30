@@ -4,6 +4,8 @@
 
 `FFlat` is a data explorer that analyzes feature importances and iteratively find the most important features
 
+`FFlat` would stand for Feature Flatening
+
 ## Predictor: XCorr
 
 Cross Correlation finder.
