@@ -1,5 +1,9 @@
 # Polaris learning module
 
+## Miner: FFlat
+
+`FFlat` is a data explorer that analyzes feature importances and iteratively find the most important features
+
 ## Predictor: XCorr
 
 Cross Correlation finder.
