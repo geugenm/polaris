@@ -1,10 +1,12 @@
 from collections import namedtuple
 
+Field = namedtuple('Field', ['key', 'equ', 'unit', 'desc'])
+
+
 class Normalizer:
     def __init__(self):
         self.normalizers = []
-        self.Field = namedtuple('Field', ['key', 'equ', 'unit', 'desc'])
-        
+
     def normalize(self, frame):
         for field in self.normalizers:
             try:
@@ -13,7 +15,7 @@ class Normalizer:
                 frame[key] = field.equ(val)  # normalize
             except KeyError as e:
                 print('Field {} not found in the frame '.format(key), e)
-                
+
         return frame
 
     def get_unit(self, key):
