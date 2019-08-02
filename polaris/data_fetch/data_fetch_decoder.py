@@ -2,6 +2,7 @@
 Module for fetching and decoding telemetry data
 """
 import datetime
+import json
 import os
 import subprocess
 from collections import namedtuple
@@ -13,46 +14,13 @@ from glouton.services.observation.observationsService import \
     ObservationsService
 
 Satellite = namedtuple('Satellite', ['norad_id', 'name', 'decoder'])
+SATELLITE_DATA_FILE = 'satellites.json'
+SATELLITE_DATA_DIR = os.path.dirname(__file__)
+_SATELLITES = json.loads(
+    open(os.path.join(SATELLITE_DATA_DIR, SATELLITE_DATA_FILE)).read(),
+    object_hook=lambda d: Satellite(d['norad_id'], d['name'], d['decoder']))
 
 DATA_DIRECTORY = '/tmp/polaris'
-_SATELLITES = [
-    Satellite('41460', 'AAUSAT 4', 'Aausat4'),
-    Satellite('99964', 'ACRUX-1', 'Acrux1'),
-    Satellite('44352', 'ARMADILLO', 'Armadillo'),
-    Satellite('40968', 'BISONSAT', 'Bisonsat'),
-    Satellite('40014', 'BUGSAT-1', 'Bugsat1'),
-    Satellite('42759', 'CAS-4B', 'Cas4'),
-    Satellite('42761', 'CAS-4A', 'Cas4'),
-    Satellite('43855', 'CHOMPTT', 'Chomptt'),
-    Satellite('43666', 'CubeBel-1', 'Cubebel1'),
-    Satellite('99999', 'CubeSatSim', 'Cubesatsim'),
-    Satellite('43793', 'CSIM-FD', 'Csim'),
-    Satellite('43616', 'ELFIN-B', 'Elfin'),
-    Satellite('43617', 'ELFIN-A', 'Elfin'),
-    Satellite('44431', 'EntrySat', 'Entrysat'),
-    Satellite('43700', 'QO-100', 'Eshail2'),
-    Satellite('43552', 'EQUiSat', 'Equisat'),
-    Satellite('40967', 'FOX-1A', 'Fox'),
-    Satellite('43017', 'FOX-1B', 'Fox'),
-    Satellite('43770', 'FOX-1C', 'Fox'),
-    Satellite('43137', 'FOX-1D', 'Fox'),
-    Satellite('43468', 'IRAZU', 'Irazu'),
-    Satellite('43693', 'IRVINE-01', 'Irvine'),
-    Satellite('99915', 'IRVINE-02', 'Irvine'),
-    Satellite('44420', 'LightSail-2', 'Lightsail2'),
-    Satellite('41474', 'MINXSS', 'Minxss'),
-    Satellite('43758', 'MinXSS 2', 'Minxss'),
-    Satellite('44045', 'MySat-1', 'Mysat'),
-    Satellite('43933', 'OrigamiSat-1', 'Origamisat1'),
-    Satellite('43814', 'PW-Sat2', 'Pwsat2'),
-    Satellite('42708', 'QBEE', 'Qbee'),
-    Satellite('43595', 'SiriusSat-1', 'Siriussat'),
-    Satellite('43596', 'SiriusSat-2', 'Siriussat'),
-    Satellite('42789', 'SKCUBE', 'Skcube'),
-    Satellite('39090', 'STRAND-1', 'Strand'),
-    Satellite('40012', 'UNISAT-6', 'Us6'),
-    Satellite('43880', 'UWE-4', 'Uwe4'),
-]
 
 
 def get_output_directory(data_directory=DATA_DIRECTORY):
