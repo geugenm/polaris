@@ -1,5 +1,4 @@
 import numpy as np
-# import fets
 
 
 def _maxdist(x_i, x_j):
@@ -12,6 +11,7 @@ def sample_entropy(timeseries_data, run_data_length, filtering_level):
     similar to approximate entropy but it is more consistent in
     estimating the complexity even for small time series
     """
+
     def _phi(run_data_length):
         x = [[
             timeseries_data[j] for j in range(i, i + run_data_length - 1 + 1)
@@ -33,6 +33,7 @@ def approximate_entropy(timeseries_data, run_data_length, filtering_level):
     Utility function to calculate the approximate entropy which quantify the
     regularity and unpredictability of the fluctuations in time series data.
     """
+
     def _phi(run_data_length):
         x = [[
             timeseries_data[j] for j in range(i, i + run_data_length - 1 + 1)
