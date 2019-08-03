@@ -1,7 +1,5 @@
 import numpy as np
 
-# import fets
-
 
 def _maxdist(x_i, x_j):
     return max([abs(ua - va) for ua, va in zip(x_i, x_j)])
