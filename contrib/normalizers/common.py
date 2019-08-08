@@ -14,7 +14,7 @@ class Normalizer:
                 val = frame[key]
                 frame[key] = field.equ(val)  # normalize
             except KeyError as e:
-                print('Field {} not found in the frame '.format(key), e)
+                print('Field {} not found in the frame'.format(key), e)
 
         return frame
 

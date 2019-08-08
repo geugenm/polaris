@@ -108,6 +108,7 @@ class Lightsail2(Normalizer):
             Field('q0_act', lambda x: x / 128, None, 'Q0 Actuator'),
             Field('q1_act', lambda x: x / 128, None, 'Q1 Actuator'),
             Field('q2_act', lambda x: x / 128, None, 'Q2 Actuator'),
+            Field('q3_act', lambda x: x / 128, None, 'Q3 Actuator'),
             Field('x_rate', lambda x: x / 128, 'deg/s', 'X Rotation Rate'),
             Field('y_rate', lambda x: x / 128, 'deg/s', 'Y Rotation Rate'),
             Field('z_rate', lambda x: x / 128, 'deg/s', 'Z Rotation Rate'),
