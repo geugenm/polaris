@@ -14,6 +14,8 @@ from glouton.domain.parameters.programCmd import ProgramCmd
 from glouton.services.observation.observationsService import \
     ObservationsService
 
+from contrib.normalizers.lightsail2 import Lightsail2
+
 Satellite = namedtuple('Satellite', ['norad_id', 'name', 'decoder'])
 SATELLITE_DATA_FILE = 'satellites.json'
 SATELLITE_DATA_DIR = os.path.dirname(__file__)
@@ -185,5 +187,20 @@ def data_fetch_decode(sat, output_directory, start_date, end_date):  # pylint: d
     except subprocess.CalledProcessError as err:
         LOGGER.info('ERROR: %s', err)
 
-    LOGGER.info('Stored the decoded data JSON file in root directory: %s',
-                decoded_file)
+    LOGGER.info('Stored the decoded data JSON file in root directory: ' +
+          decoded_file)
+
+    # Normalize values
+    normalized_frames = []
+    with open(decoded_file) as f_handle:
+        frame_list = json.load(f_handle)
+        normalizer = Lightsail2()
+        for frame in frame_list:
+            frame_norm = normalizer.normalize(frame[0])
+            normalized_frames.append(frame_norm)
+
+    normalized_file = os.path.join(output_directory, 'normalized_frames.json')
+    with open(normalized_file, 'w') as f_handle:
+        json.dump(normalized_frames, f_handle)
+        LOGGER.info('Stored the normalized data JSON file in root directory: ' +
+              normalized_file)
