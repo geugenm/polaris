@@ -9,7 +9,12 @@ from polaris import __version__
 from polaris.data_fetch.data_fetch_decoder import data_fetch_decode
 
 # Logger configuration
-LOGGER = logging.getLogger(__name__)
+
+# Set the logger name explicitly to 'polaris'; if we use __name__
+# here, we get 'polaris.polaris', which is redundant. It also allows
+# modules to use the parent logger, as their __name__ begins with
+# 'polaris', not 'polaris.polaris'.
+LOGGER = logging.getLogger('polaris')
 CH = logging.StreamHandler()
 CH.setLevel(logging.DEBUG)
 LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
