@@ -3,6 +3,7 @@ Module for fetching and decoding telemetry data
 """
 import datetime
 import json
+import logging
 import os
 import subprocess
 from collections import namedtuple
@@ -21,6 +22,8 @@ _SATELLITES = json.loads(
     object_hook=lambda d: Satellite(d['norad_id'], d['name'], d['decoder']))
 
 DATA_DIRECTORY = '/tmp/polaris'
+
+LOGGER = logging.getLogger(__name__)
 
 
 def get_output_directory(data_directory=DATA_DIRECTORY):
@@ -83,14 +86,14 @@ def data_fetch_decode(sat, output_directory, start_date, end_date):  # pylint: d
     elif not isinstance(start_date, datetime.datetime):
         start_date = (datetime.datetime.utcnow() -
                       datetime.timedelta(seconds=3600))
-    print("INFO: Fetch start date: {}".format(start_date))
+    LOGGER.info("Fetch start date: %s", start_date)
 
     # Converting start date info into datetime object
     if isinstance(end_date, str):
         end_date = pd.to_datetime(end_date).to_pydatetime()
     elif not isinstance(end_date, datetime.datetime):
         end_date = start_date + datetime.timedelta(seconds=3600)
-    print("INFO: Fetch end date: {}".format(end_date))
+    LOGGER.info("Fetch end date: %s", end_date)
 
     # Creating a new subdirectory to output directory
     # to collect glouton's data. Using start date to name it.
@@ -123,9 +126,9 @@ def data_fetch_decode(sat, output_directory, start_date, end_date):  # pylint: d
         obs = ObservationsService(glouton_conf)
         obs.extract()
     except Exception as eee:  # pylint: disable=W0703
-        print("ERROR, data collection: ", eee)
-    print('Saving the dataframes in directory: ' + output_directory)
-    print('Merging all the csv files into one CSV file.')
+        LOGGER.error("data collection: %s", eee)
+    LOGGER.info('Saving the dataframes in directory: %s', output_directory)
+    LOGGER.info('Merging all the csv files into one CSV file.')
     merged_file = os.path.join(output_directory, 'merged_frames.csv')
     # Command to merge all the csv files from the output directory
     # into a single CSV file.
@@ -137,23 +140,23 @@ def data_fetch_decode(sat, output_directory, start_date, end_date):  # pylint: d
         # Using subprocess package to execute merge command to merge CSV files.
         proc2 = subprocess.Popen(merge_cmd, shell=True, cwd=output_directory)
         proc2.wait()
-        print('Merge Completed')
-        print('Storing merged CSV file: ' + merged_file)
+        LOGGER.info('Merge Completed')
+        LOGGER.info('Storing merged CSV file: %s', merged_file)
     except subprocess.CalledProcessError as err:
-        print('ERROR:', err)
+        LOGGER.error(err)
 
     # Using satnogs-decoders to decode the CSV files containing
     # multiple dataframes and store them as JSON objects.
-    print('Starting decoding of the data')
+    LOGGER.info('Starting decoding of the data')
     decoded_file = os.path.join(output_directory, 'decoded_frames.json')
     decode_cmd = build_decode_cmd(merged_file, decoded_file, decoder)
 
     try:
         proc3 = subprocess.Popen(decode_cmd, shell=True, cwd=output_directory)
         proc3.wait()
-        print('Decoding of data finished.')
+        LOGGER.info('Decoding of data finished.')
     except subprocess.CalledProcessError as err:
-        print('ERROR:', err)
+        LOGGER.info('ERROR: %s', err)
 
-    print('Stored the decoded data JSON file in root directory: ' +
-          decoded_file)
+    LOGGER.info('Stored the decoded data JSON file in root directory: %s',
+                decoded_file)
