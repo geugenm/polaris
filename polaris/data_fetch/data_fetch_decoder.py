@@ -65,10 +65,10 @@ class NoDecoderForSatellite(Exception):
     """
 
 
-def find_satellite(sat, satellites):
+def find_satellite(sat, sat_list):
     """Find a match for a given satellite in a list of satellites
     """
-    for candidate in satellites:
+    for candidate in sat_list:
         if sat in (candidate.name, candidate.norad_id):
             print('Satellite: id={} name={} decoder={}'.format(
                 candidate.norad_id, candidate.name, candidate.decoder))
