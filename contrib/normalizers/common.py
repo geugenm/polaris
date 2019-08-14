@@ -1,4 +1,7 @@
+import logging
 from collections import namedtuple
+
+LOGGER = logging.getLogger(__name__)
 
 Field = namedtuple('Field', ['key', 'equ', 'unit', 'desc'])
 
@@ -14,7 +17,7 @@ class Normalizer:
                 val = frame[key]
                 frame[key] = field.equ(val)  # normalize
             except KeyError as e:
-                print('Field {} not found in the frame'.format(key), e)
+                LOGGER.warning('Field %s not found in the frame', key)
 
         return frame
 
