@@ -119,7 +119,13 @@ def data_fetch_decode(sat, output_directory, start_date, end_date):  # pylint: d
                               user=None,
                               transmitter_uuid=None,
                               transmitter_mode=None,
-                              transmitter_type=None)
+                              transmitter_type=None,
+                              frame_modules=None,
+                              observer=None,
+                              app_source=None,
+                              transmitter=None,
+                              page_from=None,
+                              page_to=None)
 
     # Running glouton data collection
     try:
