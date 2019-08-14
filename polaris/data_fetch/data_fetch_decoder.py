@@ -58,65 +58,73 @@ def build_decode_cmd(src, dest, decoder):
 
 
 class NoSuchSatellite(Exception):
-    """Raised when we can't identify the satellite requested
-    """
+    """Raised when we can't identify the satellite requested """
 
 
 class NoDecoderForSatellite(Exception):
-    """Raised when we have no decoder
-    """
+    """Raised when we have no decoder """
 
 
 def find_satellite(sat, sat_list):
-    """Find a match for a given satellite in a list of satellites
-    """
+    """Find a match for a given satellite in a list of satellites """
     for candidate in sat_list:
         if sat in (candidate.name, candidate.norad_id):
-            print('Satellite: id={} name={} decoder={}'.format(
-                candidate.norad_id, candidate.name, candidate.decoder))
-            print('selected decoder={}'.format(candidate.decoder))
+            LOGGER.info('Satellite: id=%s name=%s decoder=%s',
+                        candidate.norad_id, candidate.name, candidate.decoder)
+            LOGGER.info('selected decoder=%s', candidate.decoder)
             if candidate.decoder is None:
-                print('Satellite {} not supported!'.format(sat))
+                LOGGER.error('Satellite %s not supported!', sat)
                 raise NoDecoderForSatellite
             return candidate
     raise NoSuchSatellite
 
 
-def data_fetch_decode(sat, output_directory, start_date, end_date):  # pylint: disable=R0914,R0915 # noqa: E501
+def generate_datetime_obj(date):
     """
-    Main function to download and decode satellite telemetry.
-
-    :param sat: a NORAD ID or a satellite name.
-    :param output_directory: only used parameter for now.
+    Generates a datetime object based on the input dat or on the current
+    time if input not valid.
     """
-    if not os.path.exists(DATA_DIRECTORY):
-        os.makedirs(DATA_DIRECTORY)
+    if isinstance(date, str):
+        date = pd.to_datetime(date).to_pydatetime()
+    elif not isinstance(date, datetime.datetime):
+        date = (datetime.datetime.utcnow() - datetime.timedelta(seconds=3600))
 
-    # Filter or transform input arguments
-    demod_module = ["CSV"]
+    return date
+
+
+def merge_csv_files(output_directory, path):
+    """
+    Merge all the CSV files inside path into a single file.
+
+    :returns: path of the merged file.
+    """
+    LOGGER.info('Merging all the csv files into one CSV file.')
+    merged_file = os.path.join(output_directory, 'merged_frames.csv')
+    # Command to merge all the csv files from the output directory
+    # into a single CSV file.
+    merge_cmd = 'sed 1d ' \
+                + os.path.join(path, 'demod*/*.csv') \
+                + ' > ' + merged_file
 
     try:
-        satellite = find_satellite(sat, _SATELLITES)
-    except Exception as exception:
-        print("Can't find satellite or decoder: ", exception)
-        raise exception
+        # Using subprocess package to execute merge command to merge CSV files.
+        proc2 = subprocess.Popen(merge_cmd, shell=True, cwd=output_directory)
+        proc2.wait()
+        LOGGER.info('Merge Completed')
+        LOGGER.info('Storing merged CSV file: %s', merged_file)
+    except subprocess.CalledProcessError as err:
+        LOGGER.error(err)
 
-    decoder = satellite.decoder
+    return merged_file
 
-    # Converting start date info into datetime object
-    if isinstance(start_date, str):
-        start_date = pd.to_datetime(start_date).to_pydatetime()
-    elif not isinstance(start_date, datetime.datetime):
-        start_date = (datetime.datetime.utcnow() -
-                      datetime.timedelta(seconds=3600))
-    LOGGER.info("Fetch start date: %s", start_date)
 
-    # Converting start date info into datetime object
-    if isinstance(end_date, str):
-        end_date = pd.to_datetime(end_date).to_pydatetime()
-    elif not isinstance(end_date, datetime.datetime):
-        end_date = start_date + datetime.timedelta(seconds=3600)
-    LOGGER.info("Fetch end date: %s", end_date)
+def data_fetch(norad_id, output_directory, start_date, end_date):
+    """
+    Fetch data of the sat with the given Norad ID gathered between start_date
+    and end_date. Data is retrieved from SatNOGS database using Glouton.
+
+    :returns: path of the file that contains the fetched data.
+    """
 
     # Creating a new subdirectory to output directory
     # to collect glouton's data. Using start date to name it.
@@ -127,7 +135,7 @@ def data_fetch_decode(sat, output_directory, start_date, end_date):  # pylint: d
         os.mkdir(cwd_path)
 
     # Preparing glouton command configuration
-    glouton_conf = ProgramCmd(norad_id=satellite.norad_id,
+    glouton_conf = ProgramCmd(norad_id=norad_id,
                               ground_station_id=None,
                               start_date=start_date,
                               end_date=end_date,
@@ -137,7 +145,7 @@ def data_fetch_decode(sat, output_directory, start_date, end_date):  # pylint: d
                               waterfalls=False,
                               demoddata=True,
                               payload_modules=None,
-                              demoddata_modules=demod_module,
+                              demoddata_modules=["CSV"],
                               waterfall_modules=None,
                               user=None,
                               transmitter_uuid=None,
@@ -156,29 +164,24 @@ def data_fetch_decode(sat, output_directory, start_date, end_date):  # pylint: d
         obs.extract()
     except Exception as eee:  # pylint: disable=W0703
         LOGGER.error("data collection: %s", eee)
-    LOGGER.info('Saving the dataframes in directory: %s', output_directory)
-    LOGGER.info('Merging all the csv files into one CSV file.')
-    merged_file = os.path.join(output_directory, 'merged_frames.csv')
-    # Command to merge all the csv files from the output directory
-    # into a single CSV file.
-    merge_cmd = 'sed 1d ' \
-                + os.path.join(cwd_path, 'demod*/*.csv') \
-                + ' > ' + merged_file
 
-    try:
-        # Using subprocess package to execute merge command to merge CSV files.
-        proc2 = subprocess.Popen(merge_cmd, shell=True, cwd=output_directory)
-        proc2.wait()
-        LOGGER.info('Merge Completed')
-        LOGGER.info('Storing merged CSV file: %s', merged_file)
-    except subprocess.CalledProcessError as err:
-        LOGGER.error(err)
+    LOGGER.info('Saving the dataframes in directory: %s', output_directory)
+    return merge_csv_files(output_directory, cwd_path)
+
+
+def data_decode(decoder, output_directory, frames_file):
+    """
+    Decode the data found in frames_file using the given decoder. Put it in
+    output_directory.
+
+    :returns: path of the file that contains the decoded data.
+    """
 
     # Using satnogs-decoders to decode the CSV files containing
     # multiple dataframes and store them as JSON objects.
     LOGGER.info('Starting decoding of the data')
     decoded_file = os.path.join(output_directory, 'decoded_frames.json')
-    decode_cmd = build_decode_cmd(merged_file, decoded_file, decoder)
+    decode_cmd = build_decode_cmd(frames_file, decoded_file, decoder)
 
     try:
         proc3 = subprocess.Popen(decode_cmd, shell=True, cwd=output_directory)
@@ -187,14 +190,20 @@ def data_fetch_decode(sat, output_directory, start_date, end_date):  # pylint: d
     except subprocess.CalledProcessError as err:
         LOGGER.info('ERROR: %s', err)
 
-    LOGGER.info('Stored the decoded data JSON file in root directory: ' +
-          decoded_file)
+    LOGGER.info('Decoded data stored at %s', decoded_file)
+    return decoded_file
 
+
+def data_normalize(normalizer, output_directory, decoded_file):
+    """
+    Normalize the data found in decoded_file using the given normalizer.
+
+    :returns: path of the file that contains the normalized data.
+    """
     # Normalize values
     normalized_frames = []
     with open(decoded_file) as f_handle:
         frame_list = json.load(f_handle)
-        normalizer = Lightsail2()
         for frame in frame_list:
             frame_norm = normalizer.normalize(frame[0])
             normalized_frames.append(frame_norm)
@@ -202,5 +211,38 @@ def data_fetch_decode(sat, output_directory, start_date, end_date):  # pylint: d
     normalized_file = os.path.join(output_directory, 'normalized_frames.json')
     with open(normalized_file, 'w') as f_handle:
         json.dump(normalized_frames, f_handle)
-        LOGGER.info('Stored the normalized data JSON file in root directory: ' +
-              normalized_file)
+
+    LOGGER.info('Normalized data stored at % s', normalized_file)
+    return normalized_file
+
+
+def data_fetch_decode_normalize(sat, output_directory, start_date, end_date):
+    """
+    Main function to download and decode satellite telemetry.
+
+    :param sat: a NORAD ID or a satellite name.
+    :param output_directory: only used parameter for now.
+    """
+    if not os.path.exists(DATA_DIRECTORY):
+        os.makedirs(DATA_DIRECTORY)
+
+    # Check if satellite info available
+    try:
+        satellite = find_satellite(sat, _SATELLITES)
+    except Exception as exception:
+        LOGGER.error("Can't find satellite or decoder: %s", exception)
+        raise exception
+
+    # Converting dates into datetime objects
+    start_date = generate_datetime_obj(start_date)
+    end_date = generate_datetime_obj(end_date)
+    LOGGER.info('Fetch period: %s to %s', start_date, end_date)
+
+    # Retrieve, decode and normalize frames
+    frames_file = data_fetch(satellite.norad_id, output_directory, start_date,
+                             end_date)
+    decoded_file = data_decode(satellite.decoder, output_directory,
+                               frames_file)
+    normalized_file = data_normalize(Lightsail2(), output_directory,
+                                     decoded_file)
+    LOGGER.info('Output file %s', normalized_file)

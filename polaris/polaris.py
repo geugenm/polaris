@@ -6,7 +6,7 @@ import logging
 import click
 
 from polaris import __version__
-from polaris.data_fetch.data_fetch_decoder import data_fetch_decode
+from polaris.data_fetch.data_fetch_decoder import data_fetch_decode_normalize
 
 # Logger configuration
 
@@ -58,7 +58,7 @@ def cli_data_fetch(sat, start_date, end_date, output_directory):
     """ Retrieve and decode the telemetry corresponding to SAT (satellite name
      or NORAD ID) """
     LOGGER.info("output dir: %s", output_directory)
-    data_fetch_decode(sat, output_directory, start_date, end_date)
+    data_fetch_decode_normalize(sat, output_directory, start_date, end_date)
 
 
 @click.command('learning', short_help='learning help')
