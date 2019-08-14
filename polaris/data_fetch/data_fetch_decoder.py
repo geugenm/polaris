@@ -55,6 +55,31 @@ def build_decode_cmd(src, dest, decoder):
     return decode_cmd  # pylint: disable=R0914
 
 
+class NoSuchSatellite(Exception):
+    """Raised when we can't identify the satellite requested
+    """
+
+
+class NoDecoderForSatellite(Exception):
+    """Raised when we have no decoder
+    """
+
+
+def find_satellite(sat, sat_list):
+    """Find a match for a given satellite in a list of satellites
+    """
+    for candidate in sat_list:
+        if sat in (candidate.name, candidate.norad_id):
+            print('Satellite: id={} name={} decoder={}'.format(
+                candidate.norad_id, candidate.name, candidate.decoder))
+            print('selected decoder={}'.format(candidate.decoder))
+            if candidate.decoder is None:
+                print('Satellite {} not supported!'.format(sat))
+                raise NoDecoderForSatellite
+            return candidate
+    raise NoSuchSatellite
+
+
 def data_fetch_decode(sat, output_directory, start_date, end_date):  # pylint: disable=R0914,R0915 # noqa: E501
     """
     Main function to download and decode satellite telemetry.
@@ -68,17 +93,13 @@ def data_fetch_decode(sat, output_directory, start_date, end_date):  # pylint: d
     # Filter or transform input arguments
     demod_module = ["CSV"]
 
-    decoder = None
-    for satellite in _SATELLITES:
-        if sat in (satellite.name, satellite.norad_id):
-            print('INFO: Satellite: id={} name={} decoder={}'.format(
-                satellite.norad_id, satellite.name, satellite.decoder))
-            decoder = satellite.decoder
-            sat = satellite.norad_id
-            print('INFO: selected decoder={}'.format(decoder))
-    if decoder is None:
-        print('Error: Satellite {} not supported!'.format(sat))
-        return
+    try:
+        satellite = find_satellite(sat, _SATELLITES)
+    except Exception as exception:
+        print("Can't find satellite or decoder: ", exception)
+        raise exception
+
+    decoder = satellite.decoder
 
     # Converting start date info into datetime object
     if isinstance(start_date, str):
@@ -104,7 +125,7 @@ def data_fetch_decode(sat, output_directory, start_date, end_date):  # pylint: d
         os.mkdir(cwd_path)
 
     # Preparing glouton command configuration
-    glouton_conf = ProgramCmd(norad_id=sat,
+    glouton_conf = ProgramCmd(norad_id=satellite.norad_id,
                               ground_station_id=None,
                               start_date=start_date,
                               end_date=end_date,
