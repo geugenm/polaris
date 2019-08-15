@@ -16,7 +16,7 @@ class Normalizer:
                 key = field.key
                 val = frame['fields'][key]
                 frame['fields'][key] = field.equ(val)  # normalize
-            except KeyError as e:
+            except KeyError:
                 LOGGER.warning('Field %s not found in the frame', key)
 
         return frame
