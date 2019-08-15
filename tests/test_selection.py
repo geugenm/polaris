@@ -12,7 +12,10 @@ class Transformers(object):
 class FeatureImportanceOptimizationTest(TestCase):
     def setUp(self):
         self.fio = FeatureImportanceOptimization(Transformers())
+        self.assertEqual(0, len(self.fio.models))
+        self.assert self.fio.model_optinput is None
+        self.assert self.fio.do_tuning is False
 
     def test_build_pipelines(self):
-        self.assertEqual(0, self.fio.pipelines.length)
+        self.assertEqual(0, len(self.fio.pipelines))
         self.fio.build_pipelines(Transformers())
