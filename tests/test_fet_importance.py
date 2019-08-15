@@ -1,5 +1,6 @@
-import polaris.learning.feature.extraction as ext
 import unittest
+
+import polaris.learning.feature.extraction as ext
 
 
 class test_feature_extraction(unittest.TestCase):
