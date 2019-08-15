@@ -1,19 +1,19 @@
 from collections import Iterable
 
+import numpy as np
 import pandas as pd
 import xgboost as xgb
-import numpy as np
-from fets.pipeline import FeatureUnion2DF
+from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
-from sklearn.base import BaseEstimator, TransformerMixin
+
+from fets.pipeline import FeatureUnion2DF
 
 
 class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
     """
     Flattening the features' importances distribution using entropy augmentation.
     """
-
 
     def __init__(self, list_of_transformers):
         """ The constructor will help parameterize all options of this
@@ -66,14 +66,13 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
             # Preparing the list of transformer for one iteration
             tmp_pipeline = []
             if isinstance(transformer, Iterable):
-                tmp_pipeline = [("T"+str(hash(k)), k) for k in transformer]
+                tmp_pipeline = [("T" + str(hash(k)), k) for k in transformer]
             else:
                 tmp_pipeline = [("T0", transformer)]
 
             # Creating the pipeline
             self.pipelines.append(
-                Pipeline([("union", FeatureUnion2DF(tmp_pipeline))])
-            )
+                Pipeline([("union", FeatureUnion2DF(tmp_pipeline))]))
 
     def extract_feature_importance(self, columns, model):
         """ Extract a sorted list of feature importances from an XGBoost model
@@ -108,8 +107,8 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
         flat_score = 1.0
         nbr_of_importances = float(len(importances))
         if nbr_of_importances > 0.0:
-            flat_score = 1.0/nbr_of_importances
-            return np.mean(np.abs([(flat_score-k[1]) for k in importances]))
+            flat_score = 1.0 / nbr_of_importances
+            return np.mean(np.abs([(flat_score - k[1]) for k in importances]))
         return flat_score
 
     def fit(self, input_x, input_y):
