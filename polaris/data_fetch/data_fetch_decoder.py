@@ -205,7 +205,7 @@ def data_normalize(normalizer, output_directory, decoded_file):
     with open(decoded_file) as f_handle:
         frame_list = json.load(f_handle)
         for frame in frame_list:
-            frame_norm = normalizer.normalize(frame[0])
+            frame_norm = normalizer.normalize(frame)
             normalized_frames.append(frame_norm)
 
     normalized_file = os.path.join(output_directory, 'normalized_frames.json')
