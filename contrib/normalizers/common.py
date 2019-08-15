@@ -11,11 +11,13 @@ class Normalizer:
         self.normalizers = []
 
     def normalize(self, frame):
+        #print(frame['fields'])
         for field in self.normalizers:
+            #print(field)
             try:
                 key = field.key
-                val = frame[key]
-                frame[key] = field.equ(val)  # normalize
+                val = frame['fields'][key]
+                frame['fields'][key] = field.equ(val)  # normalize
             except KeyError as e:
                 LOGGER.warning('Field %s not found in the frame', key)
 
