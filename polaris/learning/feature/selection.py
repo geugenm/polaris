@@ -1,10 +1,10 @@
 from collections import Iterable
 
 import numpy as np
-import pandas as pd
+# import pandas as pd
 import xgboost as xgb
 from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.model_selection import train_test_split
+# from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 
 from fets.pipeline import FeatureUnion2DF
@@ -12,7 +12,9 @@ from fets.pipeline import FeatureUnion2DF
 
 class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
     """
-    Flattening the features' importances distribution using entropy augmentation.
+    Flattening the features' importances distribution using entropy
+    augmentation (or distribution flattening).
+
     """
 
     def __init__(self, list_of_transformers):
@@ -106,15 +108,18 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
             feature_importance) of the best features according to filtering
             `method`:
                 - first_best method: select best of each feature list
-                - all_best   method: select best features over all feature lists
+                - all_best   method: select best features over all models
         """
         # wip: return  best features (for instance 10 or 5 highest)
         pass
 
     def importances_distribution_spread(self, importances):
-        """ Calculated absolute average distance from perfectly flat distribution of importances.
+        """ Calculated absolute average distance from perfectly flat
+        distribution of importances.
 
-            :param importances: list of tuples such as [(feature_name, feature_importance), (...), ...]
+            :param importances: list of tuples such as [(feature_name,
+            feature_importance), (...), ...]
+
         """
         flat_score = 1.0
         nbr_of_importances = float(len(importances))
@@ -126,8 +131,10 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
     def fit(self, input_x, input_y):
         """ Fit models for every pipeline and extract best features
 
-            :param input_x: dataset (usually a dataframe) of features/predictors
-            :param input_y: dataset (timseries or dataframe) of target(s) to predict.
+            :param input_x: dataset (usually a dataframe) of features/predictor
+            :param input_y: dataset (timseries or dataframe) of target(s) to
+            predict.
+
         """
 
         # For now we take default hyperparameters
@@ -144,7 +151,8 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
             self.models[-1].fit(input_dataset, input_y)
 
             # Extract feature importances and keep them for further analysis
-            list_of_fimp.append(extract_feature_importance(self.models[-1]))
+            list_of_fimp.append(
+                self.extract_feature_importance(self.models[-1]))
 
         # wip:
         return self
