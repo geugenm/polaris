@@ -20,7 +20,9 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
         transformer
 
             :param list_of_transformers: list of externally built transformers
-            objects in terms of scikit-learn pipeline compatible trassff
+            objects in terms of scikit-learn pipeline compatible transformers.
+            Meant to be a list of list of transformers to test different new
+            features iteratively.
 
         """
 
@@ -57,8 +59,11 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
 
     def build_pipelines(self, list_of_transformers):
         """
-            Create series of pipelines of transformers to be called to augment input datasets
-            before searching for most important features.
+            Create series of pipelines of transformers to be called to augment
+            input datasets before searching for most important features.
+
+            :param list_of_transformers: List (of list) of scikit-learn
+            compatible transformers.
         """
         self.pipelines = []
 
@@ -77,7 +82,10 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
     def extract_feature_importance(self, columns, model):
         """ Extract a sorted list of feature importances from an XGBoost model
 
-            :param model: A trained model containing feature importances list and trained trees.
+            :param columns: Columns names in the same order than the input
+            dataset.
+            :param model: A trained model containing feature importances list
+            and trained trees.
 
         """
         importances = list(zip(columns, model.feature_importances_))
@@ -88,11 +96,15 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
         """ Return a list of best features based on their importance
 
             **fimp** stands for Feature IMPortances.
+            Each feature importance is expressed as a tuple (name, value)
 
+            :param list_of_fimp: List of list of feature importances.  Each
+            model would output a list of importances so this list is a list of
+            all model's list of features importances.
             :param method: Method to filter best
             :return: Return a list of tuples ("feature_name",
             feature_importance) of the best features according to filtering
-            `method`: 
+            `method`:
                 - first_best method: select best of each feature list
                 - all_best   method: select best features over all feature lists
         """
