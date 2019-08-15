@@ -8,10 +8,11 @@ from heapq import nlargest
 
 import pandas as pd
 import xgboost as xgb
-# from fets.math import *
-from fets.pipeline import FeatureUnion2DF
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
+
+# from fets.math import *
+from fets.pipeline import FeatureUnion2DF
 
 params = {
     'learning_rate': 0.1,
@@ -70,14 +71,9 @@ def build_pipelines(transformers, data, original_features, prev_features):
         for prev in prev_features:
             print(prev)
             col, transformer, pipeline_id = build_transformer(prev)
-            pipeline = Pipeline(
-                              [("union", FeatureUnion2DF(
-                                [
-                                  (pipeline_id, eval(transformer))
-                                ]
-                                ))
-                               ]
-                            )
+            pipeline = Pipeline([
+                ("union", FeatureUnion2DF([(pipeline_id, eval(transformer))]))
+            ])
 
             data[prev] = pipeline.transform(data[col])
     for tf in transformers.split():
