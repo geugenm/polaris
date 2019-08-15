@@ -11,9 +11,7 @@ class Normalizer:
         self.normalizers = []
 
     def normalize(self, frame):
-        #print(frame['fields'])
         for field in self.normalizers:
-            #print(field)
             try:
                 key = field.key
                 val = frame['fields'][key]
