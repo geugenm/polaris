@@ -29,6 +29,7 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
         """
 
         self.build_pipelines(list_of_transformers)
+
         # Each pipeline will have a corresponding model after fitting
         self.models = []
         # Model with optimized input
@@ -69,17 +70,23 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
         """
         self.pipelines = []
 
+        if list_of_transformers is None or list_of_transformers == []:
+            return
+
         for transformer in list_of_transformers:
             # Preparing the list of transformer for one iteration
             tmp_pipeline = []
             if isinstance(transformer, Iterable):
-                tmp_pipeline = [("T" + str(hash(k)), k) for k in transformer]
-            else:
+                tmp_pipeline = [("T" + str(hash(k)), k)
+                                for k in transformer
+                                if issubclass(type(k), TransformerMixin)]
+            elif issubclass(type(transformer), TransformerMixin):
                 tmp_pipeline = [("T0", transformer)]
 
             # Creating the pipeline
-            self.pipelines.append(
-                Pipeline([("union", FeatureUnion2DF(tmp_pipeline))]))
+            if len(tmp_pipeline) > 0:
+                self.pipelines.append(
+                    Pipeline([("union", FeatureUnion2DF(tmp_pipeline))]))
 
     def extract_feature_importance(self, columns, model):
         """ Extract a sorted list of feature importances from an XGBoost model
