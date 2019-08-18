@@ -218,7 +218,7 @@ def data_normalize(normalizer, output_directory, decoded_file):
 
     normalized_file = os.path.join(output_directory, 'normalized_frames.json')
     with open(normalized_file, 'w') as f_handle:
-        json.dump(normalized_frames, f_handle)
+        json.dump(normalized_frames, f_handle, skipkeys=True)
 
     LOGGER.info('Normalized data stored at %s', normalized_file)
     return normalized_file
