@@ -211,7 +211,12 @@ def data_normalize(normalizer, output_directory, decoded_file):
     # Normalize values
     normalized_frames = []
     with open(decoded_file) as f_handle:
-        frame_list = json.load(f_handle)
+        try:
+            frame_list = json.load(f_handle)
+        except json.JSONDecodeError:
+            LOGGER.error("Cannot load % - is it a valid JSON document?",
+                         decoded_file)
+            raise json.JSONDecodeError
         for frame in frame_list:
             frame_norm = normalizer.normalize(frame)
             normalized_frames.append(frame_norm)
