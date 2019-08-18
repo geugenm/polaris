@@ -116,8 +116,8 @@ def merge_csv_files(output_directory, path):
 
     try:
         # Using subprocess package to execute merge command to merge CSV files.
-        proc2 = subprocess.Popen(merge_cmd, shell=True, cwd=output_directory)
-        proc2.wait()
+        proc = subprocess.Popen(merge_cmd, shell=True, cwd=output_directory)
+        proc.wait()
         LOGGER.info('Merge Completed')
         LOGGER.info('Storing merged CSV file: %s', merged_file)
     except subprocess.CalledProcessError as err:
