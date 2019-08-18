@@ -11,13 +11,19 @@ class Normalizer:
         self.normalizers = []
 
     def normalize(self, frame):
+        missing_keys = False
+
         for field in self.normalizers:
             try:
                 key = field.key
                 val = frame['fields'][key]
                 frame['fields'][key] = field.equ(val)  # normalize
             except KeyError:
-                LOGGER.warning('Field %s not found in the frame', key)
+                missing_keys = True
+                LOGGER.debug('Field %s not found in the frame', key)
+
+        if missing_keys:
+            LOGGER.warning('Some fields could not be normalized')
 
         return frame
 
