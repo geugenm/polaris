@@ -79,17 +79,25 @@ def find_satellite(sat, sat_list):
     raise NoSuchSatellite
 
 
-def generate_datetime_obj(date):
+def build_start_and_end_dates(start_date, end_date):
     """
-    Generates a datetime object based on the input dat or on the current
-    time if input not valid.
+    Build start and end dates using either provided string, provided
+    datetime object, or choosing default
     """
-    if isinstance(date, str):
-        date = pd.to_datetime(date).to_pydatetime()
-    elif not isinstance(date, datetime.datetime):
-        date = (datetime.datetime.utcnow() - datetime.timedelta(seconds=3600))
+    # First start date; if no date provided, set to an hour ago.
+    if isinstance(start_date, str):
+        start_date = pd.to_datetime(start_date).to_pydatetime()
+    elif not isinstance(start_date, datetime.datetime):
+        start_date = (datetime.datetime.utcnow() -
+                      datetime.timedelta(seconds=3600))
 
-    return date
+    # Next end date; if no end date provided, set to an hour after start_date
+    if isinstance(end_date, str):
+        end_date = pd.to_datetime(end_date).to_pydatetime()
+    elif not isinstance(end_date, datetime.datetime):
+        end_date = start_date + datetime.timedelta(seconds=3600)
+
+    return start_date, end_date
 
 
 def merge_csv_files(output_directory, path):
@@ -234,8 +242,7 @@ def data_fetch_decode_normalize(sat, output_directory, start_date, end_date):
         raise exception
 
     # Converting dates into datetime objects
-    start_date = generate_datetime_obj(start_date)
-    end_date = generate_datetime_obj(end_date)
+    start_date, end_date = build_start_and_end_dates(start_date, end_date)
     LOGGER.info('Fetch period: %s to %s', start_date, end_date)
 
     # Retrieve, decode and normalize frames
