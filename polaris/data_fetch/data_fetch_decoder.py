@@ -202,31 +202,18 @@ def data_decode(decoder, output_directory, frames_file):
     return decoded_file
 
 
-def data_normalize(normalizer, output_directory, decoded_file):
+def data_normalize(normalizer, frame_list):
     """
-    Normalize the data found in decoded_file using the given normalizer.
+    Normalize the data found in frame_list using the given normalizer.
 
-    :returns: path of the file that contains the normalized data.
+    :returns: list of normalized frames
     """
     # Normalize values
     normalized_frames = []
-    with open(decoded_file) as f_handle:
-        try:
-            frame_list = json.load(f_handle)
-        except json.JSONDecodeError:
-            LOGGER.error("Cannot load % - is it a valid JSON document?",
-                         decoded_file)
-            raise json.JSONDecodeError
-        for frame in frame_list:
-            frame_norm = normalizer.normalize(frame)
-            normalized_frames.append(frame_norm)
-
-    normalized_file = os.path.join(output_directory, 'normalized_frames.json')
-    with open(normalized_file, 'w') as f_handle:
-        json.dump(normalized_frames, f_handle, skipkeys=True)
-
-    LOGGER.info('Normalized data stored at %s', normalized_file)
-    return normalized_file
+    for frame in frame_list:
+        frame_norm = normalizer.normalize(frame)
+        normalized_frames.append(frame_norm)
+    return normalized_frames
 
 
 def data_fetch_decode_normalize(sat, output_directory, start_date, end_date):
@@ -255,6 +242,16 @@ def data_fetch_decode_normalize(sat, output_directory, start_date, end_date):
                              end_date)
     decoded_file = data_decode(satellite.decoder, output_directory,
                                frames_file)
-    normalized_file = data_normalize(Lightsail2(), output_directory,
-                                     decoded_file)
+    with open(decoded_file) as f_handle:
+        try:
+            decoded_frame_list = json.load(f_handle)
+        except json.JSONDecodeError:
+            LOGGER.error("Cannot load % - is it a valid JSON document?",
+                         decoded_file)
+            raise json.JSONDecodeError
+    normalized_frames = data_normalize(Lightsail2(), decoded_frame_list)
+    normalized_file = os.path.join(output_directory, 'normalized_frames.json')
+    with open(normalized_file, 'w') as f_handle:
+        json.dump(normalized_frames, f_handle, skipkeys=True)
+
     LOGGER.info('Output file %s', normalized_file)
