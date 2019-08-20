@@ -1,3 +1,6 @@
+"""
+Module for flatening feature importance distribution from xgboost.
+"""
 from collections import Iterable
 
 import numpy as np
@@ -9,6 +12,28 @@ from sklearn.pipeline import Pipeline
 
 from fets.pipeline import FeatureUnion2DF
 
+PARAMS = {
+        'learning_rate': 0.1,
+        'gamma': 0,
+        'max_depth': 10,
+        'n_estimators': 100,
+        'base_score': 0.5,
+        'colsample_bylevel': 1,
+        'colsample_bytree': 1,
+        'max_delta_step': 0,
+        'min_child_weight': 1,
+        'missing': None,
+        'nthread': 100,
+        'objective': "reg:linear",
+        'reg_alpha': 0,
+        'reg_lambda': 1,
+        'scale_pos_weight': 1,
+        'seed': 0,
+        'verbosity': 1,
+        'subsample': 1,
+        'predictor': "gpu_predictor",
+        'tree_method': "auto"
+        }
 
 class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
     """
@@ -36,28 +61,7 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
         self.model_optinput = None
 
         # Initial XGBoost parameters
-        self.default_xgb_params = {
-            'learning_rate': 0.1,
-            'gamma': 0,
-            'max_depth': 10,
-            'n_estimators': 100,
-            'base_score': 0.5,
-            'colsample_bylevel': 1,
-            'colsample_bytree': 1,
-            'max_delta_step': 0,
-            'min_child_weight': 1,
-            'missing': None,
-            'nthread': 100,
-            'objective': "reg:linear",
-            'reg_alpha': 0,
-            'reg_lambda': 1,
-            'scale_pos_weight': 1,
-            'seed': 0,
-            'verbosity': 1,
-            'subsample': 1,
-            'predictor': "gpu_predictor",
-            'tree_method': "auto"
-        }
+        self.default_xgb_params = PARAMS
         self.do_tuning = False
 
     def build_pipelines(self, list_of_transformers):
@@ -83,11 +87,11 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
                 tmp_pipeline = [("T0", transformer)]
 
             # Creating the pipeline
-            if len(tmp_pipeline) > 0:
+            if tmp_pipeline:
                 self.pipelines.append(
                     Pipeline([("union", FeatureUnion2DF(tmp_pipeline))]))
-
-    def extract_feature_importance(self, columns, model):
+    @staticmethod
+    def extract_feature_importance(columns, model):
         """ Extract a sorted list of feature importances from an XGBoost model
 
             :param columns: Columns names in the same order than the input
@@ -99,7 +103,7 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
         importances = list(zip(columns, model.feature_importances_))
         importances.sort(key=lambda x: x[1], reverse=True)
         return importances
-
+    @staticmethod
     def find_gap(importancy_list):
         """ Find threshold in list of decreasing values
             return feature index if current gab is more than 50% of the average
@@ -112,19 +116,20 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
         lst_val = []  # list of feature values
         lst_name = []  # list of feature names
         lst_dif = []  # list of gaps/differences between two importances
-        x = 0  # index of current feature
+        idx = 0  # index of current feature
         average_dif = None  # average difference
 
-        for F, I in importancy_list:
-            lst_val.append(I)
-            lst_name.append(F)
-            if x != 0:
-                dif = lst_val[x - 1] - lst_val[x]
+        for fet, imp in importancy_list:
+            lst_val.append(imp)
+            lst_name.append(fet)
+            if idx != 0:
+                dif = lst_val[idx - 1] - lst_val[idx]
                 lst_dif.append(dif)
                 average_dif = np.mean(lst_dif, dtype=np.float64)
-                if dif > (average_dif * 0.5) and x > 5 or x == 43:
-                    return lst_name.index(lst_name[x - 1])
-            x = x + 1
+                if dif > (average_dif * 0.5) and idx > 5 or idx == 43:
+                    return lst_name.index(lst_name[idx - 1])
+            idx = idx + 1
+        return idx
 
     def filter_importances(self, list_of_fimp, method="first_best"):
         """ Return a list of best features based on their importance
@@ -174,8 +179,8 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
         all_chosen_features.sort(key=lambda x: x[1], reverse=True)
 
         return all_chosen_features
-
-    def importances_distribution_spread(self, importances):
+    @staticmethod
+    def importances_distribution_spread(importances):
         """ Calculated absolute average distance from perfectly flat
         distribution of importances.
 
@@ -214,12 +219,13 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
 
             # Extract feature importances and keep them for further analysis
             list_of_fimp.append(
-                self.extract_feature_importance(self.models[-1]))
+                self.extract_feature_importance(self.models[-1].columns,
+                                                self.models[-1].model))
 
         # wip:
         return self
 
-    def transform(self, input_data):
+    def transform(self):
         """ Unused function here. Interface requirement.
         """
         return self
