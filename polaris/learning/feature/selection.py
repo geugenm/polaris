@@ -77,8 +77,7 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
             # Preparing the list of transformer for one iteration
             tmp_pipeline = []
             if isinstance(transformer, Iterable):
-                tmp_pipeline = [("T" + str(hash(k)), k)
-                                for k in transformer
+                tmp_pipeline = [("T" + str(hash(k)), k) for k in transformer
                                 if issubclass(type(k), TransformerMixin)]
             elif issubclass(type(transformer), TransformerMixin):
                 tmp_pipeline = [("T0", transformer)]
@@ -120,11 +119,11 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
             lst_val.append(I)
             lst_name.append(F)
             if x != 0:
-                dif = lst_val[x-1]-lst_val[x]
+                dif = lst_val[x - 1] - lst_val[x]
                 lst_dif.append(dif)
                 average_dif = np.mean(lst_dif, dtype=np.float64)
-                if dif > (average_dif*0.5) and x > 5 or x == 43:
-                    return lst_name.index(lst_name[x-1])
+                if dif > (average_dif * 0.5) and x > 5 or x == 43:
+                    return lst_name.index(lst_name[x - 1])
             x = x + 1
 
     def filter_importances(self, list_of_fimp, method="first_best"):
@@ -154,7 +153,7 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
                 # Sorte the input list to get best first
                 tmp_list = sorted(model_list, reverse=True, key=lambda x: x[1])
                 # Defining how many best first we want (first quarter)
-                best_first = int(len(tmp_list)/4.0 + 1.0)
+                best_first = int(len(tmp_list) / 4.0 + 1.0)
                 # Aggregating the result
                 all_chosen_features.extend(tmp_list[:best_first])
             return all_chosen_features
@@ -166,7 +165,7 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
         if method == "best_until_threshold":
             for lst in list_of_fimp:
                 last_significant_index = self.find_gap(lst)
-                lst = lst[:last_significant_index+1]
+                lst = lst[:last_significant_index + 1]
 
         # List of all features in decreasing order
         for lists in list_of_fimp:
