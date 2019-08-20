@@ -1,16 +1,14 @@
 """
 Module for flatening feature importance distribution from xgboost.
 """
-from collections import Iterable
+from collections.abc import Iterable
 
 import numpy as np
-# import pandas as pd
 import xgboost as xgb
+from fets.pipeline import FeatureUnion2DF
 from sklearn.base import BaseEstimator, TransformerMixin
 # from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
-
-from fets.pipeline import FeatureUnion2DF
 
 PARAMS = {
     'learning_rate': 0.1,

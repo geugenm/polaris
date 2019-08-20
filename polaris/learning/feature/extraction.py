@@ -10,11 +10,10 @@ from heapq import nlargest
 
 import pandas as pd
 import xgboost as xgb
+from fets.pipeline import FeatureUnion2DF
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 
-# from fets.math import *
-from fets.pipeline import FeatureUnion2DF
 from polaris.learning.feature.selection import PARAMS
 
 # List of time lags for the transformers

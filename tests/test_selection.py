@@ -1,8 +1,9 @@
 """
 Module for testing selection.py script.
 """
-import pytest
 from fets.math import TSIntegrale
+
+import pytest
 from polaris.learning.feature.selection import FeatureImportanceOptimization
 
 
