@@ -1,3 +1,6 @@
+"""
+Python module for calculating sample entropy and approximate entropy
+"""
 import numpy as np
 
 
@@ -13,18 +16,18 @@ def sample_entropy(timeseries_data, run_data_length, filtering_level):
     """
 
     def _phi(run_data_length):
-        x = [[
+        _x = [[
             timeseries_data[j] for j in range(i, i + run_data_length - 1 + 1)
-        ] for i in range(N - run_data_length + 1)]
-        C = [
+        ] for i in range(len_ts - run_data_length + 1)]
+        _c = [
             len([
-                1 for j in range(len(x))
-                if i != j and _maxdist(x[i], x[j]) <= filtering_level
-            ]) for i in range(len(x))
+                1 for j in range(len(_x))
+                if i != j and _maxdist(_x[i], _x[j]) <= filtering_level
+            ]) for i in range(len(_x))
         ]
-        return sum(C)
+        return sum(_c)
 
-    N = len(timeseries_data)
+    len_ts = len(timeseries_data)
     return -np.log(_phi(run_data_length + 1) / _phi(run_data_length))
 
 
@@ -35,14 +38,14 @@ def approximate_entropy(timeseries_data, run_data_length, filtering_level):
     """
 
     def _phi(run_data_length):
-        x = [[
+        _x = [[
             timeseries_data[j] for j in range(i, i + run_data_length - 1 + 1)
-        ] for i in range(N - run_data_length + 1)]
-        C = [
-            len([1 for x_j in x if _maxdist(x_i, x_j) <= filtering_level]) /
-            (N - run_data_length + 1.0) for x_i in x
+        ] for i in range(len_ts - run_data_length + 1)]
+        _c = [
+            len([1 for x_j in _x if _maxdist(x_i, x_j) <= filtering_level]) /
+            (len_ts - run_data_length + 1.0) for x_i in _x
         ]
-        return (N - run_data_length + 1.0)**(-1) * sum(np.log(C))
+        return (len_ts - run_data_length + 1.0)**(-1) * sum(np.log(_c))
 
-    N = len(timeseries_data)
+    len_ts = len(timeseries_data)
     return abs(_phi(run_data_length + 1) - _phi(run_data_length))
