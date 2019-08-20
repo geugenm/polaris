@@ -101,6 +101,34 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
         importances.sort(key=lambda x: x[1], reverse=True)
         return importances
 
+
+def find_gap(importancy_list):
+        """ Find threshold in list of decreasing values
+            return feature index if current gab is more than 50% of the average
+            and with at least 5 and maximum 42 features
+            :param importancy_list: List of featurename,importancy
+            in decreasing order.
+
+        """
+
+        lst_val = []  # list of feature values
+        lst_name = []  # list of feature names
+        lst_dif = []  # list of gaps/differences between two importances
+        x = 0  # index of current feature
+        average_dif = None  # average difference
+
+        for F, I in importancy_list:
+            lst_val.append(I)
+            lst_name.append(F)
+            if x != 0:
+                dif = lst_val[x-1]-lst_val[x]
+                lst_dif.append(dif)
+                average_dif = np.mean(lst_dif, dtype=np.float64)
+                if dif > (average_dif*0.5) and x > 5 or x == 43:
+                    return lst_name.index(lst_name[x-1])
+            x = x + 1
+
+
     def filter_importances(self, list_of_fimp, method="first_best"):
         """ Return a list of best features based on their importance
 
