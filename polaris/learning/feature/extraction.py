@@ -15,7 +15,6 @@ from sklearn.pipeline import Pipeline
 
 # from fets.math import *
 from fets.pipeline import FeatureUnion2DF
-
 from polaris.learning.feature.selection import PARAMS
 
 # List of time lags for the transformers
@@ -34,6 +33,7 @@ def get_time_lag(transf):
             idx = index
             break
     return transf[idx:length - 3]
+
 
 def build_transformer(feature):
     """
@@ -55,9 +55,11 @@ def build_pipelines(transformers, data, original_features, prev_features):
         for prev in prev_features:
             print(prev)
             col, transformer, pipeline_id = build_transformer(prev)
-            pipeline = Pipeline([
-                ("union", FeatureUnion2DF([(pipeline_id, ast.literal_eval(transformer))]))
-            ])
+            pipeline = Pipeline([("union",
+                                  FeatureUnion2DF([
+                                      (pipeline_id,
+                                       ast.literal_eval(transformer))
+                                  ]))])
 
             data[prev] = pipeline.transform(data[col])
     for _tf in transformers.split():
@@ -95,6 +97,7 @@ def train_xgboostmodel(data):
     model.fit(x_train, y_train)
     return model
 
+
 def _get_feature_importances_for_xgboostmodel(data, original_features):
     """
     Utility function to get the list of top 10
@@ -116,7 +119,9 @@ def _get_feature_importances_for_xgboostmodel(data, original_features):
     }
     top_feat = []
     top_imp = []
-    ten_highest = nlargest(10, feature_importances, key=feature_importances.get)
+    ten_highest = nlargest(10,
+                           feature_importances,
+                           key=feature_importances.get)
     for fet in ten_highest:
         top_feat.append(fet)
         top_imp.append(feature_importances.get(fet))
@@ -142,6 +147,5 @@ def best_transformed_features(filepath, transformers, features_file):
         print("No feature file provided")
     original_features = data_frame.columns
     data_frame = build_pipelines(transformers, data_frame, original_features,
-                                 previous_features
-                                )
+                                 previous_features)
     _get_feature_importances_for_xgboostmodel(data_frame, original_features)
