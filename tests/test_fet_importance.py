@@ -11,6 +11,7 @@ class TestFeatureExtraction(unittest.TestCase):
     """
     Class for testing feature extraction.
     """
+
     def setUp(self):
         pass
 
