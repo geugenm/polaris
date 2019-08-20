@@ -101,8 +101,7 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
         importances.sort(key=lambda x: x[1], reverse=True)
         return importances
 
-
-def find_gap(importancy_list):
+    def find_gap(importancy_list):
         """ Find threshold in list of decreasing values
             return feature index if current gab is more than 50% of the average
             and with at least 5 and maximum 42 features
@@ -128,7 +127,6 @@ def find_gap(importancy_list):
                     return lst_name.index(lst_name[x-1])
             x = x + 1
 
-
     def filter_importances(self, list_of_fimp, method="first_best"):
         """ Return a list of best features based on their importance
 
@@ -138,15 +136,44 @@ def find_gap(importancy_list):
             :param list_of_fimp: List of list of feature importances.  Each
             model would output a list of importances so this list is a list of
             all model's list of features importances.
-            :param method: Method to filter best
+            :param method: Method to filter best features, use the following
+            string:
+                - 'first_best' method: select best of each feature list
+                - 'all_best'   method: select best features over all models
+                - 'best_until_threshold' method: select best of each feature
+                list with regard to a threshold defined by find_gap
+
             :return: Return a list of tuples ("feature_name",
             feature_importance) of the best features according to filtering
-            `method`:
-                - first_best method: select best of each feature list
-                - all_best   method: select best features over all models
+            `method`
         """
-        # wip: return  best features (for instance 10 or 5 highest)
-        pass
+        all_chosen_features = []
+
+        if method == "first_best":
+            for model_list in list_of_fimp:
+                # Sorte the input list to get best first
+                tmp_list = sorted(model_list, reverse=True, key=lambda x: x[1])
+                # Defining how many best first we want (first quarter)
+                best_first = int(len(tmp_list)/4.0 + 1.0)
+                # Aggregating the result
+                all_chosen_features.extend(tmp_list[:best_first])
+            return all_chosen_features
+
+        if method == "all_best":
+            pass
+
+        if method == "best_until_threshold":
+            for lst in list_of_fimp:
+                last_significant_index = self.find_gap(lst)
+                lst = lst[:last_significant_index+1]
+
+        # List of all features in decreasing order
+        for lists in list_of_fimp:
+            for fai in lists:  # fai = feature_and_importancy
+                all_chosen_features.append(fai)
+        all_chosen_features.sort(key=lambda x: x[1], reverse=True)
+
+        return all_chosen_features
 
     def importances_distribution_spread(self, importances):
         """ Calculated absolute average distance from perfectly flat
