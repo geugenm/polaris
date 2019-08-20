@@ -13,27 +13,28 @@ from sklearn.pipeline import Pipeline
 from fets.pipeline import FeatureUnion2DF
 
 PARAMS = {
-        'learning_rate': 0.1,
-        'gamma': 0,
-        'max_depth': 10,
-        'n_estimators': 100,
-        'base_score': 0.5,
-        'colsample_bylevel': 1,
-        'colsample_bytree': 1,
-        'max_delta_step': 0,
-        'min_child_weight': 1,
-        'missing': None,
-        'nthread': 100,
-        'objective': "reg:linear",
-        'reg_alpha': 0,
-        'reg_lambda': 1,
-        'scale_pos_weight': 1,
-        'seed': 0,
-        'verbosity': 1,
-        'subsample': 1,
-        'predictor': "gpu_predictor",
-        'tree_method': "auto"
-        }
+    'learning_rate': 0.1,
+    'gamma': 0,
+    'max_depth': 10,
+    'n_estimators': 100,
+    'base_score': 0.5,
+    'colsample_bylevel': 1,
+    'colsample_bytree': 1,
+    'max_delta_step': 0,
+    'min_child_weight': 1,
+    'missing': None,
+    'nthread': 100,
+    'objective': "reg:linear",
+    'reg_alpha': 0,
+    'reg_lambda': 1,
+    'scale_pos_weight': 1,
+    'seed': 0,
+    'verbosity': 1,
+    'subsample': 1,
+    'predictor': "gpu_predictor",
+    'tree_method': "auto"
+}
+
 
 class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
     """
@@ -90,6 +91,7 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
             if tmp_pipeline:
                 self.pipelines.append(
                     Pipeline([("union", FeatureUnion2DF(tmp_pipeline))]))
+
     @staticmethod
     def extract_feature_importance(columns, model):
         """ Extract a sorted list of feature importances from an XGBoost model
@@ -103,6 +105,7 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
         importances = list(zip(columns, model.feature_importances_))
         importances.sort(key=lambda x: x[1], reverse=True)
         return importances
+
     @staticmethod
     def find_gap(importancy_list):
         """ Find threshold in list of decreasing values
@@ -179,6 +182,7 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
         all_chosen_features.sort(key=lambda x: x[1], reverse=True)
 
         return all_chosen_features
+
     @staticmethod
     def importances_distribution_spread(importances):
         """ Calculated absolute average distance from perfectly flat
