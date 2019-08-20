@@ -1,5 +1,4 @@
 import pytest
-
 from fets.math import TSIntegrale
 from polaris.learning.feature.selection import FeatureImportanceOptimization
 
@@ -11,7 +10,8 @@ from polaris.learning.feature.selection import FeatureImportanceOptimization
     (["FAKE", "NOT_A_TRANSFORMER"], 0),
     ([TSIntegrale("30min")], 1),
     ([(TSIntegrale("5min"), TSIntegrale("30min"))], 1),
-    ([(TSIntegrale("5min"), TSIntegrale("30min")), TSIntegrale("15min")], 2),
+    ([(TSIntegrale("5min"), TSIntegrale("30min")),
+      TSIntegrale("15min")], 2),
 ])
 def test_fio_init(list_of_transformers, exp_pipes):
     """ Testing the initalization of FeatureImportanceOptimization objects
