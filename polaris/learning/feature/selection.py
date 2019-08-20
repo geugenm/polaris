@@ -160,7 +160,8 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
             return all_chosen_features
 
         if method == "all_best":
-            pass
+            for model_list in list_of_fimp:
+                all_chosen_features.extend(model_list[0])
 
         if method == "best_until_threshold":
             for lst in list_of_fimp:
