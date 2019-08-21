@@ -3,6 +3,3 @@ ignore=_version.py,decoder
 
 [FORMAT]
 good-names=X,Y
-
-[DESIGN]
-max-locals=25
