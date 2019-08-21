@@ -1,16 +1,14 @@
 """
 Module for flatening feature importance distribution from xgboost.
 """
-from collections import Iterable
+from collections.abc import Iterable
 
 import numpy as np
-# import pandas as pd
 import xgboost as xgb
+from fets.pipeline import FeatureUnion2DF
 from sklearn.base import BaseEstimator, TransformerMixin
 # from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
-
-from fets.pipeline import FeatureUnion2DF
 
 PARAMS = {
     'learning_rate': 0.1,
@@ -108,9 +106,10 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
 
     @staticmethod
     def find_gap(importancy_list):
-        """ Find threshold in list of decreasing values
-            return feature index if current gab is more than 50% of the average
-            and with at least 5 and maximum 42 features
+        """ Find a drop in list of decreasing values and returns feature index
+        at found gap if the drop is more than 50% of the average and with at
+        least 5 and maximum 42 features.
+
             :param importancy_list: List of featurename,importancy
             in decreasing order.
 
@@ -156,15 +155,18 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
         """
         all_chosen_features = []
 
+        if list_of_fimp is None \
+           or (isinstance(list_of_fimp, list) and not list_of_fimp):
+            return all_chosen_features
+
         if method == "first_best":
             for model_list in list_of_fimp:
-                # Sorte the input list to get best first
+                # Sort the input list to get best first
                 tmp_list = sorted(model_list, reverse=True, key=lambda x: x[1])
                 # Defining how many best first we want (first quarter)
                 best_first = int(len(tmp_list) / 4.0 + 1.0)
                 # Aggregating the result
                 all_chosen_features.extend(tmp_list[:best_first])
-            return all_chosen_features
 
         if method == "all_best":
             for model_list in list_of_fimp:
@@ -173,14 +175,10 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
         if method == "best_until_threshold":
             for lst in list_of_fimp:
                 last_significant_index = self.find_gap(lst)
-                lst = lst[:last_significant_index + 1]
+                tmp_list = lst[: (last_significant_index + 1)]
+                all_chosen_features.extend(tmp_list)
 
-        # List of all features in decreasing order
-        for lists in list_of_fimp:
-            for fai in lists:  # fai = feature_and_importancy
-                all_chosen_features.append(fai)
         all_chosen_features.sort(key=lambda x: x[1], reverse=True)
-
         return all_chosen_features
 
     @staticmethod
