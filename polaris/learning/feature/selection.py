@@ -167,7 +167,6 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
                 best_first = int(len(tmp_list) / 4.0 + 1.0)
                 # Aggregating the result
                 all_chosen_features.extend(tmp_list[:best_first])
-            return all_chosen_features
 
         if method == "all_best":
             for model_list in list_of_fimp:
@@ -176,14 +175,10 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
         if method == "best_until_threshold":
             for lst in list_of_fimp:
                 last_significant_index = self.find_gap(lst)
-                lst = lst[:last_significant_index + 1]
+                tmp_list = lst[: (last_significant_index + 1)]
+                all_chosen_features.extend(tmp_list)
 
-        # List of all features in decreasing order
-        for lists in list_of_fimp:
-            for fai in lists:  # fai = feature_and_importancy
-                all_chosen_features.append(fai)
         all_chosen_features.sort(key=lambda x: x[1], reverse=True)
-
         return all_chosen_features
 
     @staticmethod
