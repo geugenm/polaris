@@ -42,3 +42,17 @@ def test_filter_importances(list_of_fimp, method, result):
     fimp_op = FeatureImportanceOptimization([TSIntegrale("30min")])
     selected_features = fimp_op.filter_importances(list_of_fimp, method)
     assert selected_features == result
+
+    @pytest.mark.parametrize("list_of_imp, result", [
+        (None, int),
+        ([("a", 0.093281), ("b", 0.069863), ("c", 0.05984), ("d", 0.05914),
+          ("d", 0.053266), ("e", 0.01), ("f", 0.05198), ("g", 0.05093),
+          ("h", 0.046125), ("i", 0.0410098)], 7)
+    ])
+    def test_find_gap(list_of_imp, result):
+        """ Test of finding a gap in the feature importances
+
+            :param list_of_imp: list of feature importances
+        """
+        fimp_op = FeatureImportanceOptimization(list_of_imp)
+        assert fimp_op.find_gap(list_of_imp) == result
