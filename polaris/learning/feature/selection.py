@@ -121,6 +121,9 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
         idx = 0  # index of current feature
         average_dif = None  # average difference
 
+        if importancy_list is None:
+            return None
+
         for fet, imp in importancy_list:
             lst_val.append(imp)
             lst_name.append(fet)
