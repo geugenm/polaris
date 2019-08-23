@@ -231,7 +231,7 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
 
         best_features = self.filter_importances(list_of_fimp, method)
 
-        with open("/topFeatures.csv", "w") as file:
+        with open("/best_features.csv", "w") as file:
             writer = csv.writer(file)
             writer.writerows(best_features)
 
