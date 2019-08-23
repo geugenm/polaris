@@ -121,20 +121,21 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
         idx = 0  # index of current feature
         average_dif = None  # average difference
 
-        if importancy_list is None:
-            return None
+        try:
+            for fet, imp in importancy_list:
+                lst_val.append(imp)
+                lst_name.append(fet)
+                if idx != 0:
+                    dif = lst_val[idx - 1] - lst_val[idx]
+                    lst_dif.append(dif)
+                    average_dif = np.mean(lst_dif, dtype=np.float64)
+                    if dif > (average_dif * 0.5) and idx > 5 or idx == 43:
+                        return lst_name.index(lst_name[idx - 1])
+                idx = idx + 1
+            return idx
 
-        for fet, imp in importancy_list:
-            lst_val.append(imp)
-            lst_name.append(fet)
-            if idx != 0:
-                dif = lst_val[idx - 1] - lst_val[idx]
-                lst_dif.append(dif)
-                average_dif = np.mean(lst_dif, dtype=np.float64)
-                if dif > (average_dif * 0.5) and idx > 5 or idx == 43:
-                    return lst_name.index(lst_name[idx - 1])
-            idx = idx + 1
-        return idx
+        except TypeError:
+            print("No list provided as importancy_list.")
 
     def filter_importances(self, list_of_fimp, method="first_best"):
         """ Return a list of best features based on their importance
