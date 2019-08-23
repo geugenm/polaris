@@ -201,7 +201,7 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
             return np.mean(np.abs([(flat_score - k[1]) for k in importances]))
         return flat_score
 
-    def fit(self, input_x, input_y):
+    def fit(self, input_x, input_y, method):
         """ Fit models for every pipeline and extract best features
 
             :param input_x: dataset (usually a dataframe) of features/predictor
@@ -228,8 +228,9 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
                 self.extract_feature_importance(self.models[-1].columns,
                                                 self.models[-1].model))
 
-        # wip:
-        return self
+        best_features = self.filter_importances(list_of_fimp, method)
+
+        return best_features
 
     def transform(self):
         """ Unused function here. Interface requirement.
