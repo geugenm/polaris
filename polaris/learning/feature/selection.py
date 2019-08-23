@@ -3,6 +3,7 @@ Module for flatening feature importance distribution from xgboost.
 """
 from collections.abc import Iterable
 
+import csv
 import numpy as np
 import xgboost as xgb
 from fets.pipeline import FeatureUnion2DF
@@ -229,6 +230,10 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
                                                 self.models[-1].model))
 
         best_features = self.filter_importances(list_of_fimp, method)
+
+        with open("/topFeatures.csv", "w") as file:
+            writer = csv.writer(file)
+            writer.writerows(best_features)
 
         return best_features
 
