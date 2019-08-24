@@ -1,9 +1,9 @@
 """
 Module for flatening feature importance distribution from xgboost.
 """
+import csv
 from collections.abc import Iterable
 
-import csv
 import numpy as np
 import xgboost as xgb
 from fets.pipeline import FeatureUnion2DF
