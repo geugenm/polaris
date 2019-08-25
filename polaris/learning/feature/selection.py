@@ -6,10 +6,11 @@ from collections.abc import Iterable
 
 import numpy as np
 import xgboost as xgb
-from fets.pipeline import FeatureUnion2DF
 from sklearn.base import BaseEstimator, TransformerMixin
 # from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
+
+from fets.pipeline import FeatureUnion2DF
 
 PARAMS = {
     'learning_rate': 0.1,
@@ -180,7 +181,7 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
         if method == "best_until_threshold":
             for lst in list_of_fimp:
                 last_significant_index = self.find_gap(lst)
-                tmp_list = lst[: (last_significant_index + 1)]
+                tmp_list = lst[:(last_significant_index + 1)]
                 all_chosen_features.extend(tmp_list)
 
         all_chosen_features.sort(key=lambda x: x[1], reverse=True)
