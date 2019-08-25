@@ -61,3 +61,20 @@ def test_find_gap(list_of_imp, result):
     """
     fimp_op = FeatureImportanceOptimization(list_of_imp)
     assert fimp_op.find_gap(list_of_imp) == result
+
+@pytest.fixture
+def input_transformers():
+    transformers_list = [TSIntegrale("3H"), TSIntegrale("12H")]
+    return transformers_list
+
+
+def test_build_pipelines(input_transformers):
+    """ Testing the function build_pipelines on the argument
+        list of transformers.
+
+        :param input_transformers: fixtures for input transformers
+    """
+    fio = FeatureImportanceOptimization(input_transformers)
+    assert len(fio.pipelines) == 0
+    fio.build_pipelines(input_transformers)
+    assert len(fio.pipelines) != 0
