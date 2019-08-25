@@ -180,7 +180,7 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
         if method == "best_until_threshold":
             for lst in list_of_fimp:
                 last_significant_index = self.find_gap(lst)
-                tmp_list = lst[: (last_significant_index + 1)]
+                tmp_list = lst[:(last_significant_index + 1)]
                 all_chosen_features.extend(tmp_list)
 
         all_chosen_features.sort(key=lambda x: x[1], reverse=True)
