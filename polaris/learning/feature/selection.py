@@ -1,7 +1,6 @@
 """
 Module for flatening feature importance distribution from xgboost.
 """
-import csv
 from collections.abc import Iterable
 
 import numpy as np
@@ -10,29 +9,6 @@ from fets.pipeline import FeatureUnion2DF
 from sklearn.base import BaseEstimator, TransformerMixin
 # from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
-
-PARAMS = {
-    'learning_rate': 0.1,
-    'gamma': 0,
-    'max_depth': 10,
-    'n_estimators': 100,
-    'base_score': 0.5,
-    'colsample_bylevel': 1,
-    'colsample_bytree': 1,
-    'max_delta_step': 0,
-    'min_child_weight': 1,
-    'missing': None,
-    'nthread': 100,
-    'objective': "reg:linear",
-    'reg_alpha': 0,
-    'reg_lambda': 1,
-    'scale_pos_weight': 1,
-    'seed': 0,
-    'verbosity': 1,
-    'subsample': 1,
-    'predictor': "gpu_predictor",
-    'tree_method': "auto"
-}
 
 
 class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
@@ -53,15 +29,42 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
 
         """
 
+        # List of best features finally selected after fit()
+        self.best_features = None
+
+        # Building eventually cascading pipelines
         self.build_pipelines(list_of_transformers)
 
         # Each pipeline will have a corresponding model after fitting
         self.models = []
+
         # Model with optimized input
         self.model_optinput = None
 
         # Initial XGBoost parameters
-        self.default_xgb_params = PARAMS
+        self.default_xgb_params = {
+            'learning_rate': 0.1,
+            'gamma': 0,
+            'max_depth': 10,
+            'n_estimators': 100,
+            'base_score': 0.5,
+            'colsample_bylevel': 1,
+            'colsample_bytree': 1,
+            'max_delta_step': 0,
+            'min_child_weight': 1,
+            'missing': None,
+            'nthread': 100,
+            'objective': "reg:linear",
+            'reg_alpha': 0,
+            'reg_lambda': 1,
+            'scale_pos_weight': 1,
+            'seed': 0,
+            'verbosity': 1,
+            'subsample': 1,
+            'predictor': "gpu_predictor",
+            'tree_method': "auto"
+        }
+
         self.do_tuning = False
 
     def build_pipelines(self, list_of_transformers):
@@ -138,7 +141,7 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
         except TypeError:
             print("No list provided as importancy_list.")
 
-    def filter_importances(self, list_of_fimp, method="first_best"):
+    def filter_importances(self, list_of_fimp, method=None):
         """ Return a list of best features based on their importance
 
             **fimp** stands for Feature IMPortances.
@@ -163,6 +166,9 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
         if list_of_fimp is None \
            or (isinstance(list_of_fimp, list) and not list_of_fimp):
             return all_chosen_features
+
+        if method is None:
+            method = "first_best"
 
         if method == "first_best":
             for model_list in list_of_fimp:
@@ -202,7 +208,7 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
             return np.mean(np.abs([(flat_score - k[1]) for k in importances]))
         return flat_score
 
-    def fit(self, input_x, input_y, method):
+    def fit(self, input_x, input_y, method=None):
         """ Fit models for every pipeline and extract best features
 
             :param input_x: dataset (usually a dataframe) of features/predictor
@@ -229,13 +235,9 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
                 self.extract_feature_importance(self.models[-1].columns,
                                                 self.models[-1].model))
 
-        best_features = self.filter_importances(list_of_fimp, method)
+        self.best_features = self.filter_importances(list_of_fimp, method)
 
-        with open("/best_features.csv", "w") as file:
-            writer = csv.writer(file)
-            writer.writerows(best_features)
-
-        return best_features
+        return self
 
     def transform(self):
         """ Unused function here. Interface requirement.

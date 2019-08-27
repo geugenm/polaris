@@ -1,150 +1,98 @@
 """
-    Python module which will take matrix of params and list of transformers
-    as input and outputs the list of best transformed values.
+    Utilities to extract features.
+
+    Selection from matrix of params and list of transformers to get the list of
+    most important features.
+
     Flattening the features distribution using entropy augmentation
 """
-import ast
-import csv
-import re
-from heapq import nlargest
 
 import pandas as pd
-import xgboost as xgb
-from fets.pipeline import FeatureUnion2DF
-from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 
-from polaris.learning.feature.selection import PARAMS
-
-# List of time lags for the transformers
-# _LAGS = ["0.25H", "0.5H", "1H", "3H", "6H", "12H", "24H"]
+from polaris.learning.feature.selection import FeatureImportanceOptimization
 
 
-def get_time_lag(transf):
+def create_list_of_transformers(input_lags, transformer_class):
     """
-        Utility function to get the time lag
-        from the input transformer
+        Utility function to get a list of transformers
+        with one input parameters
+
+        :param input_lags: input parameters of the transformer_class
+        if fets.math.TSIntegrale is the class it takes only 1 parameter
+        and a possibility is that:
+            input_lags = ["0.25H", "0.5H", "1H", "3H", "6H", "12H", "24H"]
     """
-    transf = transf.replace('"', r'\"')
-    length = len(transf)
-    for index in range(length):
-        if transf[index].isdigit():
-            idx = index
-            break
-    return transf[idx:length - 3]
+    return [transformer_class(k) for k in input_lags]
 
 
-def build_transformer(feature):
+def extract_best_features(data_file,
+                          transformers,
+                          features_file=None,
+                          target_column=None,
+                          time_unit=None):
+    """ Utility to extract best features out of a set of set of transformers.
+        It is a progressive (iterative) features extraction that would select
+        the best features created out of each set of transformers.
+
+        :param datafile: File/Stream path to input data.
+        index column defaults to [0]
+
+
+        :param transformers: List of list of transformers. Iterable of
+        Iterables. Each unit iterable is a transformation description which
+        will generate a pipeline and feature importance analysis. Each unit
+        iterable should be like:
+         ("name", TranformerObject)
+         or
+         ("name", TranformerObject, "feature_column_name")
+
+        :param target_column: Colmun name for which to analyze features
+        importance.
+
+        :param features_file: Before having a proper feature store, previous
+        features might be given from a file. If the form:
+         ("name", TranformerObject, "feature_column_name")
+        is given then the "feature_column_name" will be used to directly get
+        the associated column in that file.
+
+        :param time_unit: Unit of the given time index. For instance "ms". No
+        transformation will be made if None.
+
+        :return: a list of the best features.
     """
-    Utility function to build the transformers from the previous
-    most important features
-    """
-    split = feature.split("_")
-    transformer = split[1] + '("' + split[2] + '")'
-    col = split[0]
-    return col, transformer, split[1]
+    # Loading master file with sensory/telemetry data
+    data = pd.read_csv(data_file, index_col=[0])
+    data.index = pd.to_datetime(data.index, unit=time_unit)
 
+    # Selecting target data and preparing the predictors
+    data_target = None
+    if target_column is not None:
+        data_target = data[target_column]
+        data = data.drop(target_column, axis=1)
+    else:
+        data_target = data[data.columns[0]]
+        data = data.drop(data.columns[0], axis=1)
 
-def build_pipelines(transformers, data, original_features, prev_features):
-    """
-    Utility function to build pipelines using the transformers input
-    and previous features
-    """
-    if prev_features:
-        for prev in prev_features:
-            print(prev)
-            col, transformer, pipeline_id = build_transformer(prev)
-            pipeline = Pipeline([("union",
-                                  FeatureUnion2DF([
-                                      (pipeline_id,
-                                       ast.literal_eval(transformer))
-                                  ]))])
+    # Loading an additional files of features
+    data_features = None
+    if features_file is not None:
+        data_features = pd.read_csv(data_file, index_col=[0])
+        data_features.index = pd.to_datetime(data_features.index,
+                                             unit=time_unit)
 
-            data[prev] = pipeline.transform(data[col])
-    for _tf in transformers.split():
-        integral = re.search(r'^TSIntegrale', _tf)
-        scale = re.search(r'^TSScale', _tf)
-        inter = re.search(r'^TSInterpolation', _tf)
-        poly = re.search(r'^TSPolynomialAB', _tf)
-        if integral.group(0) == 'TSIntegrale':
-            pipeline_id = integral.group(0)
-        elif scale.group(0) == 'TSScale':
-            pipeline_id = scale.group(0)
-        elif inter.group(0) == 'TSInterpolation':
-            pipeline_id = inter.group(0)
-        elif poly.group(0) == 'TSPolynomialAB':
-            pipeline_id = poly.group(0)
-        else:
-            pipeline_id = ""
-        pipeline = Pipeline([(pipeline_id, ast.literal_eval(_tf))])
-        for col in original_features:
-            data[col + "_" + pipeline_id + "_" +
-                 get_time_lag(_tf)] = (pipeline.transform(data[col]))
-    return data
+    # Joining all features related data
+    if data_features is None:
+        data_features = data
+    else:
+        data = pd.concat([data, data_features], axis=1)
 
+    # Preparing pipeline for extractiong of best features
+    selector = FeatureImportanceOptimization(transformers)
+    pipeline = Pipeline([("union", selector)])
 
-def train_xgboostmodel(data):
-    """
-    Function to train the xgboost model.
-    """
-    model = xgb.XGBClassifier(**PARAMS)
-    X = data.drop("NPWD2551", axis=1)
-    Y = data.NPWD2551
-    x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.33)
-    del x_test
-    del y_test
-    model.fit(x_train, y_train)
-    return model
+    # Running the pipeline
+    # NB: the method for best features selection is the default one.
+    features_importances = pipeline.fit(data_features, data_target)
 
-
-def _get_feature_importances_for_xgboostmodel(data, original_features):
-    """
-    Utility function to get the list of top 10
-    most important features.
-    """
-    model = train_xgboostmodel(data)
-    augmented_features = data.drop(original_features, axis=1)
-    importances = list(
-        zip(augmented_features.columns, model.feature_importances_))
-    importances.sort(key=lambda x: x[1], reverse=True)
-    features = []
-    importance = []
-    for feat, imp in importances:
-        features.append(feat)
-        importance.append(imp)
-    feature_importances = {
-        features[i]: importance[i]
-        for i in range(len(features))
-    }
-    top_feat = []
-    top_imp = []
-    ten_highest = nlargest(10,
-                           feature_importances,
-                           key=feature_importances.get)
-    for fet in ten_highest:
-        top_feat.append(fet)
-        top_imp.append(feature_importances.get(fet))
-
-    with open('/../topFeatures.csv', 'w') as _fl:
-        writer = csv.writer(_fl)
-        writer.writerows(zip(top_feat, top_imp))
-
-
-def best_transformed_features(filepath, transformers, features_file):
-    """
-        Utility function to find out the
-        best transformed features.
-    """
-    data_frame = pd.read_csv(filepath, index_col=[0])
-    data_frame.index = pd.to_datetime(data_frame.index, unit='ms')
-    data_frame = data_frame.loc['2014-01-01':'2014-02-01']
-    previous_features = []
-    try:
-        with open(features_file) as fet:
-            previous_features = [row.split(',')[0] for row in fet]
-    except FileNotFoundError:
-        print("No feature file provided")
-    original_features = data_frame.columns
-    data_frame = build_pipelines(transformers, data_frame, original_features,
-                                 previous_features)
-    _get_feature_importances_for_xgboostmodel(data_frame, original_features)
+    return features_importances
