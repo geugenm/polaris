@@ -1,9 +1,9 @@
 """
 Module for testing selection.py script.
 """
+import pytest
 from fets.math import TSIntegrale
 
-import pytest
 from polaris.learning.feature.selection import FeatureImportanceOptimization
 
 
@@ -63,8 +63,8 @@ def test_find_gap(list_of_imp, result):
     assert fimp_op.find_gap(list_of_imp) == result
 
 
-@pytest.fixture
-def input_transformers():
+@pytest.fixture(name="input_transformers")
+def fixture_input_transformers():
     """ Creating a fixed set of transformers """
     transformers_list = [TSIntegrale("3H"), TSIntegrale("12H")]
     return transformers_list
