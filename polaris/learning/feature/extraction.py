@@ -38,7 +38,6 @@ def extract_best_features(data_file,
         :param datafile: File/Stream path to input data.
         index column defaults to [0]
 
-
         :param transformers: List of list of transformers. Iterable of
         Iterables. Each unit iterable is a transformation description which
         will generate a pipeline and feature importance analysis. Each unit
@@ -63,7 +62,9 @@ def extract_best_features(data_file,
     """
     # Loading master file with sensory/telemetry data
     data = pd.read_csv(data_file, index_col=[0])
-    data.index = pd.to_datetime(data.index, unit=time_unit)
+
+    if time_unit is not None:
+        data.index = pd.to_datetime(data.index, unit=time_unit)
 
     # Selecting target data and preparing the predictors
     data_target = None
@@ -89,7 +90,7 @@ def extract_best_features(data_file,
 
     # Preparing pipeline for extractiong of best features
     selector = FeatureImportanceOptimization(transformers)
-    pipeline = Pipeline([("union", selector)])
+    pipeline = Pipeline([("FeatureImportances", selector)])
 
     # Running the pipeline
     # NB: the method for best features selection is the default one.

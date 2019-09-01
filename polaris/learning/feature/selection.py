@@ -4,6 +4,7 @@ Module for flatening feature importance distribution from xgboost.
 from collections.abc import Iterable
 
 import numpy as np
+import pandas as pd
 import xgboost as xgb
 from fets.pipeline import FeatureUnion2DF
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -54,7 +55,7 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
             'min_child_weight': 1,
             'missing': None,
             'nthread': 100,
-            'objective': "reg:linear",
+            'objective': "reg:squarederror",
             'reg_alpha': 0,
             'reg_lambda': 1,
             'scale_pos_weight': 1,
@@ -223,17 +224,37 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
         # list of list of (tuples of) feature importances
         list_of_fimp = []
 
+        pipeline_n = 0
         for pipeline in self.pipelines:
             # Augment dataset with current pipeline
-            input_dataset = pipeline.transform(input_x)
+            pipeline_n += 1
+            input_dataset = None
+            for col in input_x.columns:
+                tmp_dataset = pipeline.transform(input_x[col])
+                if isinstance(tmp_dataset, pd.Series):
+                    tmp_dataset.name = "{}_p{}_{}".format(
+                        col, pipeline_n, tmp_dataset.name)
+                elif isinstance(tmp_dataset, pd.DataFrame):
+                    tmp_dataset.columns = [
+                        "{}_p{}_{}".format(col, pipeline_n, subcol)
+                        for subcol in tmp_dataset.columns
+                    ]
+                if input_dataset is None:
+                    input_dataset = pd.DataFrame(tmp_dataset)
+                else:
+                    input_dataset = pd.concat([input_dataset, tmp_dataset],
+                                              axis=1)
+
+            input_dataset = pd.concat([input_dataset, input_x], axis=1)
+
             # Train a model with augmented dataset
             self.models.append(xgb.XGBRegressor(**xgboost_params))
             self.models[-1].fit(input_dataset, input_y)
 
             # Extract feature importances and keep them for further analysis
             list_of_fimp.append(
-                self.extract_feature_importance(self.models[-1].columns,
-                                                self.models[-1].model))
+                self.extract_feature_importance(input_dataset.columns,
+                                                self.models[-1]))
 
         self.best_features = self.filter_importances(list_of_fimp, method)
 
