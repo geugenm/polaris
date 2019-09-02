@@ -1,2 +1,3 @@
 include versioneer.py
 include polaris/_version.py
+include polaris/data_fetch/satellites.json
