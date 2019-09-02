@@ -2,9 +2,9 @@
 
 ## Miner: FFlat
 
-`FFlat` is a data explorer that analyzes feature importances and iteratively find the most important features
+`FFlat` is a data explorer that analyzes feature importances and iteratively find the most important features.
 
-`FFlat` would stand for Feature Flatening
+`FFlat` stands for Feature Flattening.
 
 ## Predictor: XCorr
 

@@ -1,5 +1,5 @@
 """
-Module for flatening feature importance distribution from xgboost.
+Module for flattening feature importance distribution from xgboost.
 """
 from collections.abc import Iterable
 
