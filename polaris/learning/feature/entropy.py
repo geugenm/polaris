@@ -16,9 +16,8 @@ def sample_entropy(timeseries_data, run_data_length, filtering_level):
     """
 
     def _phi(run_data_length):
-        _x = [[
-            timeseries_data[j] for j in range(i, i + run_data_length - 1 + 1)
-        ] for i in range(len_ts - run_data_length + 1)]
+        _x = [[timeseries_data[j] for j in range(i, i + run_data_length)]
+              for i in range(len_ts - run_data_length + 1)]
         _c = [
             len([
                 1 for j in range(len(_x))
@@ -38,9 +37,8 @@ def approximate_entropy(timeseries_data, run_data_length, filtering_level):
     """
 
     def _phi(run_data_length):
-        _x = [[
-            timeseries_data[j] for j in range(i, i + run_data_length - 1 + 1)
-        ] for i in range(len_ts - run_data_length + 1)]
+        _x = [[timeseries_data[j] for j in range(i, i + run_data_length)]
+              for i in range(len_ts - run_data_length + 1)]
         _c = [
             len([1 for x_j in _x if _maxdist(x_i, x_j) <= filtering_level]) /
             (len_ts - run_data_length + 1.0) for x_i in _x
