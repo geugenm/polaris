@@ -5,6 +5,7 @@ pytest testing framework for data_fetch module
 import datetime
 
 import pytest
+
 from contrib.normalizers.common import Field, Normalizer
 from polaris.data_fetch import data_fetch_decoder
 

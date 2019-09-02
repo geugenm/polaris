@@ -3,6 +3,7 @@ Fixtures for pytest tests
 """
 
 import pytest
+
 from polaris.data_fetch import data_fetch_decoder
 
 
