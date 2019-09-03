@@ -113,7 +113,7 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
     def find_gap(importancy_list):
         """ Find a drop in list of decreasing values and returns feature index
             at found gap if the drop is more than 50% of the average and with
-            at least 5 and maximum 42 features.
+            at least 5 and maximum of (avarage minus 1 standard deviation).
 
             :param importancy_list: List of featurename,importancy
             in decreasing order.
@@ -142,8 +142,8 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
                     dif = lst_val[idx - 1] - lst_val[idx]
                     lst_dif.append(dif)
                     average_dif = np.mean(lst_dif, dtype=np.float64)
-                    if dif > (average_dif * 0.5) and idx > 5 or \
-                       imp < upper_limit:
+                    if (dif > (average_dif * 0.5) and idx > 5) or \
+                       (imp < upper_limit):
                         return lst_name.index(lst_name[idx - 1])
                 idx = idx + 1
             return idx
