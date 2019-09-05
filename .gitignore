@@ -12,3 +12,5 @@ polaris.egg-info/
 *.log
 /build/
 /dist/
+.coverage*
+.DS_Store
