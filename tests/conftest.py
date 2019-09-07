@@ -14,8 +14,14 @@ def satellite_list():
     return [
         data_fetch_decoder.Satellite(name='ExampleSat',
                                      norad_id='12345',
-                                     decoder='ExampleDecoder'),
+                                     decoder='ExampleDecoder',
+                                     normalizer='ExampleNormalizer'),
         data_fetch_decoder.Satellite(name='NoDecoderSatellite',
                                      norad_id='67890',
-                                     decoder=None)
+                                     decoder=None,
+                                     normalizer='ExampleNormalizer'),
+        data_fetch_decoder.Satellite(name='NoNormalizerSatellite',
+                                     norad_id='67890',
+                                     decoder='ExampleNormalizer',
+                                     normalizer=None)
     ]

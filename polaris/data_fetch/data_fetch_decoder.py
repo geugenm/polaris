@@ -2,6 +2,7 @@
 Module for fetching and decoding telemetry data
 """
 import datetime
+import importlib
 import json
 import logging
 import os
@@ -14,16 +15,17 @@ from glouton.domain.parameters.programCmd import ProgramCmd
 from glouton.services.observation.observationsService import \
     ObservationsService
 
-from contrib.normalizers.lightsail2 import Lightsail2
-
-Satellite = namedtuple('Satellite', ['norad_id', 'name', 'decoder'])
+Satellite = namedtuple('Satellite',
+                       ['norad_id', 'name', 'decoder', 'normalizer'])
 SATELLITE_DATA_FILE = 'satellites.json'
 SATELLITE_DATA_DIR = os.path.dirname(__file__)
 _SATELLITES = json.loads(
     open(os.path.join(SATELLITE_DATA_DIR, SATELLITE_DATA_FILE)).read(),
-    object_hook=lambda d: Satellite(d['norad_id'], d['name'], d['decoder']))
+    object_hook=lambda d: Satellite(d['norad_id'], d['name'], d['decoder'], d[
+        'normalizer']))
 
 DATA_DIRECTORY = '/tmp/polaris'
+NORMALIZER_LIB = 'contrib.normalizers.'
 
 LOGGER = logging.getLogger(__name__)
 
@@ -63,6 +65,30 @@ class NoSuchSatellite(Exception):
 
 class NoDecoderForSatellite(Exception):
     """Raised when we have no decoder """
+
+
+class NoNormalizerForSatellite(Exception):
+    """Raised when we have no normalizer """
+
+
+def load_normalizer(sat):
+    """
+    Load the normalizer selected by name within the NORMALIZER_LIB.
+
+    :param sat: a satellite object.
+
+    :returns: the loaded normalizer.
+    """
+    if sat.normalizer is None:
+        raise NoNormalizerForSatellite
+    try:
+        loaded_normalizer = importlib.import_module(NORMALIZER_LIB +
+                                                    sat.normalizer.lower())
+        normalizer = getattr(loaded_normalizer, sat.normalizer)
+        return normalizer
+    except Exception as eee:
+        LOGGER.error("Normalizer loading: %s", eee)
+        raise eee
 
 
 def find_satellite(sat, sat_list):
@@ -249,7 +275,13 @@ def data_fetch_decode_normalize(sat, output_directory, start_date, end_date):
             LOGGER.error("Cannot load % - is it a valid JSON document?",
                          decoded_file)
             raise json.JSONDecodeError
-    normalized_frames = data_normalize(Lightsail2(), decoded_frame_list)
+    try:
+        normalizer = load_normalizer(satellite)
+    except Exception as exception:
+        LOGGER.error("Can't load satellite normalizer: %s", exception)
+        raise exception
+    LOGGER.info('Loaded normalizer=%s', satellite.normalizer)
+    normalized_frames = data_normalize(normalizer(), decoded_frame_list)
     normalized_file = os.path.join(output_directory, 'normalized_frames.json')
     with open(normalized_file, 'w') as f_handle:
         json.dump(normalized_frames, f_handle, skipkeys=True)

@@ -73,6 +73,14 @@ def test_find_satellite_no_decoder(satellite_list):
         _ = data_fetch_decoder.find_satellite(test_satellite, satellite_list)
 
 
+def test_load_normalizer_no_normalizer(satellite_list):
+    """Test no_normlizer path for find_satellite()
+    """
+    test_satellite = satellite_list[2]
+    with pytest.raises(data_fetch_decoder.NoNormalizerForSatellite):
+        _ = data_fetch_decoder.load_normalizer(test_satellite)
+
+
 def test_build_dates_from_string():
     """Test dates conversion for build_start_and_end_dates()
     """
