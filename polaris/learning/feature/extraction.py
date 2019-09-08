@@ -78,7 +78,7 @@ def extract_best_features(data_file,
     # Loading an additional files of features
     data_features = None
     if features_file is not None:
-        data_features = pd.read_csv(data_file, index_col=[0])
+        data_features = pd.read_csv(features_file, index_col=[0])
         data_features.index = pd.to_datetime(data_features.index,
                                              unit=time_unit)
 
