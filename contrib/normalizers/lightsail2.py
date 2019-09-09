@@ -12,7 +12,6 @@ class Lightsail2(Normalizer):
             Field('pid', lambda x: x, None, 'PID'),
             Field('src_ip_addr', lambda x: x, None, 'Source IP Address'),
             Field('dst_ip_addr', lambda x: x, None, 'Destination IP Address'),
-            Field('dst_ip_addr', lambda x: x, None, 'Destination IP Address'),
             Field('src_port', lambda x: x, None, 'Source port'),
             Field('dst_port', lambda x: x, None, 'Destination port'),
             Field('type', lambda x: x, None, 'Type is always 1'),
