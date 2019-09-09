@@ -117,7 +117,12 @@ def test_data_normalize_happy_path_single_frame():
         FixtureNormalizer(), SINGLE_FRAME)
 
     assert len(normalized_frames) == 1
-    assert normalized_frames[0]['fields'] == {'example_telemetry': 0}
+    assert normalized_frames[0]['fields'] == {
+        'example_telemetry': {
+            'value': 0,
+            'unit': None
+        }
+    }
 
 
 def test_data_normalize_happy_path_multiple_frames():
@@ -129,4 +134,9 @@ def test_data_normalize_happy_path_multiple_frames():
 
     assert len(normalized_frames) == 3
     for i in range(len(normalized_frames)):  # pylint: disable=C0103,C0200
-        assert normalized_frames[i]['fields'] == {'example_telemetry': i}
+        assert normalized_frames[i]['fields'] == {
+            'example_telemetry': {
+                'value': i,
+                'unit': None
+            }
+        }
