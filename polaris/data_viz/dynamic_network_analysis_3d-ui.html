@@ -1,0 +1,105 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+  <script src="3d-force-graph.js"></script>
+
+  <style type="text/css">
+
+  body { margin: 0; }
+
+  .graph-info-msg {
+  top: 50%;
+  width: 100%;
+  text-align: center;
+  color: lavender;
+  opacity: 0.7;
+  font-size: 22px;
+  position: absolute;
+  font-family: Sans-serif;
+}
+
+.grabbable {
+  cursor: move;
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+}
+
+.grabbable:active {
+  cursor: grabbing;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
+}
+
+.scene-nav-info {
+  bottom: 5px;
+  width: 100%;
+  text-align: center;
+  color: slategrey;
+  opacity: 0.7;
+  font-size: 10px;
+}
+
+.scene-tooltip {
+  color: lavender;
+  font-size: 15px;
+}
+
+.scene-nav-info, .scene-tooltip {
+  position: absolute;
+  font-family: sans-serif;
+  pointer-events: none;
+}
+
+</style>
+</head>
+
+<body>
+  <div id="3d-graph" style="">
+  <div style="position: relative;">
+   <div>
+    <div style="position: relative; width: 1920px; height: 893px;">
+      <div class="scene-nav-info">Left-click: rotate, Mouse-wheel/middle-click: zoom, Right-click: pan, Shift-Click on node: MoveAt node</div>
+      <div class="scene-tooltip" id="tooltip" style="top: 557px; left: 1053px; transform: translate(-54.8437%, 21px);"></div>
+      <canvas width="1920" height="893" style="width: 1920px; height: 893px;" class=""></canvas>
+    </div>
+   </div>
+   <div class="graph-info-msg"></div>
+  </div>
+  </div>
+
+
+  <script language="javascript">
+    const elem = document.getElementById('3d-graph');
+
+    const Graph = ForceGraph3D()(elem)
+        .jsonUrl('sample_data_fimps.json')
+        .nodeLabel(node => node.name + ':' + node.group)
+        .nodeAutoColorBy('group')
+        .onNodeHover(node => elem.style.cursor = node ? 'pointer' : null)
+        .onNodeClick(node => {
+          // node: this is the clicked node to lookAt. {x,y,z}
+          // Aim at node from outside it
+          const distance = 40;
+          const distRatio = 1 + distance/Math.hypot(node.x, node.y, node.z);
+
+          Graph.cameraPosition(
+            // aiming at new position
+            { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio },
+            // lookAt point
+            node,
+            // transition duration in ms
+            3000
+          );
+        })
+        .linkOpacity(0.4)
+        .linkWidth(1)
+        // visible traveling particule(s) per link
+        .linkDirectionalParticles(2)
+        // Speed as a ratio of link length per frame
+        // and d.value is included in [0;1]
+        // as per input definition: feature importance.
+        .linkDirectionalParticleSpeed(d => d.value*0.01);
+  </script>
+</body>
+</html>
