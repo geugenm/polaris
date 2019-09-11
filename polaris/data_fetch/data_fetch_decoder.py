@@ -284,6 +284,6 @@ def data_fetch_decode_normalize(sat, output_directory, start_date, end_date):
     normalized_frames = data_normalize(normalizer(), decoded_frame_list)
     normalized_file = os.path.join(output_directory, 'normalized_frames.json')
     with open(normalized_file, 'w') as f_handle:
-        json.dump(normalized_frames, f_handle, skipkeys=True)
+        json.dump(normalized_frames, f_handle, skipkeys=True, indent=4)
 
     LOGGER.info('Output file %s', normalized_file)

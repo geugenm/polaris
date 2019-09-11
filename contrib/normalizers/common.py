@@ -17,7 +17,9 @@ class Normalizer:
             try:
                 key = field.key
                 val = frame['fields'][key]
-                frame['fields'][key] = field.equ(val)  # normalize
+                frame['fields'][key] = {}
+                frame['fields'][key]['value'] = field.equ(val)  # normalize
+                frame['fields'][key]['unit'] = field.unit
             except KeyError:
                 missing_keys = True
                 LOGGER.debug('Field %s not found in the frame', key)
