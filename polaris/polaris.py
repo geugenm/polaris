@@ -7,6 +7,7 @@ import click
 
 from polaris import __version__
 from polaris.data_fetch.data_fetch_decoder import data_fetch_decode_normalize
+from polaris.data_viz.server import launch
 
 # Logger configuration
 
@@ -70,13 +71,12 @@ def cli_learning():
     # learning()
 
 
-@click.command('viz', short_help='data-viz help')
+@click.command('viz', short_help='Display results')
 def cli_data_viz():
     """
     Enter visualization module
     """
-    LOGGER.debug('[FIXME] Data visualization goes here')
-    # data_viz()
+    launch()
 
 
 # click doesn't automagically add the commands to the group
