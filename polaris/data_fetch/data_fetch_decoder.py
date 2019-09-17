@@ -228,6 +228,23 @@ def data_decode(decoder, output_directory, frames_file):
     return decoded_file
 
 
+def load_frames_from_json_file(file):
+    """Load frames from a JSON file.
+
+    :param file: a JSON file
+    :returns: a list of frames
+    """
+    with open(file) as f_handle:
+        try:
+            # pylint: disable=W0108
+            decoded_frame_list = json.load(f_handle)
+        except json.JSONDecodeError:
+            LOGGER.error("Cannot load % - is it a valid JSON document?", file)
+            raise json.JSONDecodeError
+
+    return decoded_frame_list
+
+
 def data_normalize(normalizer, frame_list):
     """
     Normalize the data found in frame_list using the given normalizer.
@@ -268,13 +285,7 @@ def data_fetch_decode_normalize(sat, output_directory, start_date, end_date):
                              end_date)
     decoded_file = data_decode(satellite.decoder, output_directory,
                                frames_file)
-    with open(decoded_file) as f_handle:
-        try:
-            decoded_frame_list = json.load(f_handle)
-        except json.JSONDecodeError:
-            LOGGER.error("Cannot load % - is it a valid JSON document?",
-                         decoded_file)
-            raise json.JSONDecodeError
+    decoded_frame_list = load_frames_from_json_file(decoded_file)
     try:
         normalizer = load_normalizer(satellite)
     except Exception as exception:
