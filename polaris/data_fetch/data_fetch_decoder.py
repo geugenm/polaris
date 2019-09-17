@@ -15,8 +15,11 @@ from glouton.domain.parameters.programCmd import ProgramCmd
 from glouton.services.observation.observationsService import \
     ObservationsService
 
+from polaris.dataset.dataset import PolarisDataset
+
 Satellite = namedtuple('Satellite',
                        ['norad_id', 'name', 'decoder', 'normalizer'])
+
 SATELLITE_DATA_FILE = 'satellites.json'
 SATELLITE_DATA_DIR = os.path.dirname(__file__)
 _SATELLITES = json.loads(
@@ -294,7 +297,11 @@ def data_fetch_decode_normalize(sat, output_directory, start_date, end_date):
     LOGGER.info('Loaded normalizer=%s', satellite.normalizer)
     normalized_frames = data_normalize(normalizer(), decoded_frame_list)
     normalized_file = os.path.join(output_directory, 'normalized_frames.json')
+    polaris_dataset = PolarisDataset(metadata={
+        "satellite_norad": satellite.norad_id,
+        "satellite_name": satellite.name
+    },
+                                     frames=normalized_frames)
     with open(normalized_file, 'w') as f_handle:
-        json.dump(normalized_frames, f_handle, skipkeys=True, indent=4)
-
+        f_handle.write(polaris_dataset.to_json())
     LOGGER.info('Output file %s', normalized_file)
