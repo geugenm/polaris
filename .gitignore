@@ -1,11 +1,17 @@
+#
+# Please don't add IDE or OS artifacts in here!
+# There is support for a global .gitignore file that deals with them.
+# See:
+#
+# https://help.github.com/en/articles/ignoring-files
+# https://gist.github.com/octocat/9257657
+#
 .ipynb_checkpoints/
 __pycache__
 *.pyc
-untracked/
 *.pickle
 /venv
 .venv
-.vscode
 /docker/*/data/*
 .tox/
 polaris.egg-info/
@@ -13,4 +19,3 @@ polaris.egg-info/
 /build/
 /dist/
 .coverage*
-.DS_Store
