@@ -33,3 +33,18 @@ class Normalizer:
         for field in self.normalizers:
             if key == field.key:
                 return field.unit
+
+
+def int2ddn(val):
+    """
+    Convert simple integer represented IP adresses into DDN (Dotted
+    Decimal Notation)
+
+    :param val: an IP address stored as integer
+
+    :returns out: a string containing the DDN represented IP address
+    """
+    out = '{}.{}.{}.{}'.format((val & 0xFF000000) >> 24,
+                               (val & 0x00FF0000) >> 16,
+                               (val & 0x0000FF00) >> 8, (val & 0x000000FF))
+    return out
