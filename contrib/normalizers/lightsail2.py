@@ -1,8 +1,20 @@
-from contrib.normalizers.common import Field, Normalizer
+"""
+Normalizer class for LightSail-2 satellite
+
+Converts raw digit values, decoded by satnogs-decoders,  into
+normalized ("Si") units using the equations provided in the telemetry
+documentation.
+"""
+from contrib.normalizers.common import Field, Normalizer, int2ddn
 
 
 class Lightsail2(Normalizer):
+    """
+    The class providing equations for the satellite telemetry
+    """
+
     def __init__(self):
+        super(Lightsail2, self).__init__()
         self.normalizers = [
             Field('dest_callsign', lambda x: x, None, 'Destination Callsign'),
             Field('src_callsign', lambda x: x, None, 'Source Callsign'),
@@ -10,8 +22,8 @@ class Lightsail2(Normalizer):
             Field('dest_ssid', lambda x: x, None, 'Destination SSID'),
             Field('ctl', lambda x: x, None, 'CTL'),
             Field('pid', lambda x: x, None, 'PID'),
-            Field('src_ip_addr', lambda x: x, None, 'Source IP Address'),
-            Field('dst_ip_addr', lambda x: x, None, 'Destination IP Address'),
+            Field('src_ip_addr', int2ddn, None, 'Source IP Address'),
+            Field('dst_ip_addr', int2ddn, None, 'Destination IP Address'),
             Field('src_port', lambda x: x, None, 'Source port'),
             Field('dst_port', lambda x: x, None, 'Destination port'),
             Field('type', lambda x: x, None, 'Type is always 1'),
@@ -127,6 +139,26 @@ class Lightsail2(Normalizer):
             Field('sol_pyy', lambda x: x, None, '+Y Solar Sensor Y'),
             Field('sol_nzx', lambda x: x, None, '-Z Solar Sensor X'),
             Field('sol_nzy', lambda x: x, None, '-Z Solar Sensor Y'),
+            Field('mag_nxx', lambda x: x * 100, 'nT',
+                  '-X panel magnetometer x channel'),
+            Field('mag_nxy', lambda x: x * 100, 'nT',
+                  '-X panel magnetometer y channel'),
+            Field('mag_nxz', lambda x: x * 100, 'nT',
+                  '-X panel magnetometer z channel'),
+            Field('mag_pxz', lambda x: x * 100, 'nT',
+                  '+X panel magnetometer z channel'),
+            Field('mag_pxx', lambda x: x * 100, 'nT',
+                  '+X panel magnetometer x channel'),
+            Field('mag_pxy', lambda x: x * 100, 'nT',
+                  '+X panel magnetometer y channel'),
+            Field('mag_nyz', lambda x: x * 100, 'nT',
+                  '-Y panel magnetometer z channel'),
+            Field('mag_pyz', lambda x: x * 100, 'nT',
+                  '+Y panel magnetometer z channel'),
+            Field('mag_pyx', lambda x: x * 100, 'nT',
+                  '+Y panel magnetometer x channel'),
+            Field('mag_pyy', lambda x: x * 100, 'nT',
+                  '+Y panel magnetometer y channel'),
             Field('wheel_rpm', lambda x: x, 'rpm', 'Wheel RPM'),
             Field('cam0_status', lambda x: x, None, 'Camera 0 Status Bits'),
             Field('cam0_temp', lambda x: x * 0.5 - 75, None,
