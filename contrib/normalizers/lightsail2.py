@@ -1,8 +1,20 @@
+"""
+Normalizer class for LightSail-2 satellite
+
+Converts raw digit values, decoded by satnogs-decoders,  into
+normalized ("Si") units using the equations provided in the telemetry
+documentation.
+"""
 from contrib.normalizers.common import Field, Normalizer, int2ddn
 
 
 class Lightsail2(Normalizer):
+    """
+    The class providing equations for the satellite telemetry
+    """
+
     def __init__(self):
+        super(Lightsail2, self).__init__()
         self.normalizers = [
             Field('dest_callsign', lambda x: x, None, 'Destination Callsign'),
             Field('src_callsign', lambda x: x, None, 'Source Callsign'),
@@ -10,10 +22,8 @@ class Lightsail2(Normalizer):
             Field('dest_ssid', lambda x: x, None, 'Destination SSID'),
             Field('ctl', lambda x: x, None, 'CTL'),
             Field('pid', lambda x: x, None, 'PID'),
-            Field('src_ip_addr', lambda x: int2ddn(x), None,
-                  'Source IP Address'),
-            Field('dst_ip_addr', lambda x: int2ddn(x), None,
-                  'Destination IP Address'),
+            Field('src_ip_addr', int2ddn, None, 'Source IP Address'),
+            Field('dst_ip_addr', int2ddn, None, 'Destination IP Address'),
             Field('src_port', lambda x: x, None, 'Source port'),
             Field('dst_port', lambda x: x, None, 'Destination port'),
             Field('type', lambda x: x, None, 'Type is always 1'),
