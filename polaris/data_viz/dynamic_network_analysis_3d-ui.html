@@ -1,96 +1,129 @@
 <html><head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<script src="3d-force-graph.js"></script>
 
-  <script src="3d-force-graph.js"></script>
-
-  <style type="text/css">
+<style type="text/css">
 
   body { margin: 0; }
 
-  .graph-info-msg {
-  top: 50%;
-  width: 100%;
-  text-align: center;
-  color: lavender;
-  opacity: 0.7;
-  font-size: 22px;
-  position: absolute;
-  font-family: Sans-serif;
-}
+  #graph-search, #graph-hud {
+    z-index: 100;
+    color: lavender;
+    opacity: 0.7;
+    font-size: 16px;
+    font-family: Sans-serif;
+  }
 
-.grabbable {
-  cursor: move;
-  cursor: grab;
-  cursor: -moz-grab;
-  cursor: -webkit-grab;
-}
+  #graph-hud {
+    position: absolute;
+    top: 10px;
+    right: 10px;
 
-.grabbable:active {
-  cursor: grabbing;
-  cursor: -moz-grabbing;
-  cursor: -webkit-grabbing;
-}
+    text-align: right;
+    pointer-events: none;
+  }
 
-.scene-nav-info {
-  bottom: 5px;
-  width: 100%;
-  text-align: center;
-  color: slategrey;
-  opacity: 0.7;
-  font-size: 10px;
-}
+  #graph-search {
+    position: absolute;
+    top: 10px;
+    left: 10px;
 
-.scene-tooltip {
-  color: lavender;
-  font-size: 15px;
-}
+    text-align: left;
+  }
 
-.scene-nav-info, .scene-tooltip {
-  position: absolute;
-  font-family: sans-serif;
-  pointer-events: none;
-}
+  #graph-search-input {
+    color: black;
+    text-align: left;
+  }
+
+  .scene-nav-info {
+    bottom: 5px;
+    width: 100%;
+    text-align: center;
+    color: slategrey;
+    opacity: 0.7;
+    font-size: 10px;
+    position: absolute;
+    font-family: sans-serif;
+  }
 
 </style>
+
 </head>
 
 <body>
+  <div id="graph-hud"></div>
+  <div id="graph-search"><input type="text" id="graph-search-input" list="nodeslist" placeholder="search"></div>
+  <datalist id="nodeslist"></datalist>
+
+
   <div id="3d-graph" style="">
-  <div style="position: relative;">
-   <div>
-    <div style="position: relative; width: 1920px; height: 893px;">
-      <div class="scene-nav-info">Left-click: rotate, Mouse-wheel/middle-click: zoom, Right-click: pan, Shift-Click on node: MoveAt node</div>
-      <div class="scene-tooltip" id="tooltip" style="top: 557px; left: 1053px; transform: translate(-54.8437%, 21px);"></div>
-      <canvas width="1920" height="893" style="width: 1920px; height: 893px;" class=""></canvas>
+    <div style="position: relative;">
+      <div>
+        <div style="position: relative; width: 1920px; height: 893px;">
+          <div class="scene-nav-info">Left-click: rotate, Mouse-wheel/middle-click: zoom, Right-click: pan, Shift-Click on node: MoveAt node</div>
+          <canvas width="1920" height="893" style="width: 1920px; height: 893px;" class=""></canvas>
+        </div>
+      </div>
     </div>
-   </div>
-   <div class="graph-info-msg"></div>
-  </div>
   </div>
 
 
   <script language="javascript">
-    const elem = document.getElementById('3d-graph');
 
-    const Graph = ForceGraph3D()(elem)
+    // ---- Global constants
+    const graph_elt = document.getElementById('3d-graph');
+    const hud_elt = document.getElementById('graph-hud');
+    const nodeslist_elt = document.getElementById('nodeslist');
+    const search_elt = document.getElementById('graph-search-input');
+
+    // ---- Graph's routines ---- //
+
+    // Converts node info to HTML for screen display
+    function node_to_html(node) {
+      if (node.hasOwnProperty("id"))
+        return "id: " + node.id
+             + ", name: <b>" + node.name
+             + "</b>/" + node.group;
+      return node;
+    }
+
+    // This function updates the HUD in a custom way
+    function hud_update(action, node) {
+      let action_header = "<tiny>"+action+"</tiny>";
+      let br = "<br/>";
+      let info = node_to_html(node);
+      hud_elt.innerHTML = action_header+br+info+br;
+    }
+
+    // A zoom and fly to node function
+    function jetpack_to(node) {
+      // node: this is the clicked node to lookAt. {x,y,z}
+      // Aim at node from outside it
+      const distance = 40;
+      const distRatio = 1 + distance/Math.hypot(node.x, node.y, node.z);
+
+      Graph.cameraPosition(
+        // aiming at new position
+        { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio },
+        // lookAt point
+        node,
+        // transition duration in ms
+        3000
+      );
+    }
+
+    // ---- Graph creation and customization ---- //
+
+    // Creationg of the 3D graph which loads the corresponding data file
+    const Graph = ForceGraph3D()(graph_elt)
         .jsonUrl('sample_data_fimps.json')
         .nodeLabel(node => node.name + ':' + node.group)
         .nodeAutoColorBy('group')
-        .onNodeHover(node => elem.style.cursor = node ? 'pointer' : null)
+        .onNodeHover(node => graph_elt.style.cursor = node ? 'pointer' : null)
         .onNodeClick(node => {
-          // node: this is the clicked node to lookAt. {x,y,z}
-          // Aim at node from outside it
-          const distance = 40;
-          const distRatio = 1 + distance/Math.hypot(node.x, node.y, node.z);
-
-          Graph.cameraPosition(
-            // aiming at new position
-            { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio },
-            // lookAt point
-            node,
-            // transition duration in ms
-            3000
-          );
+          hud_update("clicked", node);
+          jetpack_to(node);
         })
         .linkOpacity(0.4)
         .linkWidth(1)
@@ -100,6 +133,66 @@
         // and d.value is included in [0;1]
         // as per input definition: feature importance.
         .linkDirectionalParticleSpeed(d => d.value*0.01);
+
+
+    // ---- Search events and routines ---- //
+
+    // This function will be used to fill the datalist
+    // The datalist is the database for the input auto-complete
+    function fill_nodeslist() {
+      nodeslist_elt.innerHTML = "";
+      const { nodes, links } = Graph.graphData();
+      for (node of nodes) {
+        nodeslist_elt.innerHTML += "<option value=\""
+                                +node.id+":"+node.name+"/"+node.group
+                                +"\"/>";
+      }
+    }
+
+    // Multi-function search for string
+    // for now search by ID.
+    function find_node(search_str) {
+      var node_id = search_str.split(":")[0];
+
+      const { nodes, links } = Graph.graphData();
+      for (node of nodes) {
+        if (node.id.toString() == node_id) {
+          return node;
+        }
+      }
+
+      return undefined;
+    }
+
+    // search: Click event only to check status of datalist
+    search_elt.addEventListener("click", function () {
+      if (nodeslist_elt.innerHTML == "") {
+        fill_nodeslist();
+      }
+    });
+
+    // search: Enter press event zoom to node
+    search_elt.addEventListener('keypress', function (e) {
+        var key = e.which || e.keyCode;
+        if (key === 13) { // 13 is enter
+          if (e.ctrlKey) {
+            // Control key is pressed: highligting
+            console.log("Highlights");
+          } else {
+            // Control key is NOT pressed: jetpacking
+            hud_update("searching", search_elt.value);
+            const node = find_node(search_elt.value);
+
+            if (node) {
+              hud_update("jetpacking", node);
+              jetpack_to(node);
+            } else {
+              hud_update("search stopped", node);
+            }
+          }
+        }
+    });
+
   </script>
 </body>
 </html>
