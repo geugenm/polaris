@@ -6,6 +6,7 @@ import http.server
 import logging
 import os
 import socketserver
+
 import requests
 
 LOGGER = logging.getLogger(__name__)
@@ -19,6 +20,7 @@ class CustomHTTPHandler(http.server.SimpleHTTPRequestHandler):
     """ HTTP Handler to serve data_viz directory """
 
     def handle(self):
+        # pylint: disable=W0603
         global WWW_DIR
         self.directory = WWW_DIR
         super().handle()
@@ -33,7 +35,7 @@ def launch_webserver(json_data_file):
 
     # Define path for index.html
     target_directory, target_file = os.path.split(
-                                    os.path.abspath(json_data_file))
+        os.path.abspath(json_data_file))
     target_index = os.path.join(target_directory, "index.html")
     target_icon = os.path.join(target_directory, "favicon.ico")
     target_lib = os.path.join(target_directory, "3d-force-graph.js")
@@ -49,9 +51,8 @@ def launch_webserver(json_data_file):
     with open(target_index, "w") as target_fd:
         with open(html_template, "r") as template_fd:
             for line in template_fd:
-                target_fd.write(line.replace(
-                                "JSON_DATA_FILE_HERE",
-                                target_file))
+                target_fd.write(
+                    line.replace("JSON_DATA_FILE_HERE", target_file))
 
     with open(target_icon, "w") as icon_fd:
         icon_fd.write("A")
@@ -64,6 +65,7 @@ def launch_webserver(json_data_file):
             lib_fd.write(req.text)
 
     # Setup web directory
+    # pylint: disable=W0603
     global WWW_DIR
     WWW_DIR = target_directory
 
