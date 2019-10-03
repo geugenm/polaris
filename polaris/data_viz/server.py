@@ -11,17 +11,56 @@ LOGGER = logging.getLogger(__name__)
 
 HOST, PORT = "localhost", 8080
 
+WWW_DIR = "/tmp/"
+
 
 class CustomHTTPHandler(http.server.SimpleHTTPRequestHandler):
     """ HTTP Handler to serve data_viz directory """
 
     def handle(self):
-        self.directory = os.path.dirname(os.path.abspath(__file__))
+        global WWW_DIR
+        self.directory = WWW_DIR
         super().handle()
 
 
-def launch():
-    """ Start the server """
+def launch_webserver(json_data_file):
+    """ Start the server
+
+        - Generates index file with right JSON input data
+        - Launch server from the JSON input data file directory
+    """
+
+    # Define path for index.html
+    target_directory, target_file = os.path.split(
+                                    os.path.abspath(json_data_file))
+    target_index = os.path.join(target_directory, "index.html")
+    target_icon = os.path.join(target_directory, "favicon.ico")
+
+    # Read path for source template
+    # If HTML template is installed with polaris:
+    #   html_template = os.path.dirname(os.path.abspath(__file__))
+    # for now it is not.
+    html_template = os.path.join(target_directory,
+                                 "dynamic_network_analysis_3d-ui.html")
+
+    # Write new index file to be served
+    with open(target_index, "w") as target_fd:
+        with open(html_template, "r") as template_fd:
+            for line in template_fd:
+                target_fd.write(line.replace(
+                                "JSON_DATA_FILE_HERE",
+                                target_file))
+
+    with open(target_icon, "w") as icon_fd:
+        icon_fd.write("A")
+
+    # Check if required JS libs are in target directory
+
+    # Setup web directory
+    global WWW_DIR
+    WWW_DIR = target_directory
+
+    # Launch the unglaublich webserver
     with socketserver.TCPServer((HOST, PORT), CustomHTTPHandler) as httpd:
         LOGGER.info("Serving ready: http://%s:%s", HOST, PORT)
         httpd.serve_forever()

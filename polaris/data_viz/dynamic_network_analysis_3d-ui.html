@@ -117,7 +117,7 @@
 
     // Creationg of the 3D graph which loads the corresponding data file
     const Graph = ForceGraph3D()(graph_elt)
-        .jsonUrl('sample_data_fimps.json')
+        .jsonUrl('JSON_DATA_FILE_HERE')
         .nodeLabel(node => node.name + ':' + node.group)
         .nodeAutoColorBy('group')
         .onNodeHover(node => graph_elt.style.cursor = node ? 'pointer' : null)
