@@ -6,6 +6,7 @@ import http.server
 import logging
 import os
 import socketserver
+import requests
 
 LOGGER = logging.getLogger(__name__)
 
@@ -35,6 +36,7 @@ def launch_webserver(json_data_file):
                                     os.path.abspath(json_data_file))
     target_index = os.path.join(target_directory, "index.html")
     target_icon = os.path.join(target_directory, "favicon.ico")
+    target_lib = os.path.join(target_directory, "3d-force-graph.js")
 
     # Read path for source template
     # If HTML template is installed with polaris:
@@ -55,6 +57,11 @@ def launch_webserver(json_data_file):
         icon_fd.write("A")
 
     # Check if required JS libs are in target directory
+    if not os.path.isfile(target_lib):
+        with open(target_lib, "w") as lib_fd:
+            LOGGER.info("Downloading dependency: %s", target_lib)
+            req = requests.get('https://deepchaos.space/3d-force-graph.js')
+            lib_fd.write(req.text)
 
     # Setup web directory
     global WWW_DIR
