@@ -7,6 +7,7 @@ import click
 
 from polaris import __version__
 from polaris.data_fetch.data_fetch_decoder import data_fetch_decode_normalize
+from polaris.data_viz.server import launch_webserver
 
 # Logger configuration
 
@@ -70,13 +71,15 @@ def cli_learning():
     # learning()
 
 
-@click.command('viz', short_help='data-viz help')
-def cli_data_viz():
+@click.command('viz', short_help='Display results')
+@click.argument('graph_file', nargs=1, required=True)
+def cli_data_viz(graph_file):
+    """ Serving HTML5 vizualization from directory with JSON graph file
+
+        :param graph_file: JSON data file with graph information about nodes
+        and edges.
     """
-    Enter visualization module
-    """
-    LOGGER.debug('[FIXME] Data visualization goes here')
-    # data_viz()
+    launch_webserver(graph_file)
 
 
 # click doesn't automagically add the commands to the group
