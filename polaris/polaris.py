@@ -8,6 +8,7 @@ import click
 from polaris import __version__
 from polaris.data_fetch.data_fetch_decoder import data_fetch_decode_normalize
 from polaris.data_viz.server import launch_webserver
+from polaris.learning.analysis import feature_extraction
 
 # Logger configuration
 
@@ -63,12 +64,13 @@ def cli_data_fetch(sat, start_date, end_date, output_directory):
 
 
 @click.command('learning', short_help='learning help')
-def cli_learning():
+@click.argument('param', nargs=1, required=True)
+@click.argument('input_data', nargs=1, required=True)
+def cli_learning(input_data, param):
     """
     Enter learning module
     """
-    LOGGER.debug('[FIXME] Learning goes here')
-    # learning()
+    feature_extraction(input_data, param)
 
 
 @click.command('viz', short_help='Display results')
