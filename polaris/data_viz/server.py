@@ -69,6 +69,7 @@ def launch_webserver(json_data_file):
     global WWW_DIR
     WWW_DIR = target_directory
 
+    socketserver.TCPServer.allow_reuse_address = True
     # Launch the unglaublich webserver
     with socketserver.TCPServer((HOST, PORT), CustomHTTPHandler) as httpd:
         LOGGER.info("Serving ready: http://%s:%s", HOST, PORT)
