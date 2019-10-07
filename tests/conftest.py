@@ -214,3 +214,23 @@ def polaris_dataset_json():
         }
     ]
 }"""
+
+
+@pytest.fixture
+def pandas_dataset_dict():
+    """PolarisDataset JSON to be used in testing
+    """
+    return [{
+        "dest_callsign": "N6CP  ",
+        "src_callsign": "KK6HIT",
+        "src_ssid": 2,
+        "dest_ssid": 1,
+        "ctl": 3,
+        "pid": 204,
+        "type": 1,
+        "bat1_volt": 3.875,
+        "bat1_temp": 13.0,
+        "bat1_flags": 165,
+        "bat1_ctlflags": 0,
+        "time": "2019-07-21 20:43:57"
+    }]
