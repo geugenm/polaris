@@ -6,8 +6,11 @@ Dataframe.
 """
 
 import json
+import logging
 
 import pandas as pd
+
+LOGGER = logging.getLogger(__name__)
 
 
 def read_polaris_data(json_path):
@@ -19,15 +22,18 @@ def read_polaris_data(json_path):
     """
     dataframe = None
 
-    with open(json_path, "r") as json_file:
-        # converting frames to pandas compatible records
-        json_data = json.load(json_file)
-        json_records = records_from_satnogs_frames(json_data)
+    try:
+        with open(json_path, "r") as json_file:
+            # converting frames to pandas compatible records
+            json_data = json.load(json_file)
+            json_records = records_from_satnogs_frames(json_data)
 
-        # Creating a pandas dataframe
-        dataframe = pd.DataFrame(json_records)
-        dataframe.time = pd.to_datetime(dataframe.time, unit="s")
-        dataframe.index = dataframe.time
+            # Creating a pandas dataframe
+            dataframe = pd.DataFrame(json_records)
+            dataframe.time = pd.to_datetime(dataframe.time, unit="s")
+            dataframe.index = dataframe.time
+    except FileNotFoundError as exception_error:
+        LOGGER.warning(exception_error)
 
     return dataframe
 
