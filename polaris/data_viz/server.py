@@ -5,7 +5,9 @@ Module to prepare and serve data for visualization
 import http.server
 import logging
 import os
+import signal
 import socketserver
+import sys
 
 import requests
 
@@ -69,7 +71,19 @@ def launch_webserver(json_data_file):
     global WWW_DIR
     WWW_DIR = target_directory
 
+    socketserver.TCPServer.allow_reuse_address = True
     # Launch the unglaublich webserver
     with socketserver.TCPServer((HOST, PORT), CustomHTTPHandler) as httpd:
         LOGGER.info("Serving ready: http://%s:%s", HOST, PORT)
+
+        # Catching ctrl+c for clean exit
+        def signal_handler(sig, frame):
+            LOGGER.info("Shutdown server from ctrl+c")
+            LOGGER.debug("%s | %s", sig, frame)
+            httpd.server_close()
+            sys.exit(0)
+
+        signal.signal(signal.SIGINT, signal_handler)
+
+        # Launch the server
         httpd.serve_forever()
