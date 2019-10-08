@@ -1,3 +1,4 @@
 include versioneer.py
 include polaris/_version.py
 include polaris/data_fetch/satellites.json
+include polaris/data_viz/dynamic_network_analysis_3d-ui.html
