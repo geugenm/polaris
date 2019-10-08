@@ -1,6 +1,9 @@
 """
 Cross Correlation module
 """
+import json
+
+import numpy as np
 import pandas as pd
 # Used for the pipeline interface of scikit learn
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -26,11 +29,13 @@ class XCorr(BaseEstimator, TransformerMixin):
         # These parameters could be optimized with
         # with a search method, such as the grid search.
         self.model_params = {
-            "objective": "reg:linear",
+            "objective": "reg:squarederror",
             "n_estimators": 80,
             "learning_rate": 0.1,
             "n_jobs": -1,
-            # "max_depth": 8
+            "predictor": "cpu_predictor",
+            "tree_method": "auto",
+            "max_depth": 8
         }
         if model_params is not None:
             self.model_params = model_params
@@ -99,3 +104,47 @@ class XCorr(BaseEstimator, TransformerMixin):
         """
         if self.importances_map is None:
             self.importances_map = pd.DataFrame(data={}, columns=columns)
+
+    def to_graph(self, output_graph_file, graph_link_threshold=0.1):
+        """
+        Creating a json file for graph visualization
+
+        JSON model used is the one for:
+        https://vasturiano.github.io/3d-force-graph/
+        """
+
+        if graph_link_threshold is None:
+            graph_link_threshold = 0.1
+
+        if self.importances_map is not None:
+            graph_dict = {"nodes": [], "links": []}
+
+            # Adding all possible nodes
+            for col in self.importances_map.columns:
+                graph_dict["nodes"].append({
+                    "id": col,
+                    "name": col,
+                    "group": 0
+                })
+
+            # Adding all edges to graph
+            mdict = self.importances_map.to_dict("dict")
+            for source in self.importances_map.to_dict("dict"):
+                for target in mdict[source]:
+                    if target == source:
+                        continue
+                    if (np.isnan(mdict[source][target])
+                            or isinstance(mdict[source][target], str)):
+                        continue
+                    elif mdict[source][target] >= graph_link_threshold:
+                        graph_dict["links"].append({
+                            "source":
+                            source,
+                            "target":
+                            target,
+                            "value":
+                            mdict[source][target]
+                        })
+
+            with open(output_graph_file, "w") as graph_file:
+                json.dump(graph_dict, graph_file)
