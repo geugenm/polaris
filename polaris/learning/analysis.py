@@ -1,9 +1,9 @@
 """
 Module to launch different data analysis.
 """
-import pandas as pd
 from fets.math import TSIntegrale
 
+from polaris.learning.data.readers import read_polaris_data
 from polaris.learning.feature.extraction import create_list_of_transformers, \
     extract_best_features
 from polaris.learning.predictor.cross_correlation import XCorr
@@ -44,8 +44,7 @@ def cross_correlate(input_file,
     """
 
     # Reading input file - index is considered on first column
-    input_data = pd.read_csv(input_file, index_col=[0])
-    input_data.index = pd.to_datetime(input_data.index, unit="ms")
+    input_data = read_polaris_data(input_file)
 
     # Creating and fitting cross-correlator
     xcorr = XCorr(model_params)

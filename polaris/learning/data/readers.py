@@ -32,6 +32,9 @@ def read_polaris_data(json_path):
             dataframe = pd.DataFrame(json_records)
             dataframe.time = pd.to_datetime(dataframe.time, unit="s")
             dataframe.index = dataframe.time
+
+            # Keep numeric values only
+            dataframe = dataframe.select_dtypes(include=['number', 'datetime'])
     except FileNotFoundError as exception_error:
         LOGGER.warning(exception_error)
 
