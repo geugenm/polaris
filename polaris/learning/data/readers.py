@@ -30,7 +30,6 @@ def read_polaris_data(json_path):
 
             # Creating a pandas dataframe
             dataframe = pd.DataFrame(json_records)
-            dataframe.time = pd.to_datetime(dataframe.time, unit="s")
             dataframe.index = dataframe.time
 
             # Keep numeric values only
