@@ -78,8 +78,8 @@ def launch_webserver(json_data_file):
 
         # Catching ctrl+c for clean exit
         def signal_handler(sig, frame):
-            LOGGER.debug(sig)
-            LOGGER.debug(frame)
+            LOGGER.info("Shutdown server from ctrl+c")
+            LOGGER.debug("%s | %s", sig, frame)
             httpd.server_close()
             sys.exit(0)
 
