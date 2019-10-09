@@ -43,10 +43,7 @@ def launch_webserver(json_data_file):
     target_lib = os.path.join(target_directory, "3d-force-graph.js")
 
     # Read path for source template
-    # If HTML template is installed with polaris:
-    #   html_template = os.path.dirname(os.path.abspath(__file__))
-    # for now it is not.
-    html_template = os.path.join(target_directory,
+    html_template = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                  "dynamic_network_analysis_3d-ui.html")
 
     # Write new index file to be served
