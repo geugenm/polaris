@@ -27,7 +27,7 @@ def sample_entropy(timeseries_data, run_data_length, filtering_level):
         return sum(_c)
 
     len_ts = len(timeseries_data)
-    return -np.log(_phi(run_data_length + 1) / _phi(run_data_length))
+    return 0.0 - np.log(_phi(run_data_length + 1) / _phi(run_data_length))
 
 
 def approximate_entropy(timeseries_data, run_data_length, filtering_level):

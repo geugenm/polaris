@@ -65,17 +65,50 @@ POLARIS_FRAME_DICT = {
         "version": "0.15.1"
     },
     "fields": {
-        "dest_callsign": "N6CP",
-        "src_callsign": "KK6HIT",
-        "src_ssid": 2,
-        "dest_ssid": 1,
-        "ctl": 3,
-        "pid": 204,
-        "type": 1,
-        "bat1_volt": 124,
-        "bat1_temp": 161,
-        "bat1_flags": 161,
-        "bat1_ctlflags": 0,
+        "dest_callsign": {
+            "value": "N6CP  ",
+            "unit": None
+        },
+        "src_callsign": {
+            "value": "KK6HIT",
+            "unit": None
+        },
+        "src_ssid": {
+            "value": 2,
+            "unit": None
+        },
+        "dest_ssid": {
+            "value": 1,
+            "unit": None
+        },
+        "ctl": {
+            "value": 3,
+            "unit": None
+        },
+        "pid": {
+            "value": 204,
+            "unit": None
+        },
+        "type": {
+            "value": 1,
+            "unit": None
+        },
+        "bat1_volt": {
+            "value": 3.875,
+            "unit": "V"
+        },
+        "bat1_temp": {
+            "value": 13.0,
+            "unit": "degC"
+        },
+        "bat1_flags": {
+            "value": 165,
+            "unit": None
+        },
+        "bat1_ctlflags": {
+            "value": 0,
+            "unit": None
+        }
     }
 }
 
@@ -133,18 +166,71 @@ def polaris_dataset_json():
                 "version": "0.15.1"
             },
             "fields": {
-                "dest_callsign": "N6CP",
-                "src_callsign": "KK6HIT",
-                "src_ssid": 2,
-                "dest_ssid": 1,
-                "ctl": 3,
-                "pid": 204,
-                "type": 1,
-                "bat1_volt": 124,
-                "bat1_temp": 161,
-                "bat1_flags": 161,
-                "bat1_ctlflags": 0
+                "dest_callsign": {
+                    "value": "N6CP  ",
+                    "unit": null
+                },
+                "src_callsign": {
+                    "value": "KK6HIT",
+                    "unit": null
+                },
+                "src_ssid": {
+                    "value": 2,
+                    "unit": null
+                },
+                "dest_ssid": {
+                    "value": 1,
+                    "unit": null
+                },
+                "ctl": {
+                    "value": 3,
+                    "unit": null
+                },
+                "pid": {
+                    "value": 204,
+                    "unit": null
+                },
+                "type": {
+                    "value": 1,
+                    "unit": null
+                },
+                "bat1_volt": {
+                    "value": 3.875,
+                    "unit": "V"
+                },
+                "bat1_temp": {
+                    "value": 13.0,
+                    "unit": "degC"
+                },
+                "bat1_flags": {
+                    "value": 165,
+                    "unit": null
+                },
+                "bat1_ctlflags": {
+                    "value": 0,
+                    "unit": null
+                }
             }
         }
     ]
 }"""
+
+
+@pytest.fixture
+def pandas_dataset_dict():
+    """PolarisDataset JSON to be used in testing
+    """
+    return [{
+        "dest_callsign": "N6CP  ",
+        "src_callsign": "KK6HIT",
+        "src_ssid": 2,
+        "dest_ssid": 1,
+        "ctl": 3,
+        "pid": 204,
+        "type": 1,
+        "bat1_volt": 3.875,
+        "bat1_temp": 13.0,
+        "bat1_flags": 165,
+        "bat1_ctlflags": 0,
+        "time": "2019-07-21 20:43:57"
+    }]
