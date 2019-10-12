@@ -63,7 +63,9 @@ def cli_data_fetch(sat, start_date, end_date, output_directory):
     data_fetch_decode_normalize(sat, output_directory, start_date, end_date)
 
 
-@click.command('learn', short_help='learning help')
+@click.command('learn',
+               short_help='learning help',
+               help='INPUT_FILE in csv or json format')
 @click.argument('input_file', nargs=1, required=True)
 @click.option('--output_graph_file',
               '-g',
@@ -77,17 +79,25 @@ def cli_data_fetch(sat, start_date, end_date, output_directory):
               '-c',
               is_flag=False,
               help='Target column to extract features for')
+@click.option('--csv_sep',
+              '-s',
+              is_flag=False,
+              help='The separator used in the input csv file')
 def cli_learning(input_file,
                  output_graph_file=None,
                  graph_link_threshold=0.1,
-                 col=None):
+                 col=None,
+                 csv_sep=','):
     """
     Enter learning module
     """
     if col is not None:
         feature_extraction(input_file, col)
     elif output_graph_file is not None:
-        cross_correlate(input_file, output_graph_file, graph_link_threshold)
+        cross_correlate(input_file,
+                        output_graph_file,
+                        graph_link_threshold,
+                        csv_sep=csv_sep)
     else:
         LOGGER.warning("Nothing learnt from file: %s", input_file)
 
