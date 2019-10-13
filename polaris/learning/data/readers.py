@@ -78,6 +78,7 @@ def normalize_dataframe(dataframe):
         :return: Pandas dataframe normalized
     """
     dataframe.index = dataframe.time
+    dataframe.drop(['time'], axis=1, inplace=True)
 
     # Keep numeric values only
     dataframe = dataframe.select_dtypes(include=['number', 'datetime'])
