@@ -119,7 +119,9 @@
     const Graph = ForceGraph3D()(graph_elt)
         .jsonUrl('JSON_DATA_FILE_HERE')
         .nodeLabel(node => node.name + ':' + node.group)
-        .nodeAutoColorBy('group')
+        //.nodeAutoColorBy('group')
+        .nodeColor(node => node.id.toString().includes(search_elt.value)
+                       && (search_elt.value.length > 0) ? "#33EE33" : "#BBF")
         .onNodeHover(node => graph_elt.style.cursor = node ? 'pointer' : null)
         .onNodeClick(node => {
           hud_update("clicked", node);
@@ -176,8 +178,12 @@
         var key = e.which || e.keyCode;
         if (key === 13) { // 13 is enter
           if (e.ctrlKey) {
-            // Control key is pressed: highligting
-            console.log("Highlights");
+            // Control key is pressed: node highligting
+
+            // The field search_elt.value was certainly updated
+            // So we refresh to update color of nodes which contain
+            // the search string.
+            Graph.refresh();
           } else {
             // Control key is NOT pressed: jetpacking
             hud_update("searching", search_elt.value);
