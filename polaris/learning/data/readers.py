@@ -17,9 +17,10 @@ LOGGER = logging.getLogger(__name__)
 
 def read_polaris_data(path, csv_sep=','):
     """
-        Read a JSON file and creates a pandas dataframe out of it.
+        Read a JSON or CSV file and creates a pandas dataframe out of it.
 
         :param path: File path for the input file.
+        :param csv_sep: The csv separator used for the input csv file.
         :return: Pandas dataframe with all frames fields values
     """
     dataframe = None
