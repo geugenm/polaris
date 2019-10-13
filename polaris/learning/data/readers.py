@@ -5,8 +5,10 @@ General input standard format for functions in polaris learn are Pandas
 Dataframe.
 """
 
+import calendar
 import json
 import logging
+import time
 
 import pandas as pd
 
@@ -63,7 +65,8 @@ def records_from_satnogs_frames(json_data):
         # check if we had the time information from frame
         # if not we use the metadata
         if "time" not in this_record:
-            this_record["time"] = frame["time"]
+            this_record["time"] = calendar.timegm(
+                time.strptime(frame["time"], "%Y-%m-%d %H:%M:%S"))
         records.append(this_record)
 
     return records
