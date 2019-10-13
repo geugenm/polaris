@@ -66,8 +66,8 @@ def records_from_satnogs_frames(json_data):
         # check if we had the time information from frame
         # if not we use the metadata
         if "time" not in this_record:
-            this_record["time"] = calendar.timegm(
-                time.strptime(frame["time"], "%Y-%m-%d %H:%M:%S"))
+            this_record["time"] = pd.to_datetime(frame["time"]).timestamp()
+
         records.append(this_record)
 
     return records
