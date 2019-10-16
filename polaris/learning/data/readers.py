@@ -5,10 +5,8 @@ General input standard format for functions in polaris learn are Pandas
 Dataframe.
 """
 
-import calendar
 import json
 import logging
-import time
 
 import pandas as pd
 
