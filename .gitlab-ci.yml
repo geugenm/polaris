@@ -1,19 +1,22 @@
+variables:
+  GITLAB_CI_IMAGE_PYTHON: 'python:3.7.4'
+  GITLAB_CI_PYPI_TOX: 'tox~=3.8.0'
 stages:
   - static
   - build
   - test
 static:
   stage: static
-  image: python:latest
+  image: ${GITLAB_CI_IMAGE_PYTHON}
   before_script:
-    - pip install tox~=3.8.0
+    - pip install "$GITLAB_CI_PYPI_TOX"
   script:
     - tox -e "flake8,isort,yapf,pylint"
 build:
   stage: build
-  image: python:latest
+  image: ${GITLAB_CI_IMAGE_PYTHON}
   before_script:
-    - pip install tox~=3.8.0
+    - pip install "$GITLAB_CI_PYPI_TOX"
   script:
     - rm -rf dist
     - tox -e "build"
@@ -24,9 +27,9 @@ build:
       - dist
 test:
   stage: test
-  image: python:latest
+  image: ${GITLAB_CI_IMAGE_PYTHON}
   before_script:
-    - pip install tox~=3.8.0
+    - pip install "$GITLAB_CI_PYPI_TOX"
   script:
     - tox -e "pytest"
   coverage: '/^TOTAL.*\s+(\d+\%)$/'
