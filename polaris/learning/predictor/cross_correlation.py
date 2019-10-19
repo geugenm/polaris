@@ -147,4 +147,4 @@ class XCorr(BaseEstimator, TransformerMixin):
                         })
 
             with open(output_graph_file, "w") as graph_file:
-                json.dump(graph_dict, graph_file)
+                json.dump(graph_dict, graph_file, indent=4)

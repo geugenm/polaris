@@ -13,27 +13,30 @@ import pandas as pd
 LOGGER = logging.getLogger(__name__)
 
 
-def read_polaris_data(json_path):
+def read_polaris_data(path, csv_sep=','):
     """
-        Read a JSON file and creates a pandas dataframe out of it.
+        Read a JSON or CSV file and creates a pandas dataframe out of it.
 
-        :param json_path: File path for the input json file.
+        :param path: File path for the input file.
+        :param csv_sep: The csv separator used for the input csv file.
         :return: Pandas dataframe with all frames fields values
     """
     dataframe = None
 
     try:
-        with open(json_path, "r") as json_file:
+        if path.lower().endswith('.csv'):
+            dataframe = pd.read_csv(path, sep=csv_sep)
+            dataframe = normalize_dataframe(dataframe)
+            return dataframe
+
+        with open(path, "r") as json_file:
             # converting frames to pandas compatible records
             json_data = json.load(json_file)
             json_records = records_from_satnogs_frames(json_data)
 
             # Creating a pandas dataframe
             dataframe = pd.DataFrame(json_records)
-            dataframe.index = dataframe.time
-
-            # Keep numeric values only
-            dataframe = dataframe.select_dtypes(include=['number', 'datetime'])
+            dataframe = normalize_dataframe(dataframe)
     except FileNotFoundError as exception_error:
         LOGGER.warning(exception_error)
 
@@ -61,7 +64,25 @@ def records_from_satnogs_frames(json_data):
         # check if we had the time information from frame
         # if not we use the metadata
         if "time" not in this_record:
-            this_record["time"] = frame["time"]
+            this_record["time"] = pd.to_datetime(frame["time"]).timestamp()
+
         records.append(this_record)
 
     return records
+
+
+def normalize_dataframe(dataframe):
+    """
+        Apply dataframe modification for being used
+        by the learn module.
+
+        :param dataframe: the pandas dataframe to normalize
+        :return: Pandas dataframe normalized
+    """
+    dataframe.index = dataframe.time
+    dataframe.drop(['time'], axis=1, inplace=True)
+
+    # Keep numeric values only
+    dataframe = dataframe.select_dtypes(include=['number', 'datetime'])
+
+    return dataframe

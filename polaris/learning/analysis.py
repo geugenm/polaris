@@ -35,7 +35,8 @@ def feature_extraction(input_file, param_col):
 def cross_correlate(input_file,
                     output_graph_file=None,
                     graph_link_threshold=0.1,
-                    model_params=None):
+                    model_params=None,
+                    csv_sep=','):
     """
     Catch linear and non-linear correlations between all columns of the
     input data.
@@ -44,7 +45,7 @@ def cross_correlate(input_file,
     """
 
     # Reading input file - index is considered on first column
-    input_data = read_polaris_data(input_file)
+    input_data = read_polaris_data(input_file, csv_sep)
 
     # Creating and fitting cross-correlator
     xcorr = XCorr(model_params)
