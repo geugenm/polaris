@@ -191,9 +191,7 @@ def data_fetch(norad_id, output_directory, start_date, end_date):
                               frame_modules=None,
                               observer=None,
                               app_source=None,
-                              transmitter=None,
-                              page_from=None,
-                              page_to=None)
+                              transmitter=None)
 
     # Running glouton data collection
     try:
