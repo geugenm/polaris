@@ -15,7 +15,7 @@ class Lightsail2(Normalizer):
 
     def __init__(self):
         super(Lightsail2, self).__init__()
-        self.normalizers = [
+        self.normalizers = [  # pylint: disable=R0801
             Field('dest_callsign', lambda x: x, None, 'Destination Callsign'),
             Field('src_callsign', lambda x: x, None, 'Source Callsign'),
             Field('src_ssid', lambda x: x, None, 'Source SSID'),
