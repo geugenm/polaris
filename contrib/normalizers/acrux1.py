@@ -16,12 +16,13 @@ class Acrux1(Normalizer):
     def __init__(self):
         super(Acrux1, self).__init__()
         self.normalizers = [  # pylint: disable=R0801
-            Field('dest_callsign', lambda x: x, None, 'Destination Callsign'),
-            Field('src_callsign', lambda x: x, None, 'Source Callsign'),
-            Field('src_ssid', lambda x: x, None, 'Source SSID'),
-            Field('dest_ssid', lambda x: x, None, 'Destination SSID'),
-            Field('ctl', lambda x: x, None, 'CTL'),
-            Field('pid', lambda x: x, None, 'PID'),
+            Field('dest_callsign', lambda x: x, None,
+                  'AX25 Destination Callsign'),
+            Field('src_callsign', lambda x: x, None, 'AX25 Source Callsign'),
+            Field('src_ssid', lambda x: x, None, 'AX25 Source SSID'),
+            Field('dest_ssid', lambda x: x, None, 'AX25 Destination SSID'),
+            Field('ctl', lambda x: x, None, 'AX25 CTL'),
+            Field('pid', lambda x: x, None, 'AX25 PID'),
             Field('tx_count', lambda x: x, None, 'TX byte count'),
             Field('rx_count', lambda x: x, None, 'RX byte count'),
             Field('rx_valid', lambda x: x, None, 'n.a.'),
