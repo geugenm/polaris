@@ -5,11 +5,20 @@
 
 Python3 tool to analyze a satellite set of telemetry to understand links/dependencies among different subsystems. The telemetry is currently retrieved from the [SatNOGS Network](https://network.satnogs.org/).
 
-If you want to **know more**, join our [Matrix room](https://riot.im/app/#/room/#polaris:matrix.org)
+If you want to **know more**:
+
+- join our [Matrix room](https://riot.im/app/#/room/#polaris:matrix.org)
+
+- read the [project wiki](https://gitlab.com/crespum/polaris/wikis/Home)
+
+- read the blog post [Analyzing Lightsail-2 Telemetry with Polaris](https://blog.crespum.eu/analyzing-lightsail-2-telemetry-with-polaris/)
 
 ## Project structure
 
 ```
+contrib/               - code that is not directly dependent on Polaris, but is used in the project
+docs/                  - Some documentation on the project (though more is in the wiki)
+docker/                - Docker files for Grafana and InfluxDB
 polaris/               - Project source code
     data_fetch/        - Module to fetch and prepare data for the analysis
     data_viz/          - Module to visualize the analysis results
@@ -18,7 +27,6 @@ polaris/               - Project source code
 
 tests/                 - Project unit tests
 playground/            - Exploratory tests
-utils/                 - Dependencies that are submodules for this repo
 ```
 
 ## Installation
@@ -38,8 +46,10 @@ $ make setup
 $ source .venv/bin/activate
 ```
 
+
+
 ## Running the code
-```
+```bash
 # Activate the virtual environment:
 $ source .venv/bin/activate
 
@@ -56,8 +66,32 @@ Commands:
   learning  learning help
   viz       data-viz help
 
-# To fetch and decode the data from the SatNOGS network, use the following command
-$ python bin/polaris fetch -s 2019-06-01 -e 2019-06-07 2019-elfin-a
+# To fetch and decode data from the SatNOGS network, run:
+$ polaris fetch -s 2019-08-10 -e 2019-10-5 LightSail-2 /tmp/
+# Note: this may take some time.
+
+# Data will be saved at /tmp/normalized_frames.json
+$ head /tmp/normalized_frames.json
+[
+    {
+        "time": "2019-09-12 08:14:42",
+        "measurement": "",
+        "tags": {
+            "satellite": "",
+            "decoder": "Lightsail2",
+            "station": "",
+            "observer": "",
+            "source": "",
+[...]
+
+
+# To learn from that data, run:
+$ polaris learn -g /tmp/new_graph.json /tmp/normalized_frames.json
+# Note: depending on your hardware, this may take some time.
+
+# To see a visualization of these results, run:
+$ polaris viz /tmp/new_graph.json
+# Then visit http://localhost:8080 in your browser
 ```
 
 ### More info for developers
@@ -67,8 +101,9 @@ Building the package
 # Activate the virtual environment:
 $ source .venv/bin/activate
 
-# Build and install the package
-$ python setup.py install
+# Build and install the package in editable mode; any changes
+# to your code will be reflected when you run polaris.
+$ pip install -e .
 ```
 
 Format the code before commiting, otherwise the CI engine will fail:
