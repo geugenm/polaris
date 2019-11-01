@@ -1,9 +1,7 @@
 """
 Cross Correlation module
 """
-import json
 
-import numpy as np
 import pandas as pd
 # Used for the pipeline interface of scikit learn
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -22,7 +20,7 @@ class XCorr(BaseEstimator, TransformerMixin):
             :param model_params: parameters for each model
         """
         self.models = None
-        self.importances_map = None
+        self.__importances_map = None
         self.early_stopping_rounds = 5
 
         # Model parameters in use for all iterations
@@ -39,6 +37,19 @@ class XCorr(BaseEstimator, TransformerMixin):
         }
         if model_params is not None:
             self.model_params = model_params
+
+    @property
+    def importances_map(self):
+        """
+        Return the importances_map value as Pandas Dataframe.
+
+        """
+
+        return self.__importances_map
+
+    @importances_map.setter
+    def importances_map(self, importances_map):
+        self.__importances_map = importances_map
 
     def fit(self, X):
         """ Train on a dataframe
@@ -91,9 +102,9 @@ class XCorr(BaseEstimator, TransformerMixin):
         new_row = dict(sorted(new_row.items()))
 
         # Concatenating new information about feature importances
-        if self.importances_map is not None:
-            self.importances_map = pd.concat([
-                self.importances_map,
+        if self.__importances_map is not None:
+            self.__importances_map = pd.concat([
+                self.__importances_map,
                 pd.DataFrame(index=[target_series.name], data=new_row)
             ])
         return regr_m
@@ -102,49 +113,5 @@ class XCorr(BaseEstimator, TransformerMixin):
         """
         Creating an empty importance map
         """
-        if self.importances_map is None:
-            self.importances_map = pd.DataFrame(data={}, columns=columns)
-
-    def to_graph(self, output_graph_file, graph_link_threshold=0.1):
-        """
-        Creating a json file for graph visualization
-
-        JSON model used is the one for:
-        https://vasturiano.github.io/3d-force-graph/
-        """
-
-        if graph_link_threshold is None:
-            graph_link_threshold = 0.1
-
-        if self.importances_map is not None:
-            graph_dict = {"nodes": [], "links": []}
-
-            # Adding all possible nodes
-            for col in self.importances_map.columns:
-                graph_dict["nodes"].append({
-                    "id": col,
-                    "name": col,
-                    "group": 0
-                })
-
-            # Adding all edges to graph
-            mdict = self.importances_map.to_dict("dict")
-            for source in self.importances_map.to_dict("dict"):
-                for target in mdict[source]:
-                    if target == source:
-                        continue
-                    if (np.isnan(mdict[source][target])
-                            or isinstance(mdict[source][target], str)):
-                        continue
-                    elif mdict[source][target] >= graph_link_threshold:
-                        graph_dict["links"].append({
-                            "source":
-                            source,
-                            "target":
-                            target,
-                            "value":
-                            mdict[source][target]
-                        })
-
-            with open(output_graph_file, "w") as graph_file:
-                json.dump(graph_dict, graph_file, indent=4)
+        if self.__importances_map is None:
+            self.__importances_map = pd.DataFrame(data={}, columns=columns)
