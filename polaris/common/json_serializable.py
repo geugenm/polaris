@@ -3,6 +3,8 @@
 
 import json
 
+from polaris.common import constants
+
 
 class JsonSerializable():
     """Class for JSON-serializable objects
@@ -11,7 +13,7 @@ class JsonSerializable():
     def to_json(self):
         """Write a dataset object to JSON.
         """
-        return json.dumps(self, indent=4)
+        return json.dumps(self, indent=constants.JSON_INDENT)
 
     def from_json(self, json_string):
         """Load a dataset object from a JSON string

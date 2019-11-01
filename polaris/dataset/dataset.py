@@ -3,6 +3,7 @@
 
 import json
 
+from polaris.common import constants
 from polaris.common.json_serializable import JsonSerializable
 from polaris.dataset.frame import PolarisFrame
 from polaris.dataset.metadata import PolarisMetadata
@@ -30,7 +31,7 @@ class PolarisDataset(dict, JsonSerializable):
         return {"metadata": self.metadata, "frames": self.frames}
 
     def __str__(self):
-        return json.dumps(self.__repr__(), indent=4)
+        return json.dumps(self.__repr__(), indent=constants.JSON_INDENT)
 
     def from_json(self, json_string):
         """Load a dataset object from a JSON string.
@@ -47,4 +48,4 @@ class PolarisDataset(dict, JsonSerializable):
     def to_json(self):
         """Write a dataset object to JSON.
         """
-        return json.dumps(self.__repr__(), indent=4)
+        return json.dumps(self.__repr__(), indent=constants.JSON_INDENT)
