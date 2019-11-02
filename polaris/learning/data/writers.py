@@ -10,9 +10,9 @@ import numpy as np
 from polaris.common import constants
 
 
-def importances_map_to_graph(importances_map,
-                             output_graph_file,
-                             graph_link_threshold=0.1):
+def heatmap_to_graph(importances_map,
+                     output_graph_file,
+                     graph_link_threshold=0.1):
     """
         Creating a json file for graph visualization
 
