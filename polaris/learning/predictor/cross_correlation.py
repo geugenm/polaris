@@ -20,7 +20,7 @@ class XCorr(BaseEstimator, TransformerMixin):
             :param model_params: parameters for each model
         """
         self.models = None
-        self.__importances_map = None
+        self._importances_map = None
         self.early_stopping_rounds = 5
 
         # Model parameters in use for all iterations
@@ -45,11 +45,11 @@ class XCorr(BaseEstimator, TransformerMixin):
 
         """
 
-        return self.__importances_map
+        return self._importances_map
 
     @importances_map.setter
     def importances_map(self, importances_map):
-        self.__importances_map = importances_map
+        self._importances_map = importances_map
 
     def fit(self, X):
         """ Train on a dataframe
@@ -102,9 +102,9 @@ class XCorr(BaseEstimator, TransformerMixin):
         new_row = dict(sorted(new_row.items()))
 
         # Concatenating new information about feature importances
-        if self.__importances_map is not None:
-            self.__importances_map = pd.concat([
-                self.__importances_map,
+        if self._importances_map is not None:
+            self._importances_map = pd.concat([
+                self._importances_map,
                 pd.DataFrame(index=[target_series.name], data=new_row)
             ])
         return regr_m
@@ -113,5 +113,5 @@ class XCorr(BaseEstimator, TransformerMixin):
         """
         Creating an empty importance map
         """
-        if self.__importances_map is None:
-            self.__importances_map = pd.DataFrame(data={}, columns=columns)
+        if self._importances_map is None:
+            self._importances_map = pd.DataFrame(data={}, columns=columns)
