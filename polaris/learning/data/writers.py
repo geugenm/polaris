@@ -10,9 +10,7 @@ import numpy as np
 from polaris.common import constants
 
 
-def heatmap_to_graph(importances_map,
-                     output_graph_file,
-                     graph_link_threshold=0.1):
+def heatmap_to_graph(heatmap, output_graph_file, graph_link_threshold=0.1):
     """
         Creating a json file for graph visualization
 
@@ -23,16 +21,16 @@ def heatmap_to_graph(importances_map,
     if graph_link_threshold is None:
         graph_link_threshold = 0.1
 
-    if importances_map is not None:
+    if heatmap is not None:
         graph_dict = {"nodes": [], "links": []}
 
         # Adding all possible nodes
-        for col in importances_map.columns:
+        for col in heatmap.columns:
             graph_dict["nodes"].append({"id": col, "name": col, "group": 0})
 
         # Adding all edges to graph
-        mdict = importances_map.to_dict("dict")
-        for source in importances_map.to_dict("dict"):
+        mdict = heatmap.to_dict("dict")
+        for source in heatmap.to_dict("dict"):
             for target in mdict[source]:
                 if target == source:
                     continue
