@@ -4,6 +4,7 @@ Module to launch different data analysis.
 from fets.math import TSIntegrale
 
 from polaris.learning.data.readers import read_polaris_data
+from polaris.learning.data.writers import heatmap_to_graph
 from polaris.learning.feature.extraction import create_list_of_transformers, \
     extract_best_features
 from polaris.learning.predictor.cross_correlation import XCorr
@@ -54,4 +55,5 @@ def cross_correlate(input_file,
     if output_graph_file is None:
         output_graph_file = "/tmp/polaris_graph.json"
 
-    xcorr.to_graph(output_graph_file, graph_link_threshold)
+    heatmap_to_graph(xcorr.importances_map, output_graph_file,
+                     graph_link_threshold)
