@@ -33,7 +33,7 @@ playground/            - Exploratory tests
 
 ```bash
 # Clone the repo
-$ git clone --recurse-submodules https://gitlab.com/crespum/polaris.git
+$ git clone https://gitlab.com/crespum/polaris.git
 
 # Run `make setup` -- this will:
 # - Create virtual environment
@@ -46,7 +46,11 @@ $ make setup
 $ source .venv/bin/activate
 ```
 
+You can also use the deployed PyPI package using:
 
+```bash
+$ pip install polaris-ml
+```
 
 ## Running the code
 ```bash
