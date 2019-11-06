@@ -81,3 +81,35 @@ def test_build_pipelines(input_transformers):
     # Checking if pipelines are reset
     fio.build_pipelines(input_transformers)
     assert len(fio.pipelines) == 2
+
+
+@pytest.fixture(name="input_importances")
+def fixture_input_importances():
+    """ Creating a fixed set of transformers """
+    class FakeModel():
+
+        def __init__(self):
+            self.feature_importances_ = [0.5, 0.2, 0.3]
+
+    return FakeModel()
+
+
+def test_extract_feature_importance(input_importances, input_transformers):
+    """ Testing the function build_pipelines on the argument
+        list of transformers.
+
+        :param input_importances: fixtures for input transformers
+    """
+    fio = FeatureImportanceOptimization(input_transformers)
+    assert len(fio.pipelines) == 2
+    # Checking if importances are well listed and ordered
+    result = fio.extract_feature_importance(["A", "B", "C"], input_importances)
+    assert len(result) == 3
+    assert len(result[0]) == 2
+    print(result)
+    assert result[0][0] == "A"
+    assert result[0][1] == 0.5
+    assert result[1][0] == "C"
+    assert result[1][1] == 0.3
+    assert result[2][0] == "B"
+    assert result[2][1] == 0.2
