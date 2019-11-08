@@ -218,6 +218,26 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
             return np.mean(np.abs([(flat_score - k[1]) for k in importances]))
         return flat_score
 
+    @staticmethod
+    def anti_collision_renaming(dataset, col, pipeline_n):
+        """ Renaming column names to avoid collision during pipelines
+        transformations
+
+            :param dataset: pd.Series or pd.DataFrame to be managed
+            :param col: string for initial column name from which this data is
+            originated
+            :param pipeline_n: pipeline stage, an Integer number.
+            :return: the input dataset with changed name or column names.
+        """
+        if isinstance(dataset, pd.Series):
+            dataset.name = "{}_p{}_{}".format(col, pipeline_n, dataset.name)
+        elif isinstance(dataset, pd.DataFrame):
+            dataset.columns = [
+                "{}_p{}_{}".format(col, pipeline_n, subcol)
+                for subcol in dataset.columns
+            ]
+        return dataset
+
     def fit(self, input_x, input_y, method=None):
         """ Fit models for every pipeline and extract best features
 
@@ -240,14 +260,8 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
             input_dataset = None
             for col in input_x.columns:
                 tmp_dataset = pipeline.transform(input_x[col])
-                if isinstance(tmp_dataset, pd.Series):
-                    tmp_dataset.name = "{}_p{}_{}".format(
-                        col, pipeline_n, tmp_dataset.name)
-                elif isinstance(tmp_dataset, pd.DataFrame):
-                    tmp_dataset.columns = [
-                        "{}_p{}_{}".format(col, pipeline_n, subcol)
-                        for subcol in tmp_dataset.columns
-                    ]
+                tmp_dataset = self.anti_collision_renaming(
+                    tmp_dataset, col, pipeline_n)
                 if input_dataset is None:
                     input_dataset = pd.DataFrame(tmp_dataset)
                 else:

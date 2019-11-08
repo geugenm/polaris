@@ -1,6 +1,7 @@
 """
 Module for testing selection.py script.
 """
+import pandas as pd
 import pytest
 from fets.math import TSIntegrale
 
@@ -83,27 +84,22 @@ def test_build_pipelines(input_transformers):
     assert len(fio.pipelines) == 2
 
 
-@pytest.fixture(name="input_importances")
-def fixture_input_importances():
-    """ Creating a fixed set of transformers """
-    class FakeModel():
+def test_extract_feature_importance(input_transformers):
+    """ Testing if feature importances are well extracted and ordered
 
+        :param input_transformers: fixtures for input transformers
+
+    """
+
+    class FakeModel():
         def __init__(self):
             self.feature_importances_ = [0.5, 0.2, 0.3]
 
-    return FakeModel()
-
-
-def test_extract_feature_importance(input_importances, input_transformers):
-    """ Testing the function build_pipelines on the argument
-        list of transformers.
-
-        :param input_importances: fixtures for input transformers
-    """
+    model = FakeModel()
     fio = FeatureImportanceOptimization(input_transformers)
     assert len(fio.pipelines) == 2
     # Checking if importances are well listed and ordered
-    result = fio.extract_feature_importance(["A", "B", "C"], input_importances)
+    result = fio.extract_feature_importance(["A", "B", "C"], model)
     assert len(result) == 3
     assert len(result[0]) == 2
     print(result)
@@ -113,3 +109,41 @@ def test_extract_feature_importance(input_importances, input_transformers):
     assert result[1][1] == 0.3
     assert result[2][0] == "B"
     assert result[2][1] == 0.2
+
+
+def test_anti_collision_renaming(input_transformers):
+    """ Test if columns are well renamed during pipelined transformations
+
+        :param input_transformers: fixtures for input transformers
+
+    """
+    fio = FeatureImportanceOptimization(input_transformers)
+
+    # Checking renaming on Series
+    series = pd.Series([3, 2, 1, "ignition"], name="myseries")
+    col = "ORIGIN"
+    step_n = 4
+
+    assert series.name == "myseries"
+
+    series = fio.anti_collision_renaming(series, col, step_n)
+
+    assert series.name == "ORIGIN_p4_myseries"
+
+    step_n = 5
+    series = fio.anti_collision_renaming(series, col, step_n)
+
+    assert series.name == "ORIGIN_p5_ORIGIN_p4_myseries"
+
+    # Checking renaming on DataFrames
+    dataframe = pd.DataFrame({"A": [3, 2], "B": [1, "ignition"]})
+
+    assert len(dataframe.columns) == 2
+    assert dataframe.columns[0] == "A"
+    assert dataframe.columns[1] == "B"
+
+    dataframe = fio.anti_collision_renaming(dataframe, col, step_n)
+
+    assert len(dataframe.columns) == 2
+    assert dataframe.columns[0] == "ORIGIN_p5_A"
+    assert dataframe.columns[1] == "ORIGIN_p5_B"
