@@ -191,12 +191,20 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
 
         if method == "all_best":
             for model_list in list_of_fimp:
-                all_chosen_features.extend(model_list[0])
+                if len(model_list) == 0:
+                    continue
+                model_list = sorted(model_list,
+                                    reverse=True,
+                                    key=lambda x: x[1])
+                all_chosen_features.append(model_list[0])
 
         if method == "best_until_threshold":
-            for lst in list_of_fimp:
-                last_significant_index = self.find_gap(lst)
-                tmp_list = lst[:(last_significant_index + 1)]
+            for model_list in list_of_fimp:
+                model_list = sorted(model_list,
+                                    reverse=True,
+                                    key=lambda x: x[1])
+                last_significant_index = self.find_gap(model_list)
+                tmp_list = model_list[:(last_significant_index + 1)]
                 all_chosen_features.extend(tmp_list)
 
         all_chosen_features.sort(key=lambda x: x[1], reverse=True)

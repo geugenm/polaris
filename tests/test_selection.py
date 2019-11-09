@@ -30,10 +30,29 @@ def test_fio_init(list_of_transformers, exp_pipes):
     assert fio.model_optinput is None
 
 
-@pytest.mark.parametrize("list_of_fimp, method, result", [
-    (None, "first_best", []),
-    ([[("a", 0.2), ("b", 0.8)]], "first_best", [("b", 0.8)]),
-])
+@pytest.mark.parametrize(
+    "list_of_fimp, method, result",
+    [
+        # Tests for method "first_best"
+        (None, "first_best", []),
+        ([[("a", 0.2), ("b", 0.8)]], "first_best", [("b", 0.8)]),
+        # Test for no method provided - should behave like "first_best"
+        (None, None, []),
+        ([[("a", 0.2), ("b", 0.8)]], None, [("b", 0.8)]),
+        # Tests for method "all_best"
+        (None, "all_best", []),
+        ([[("a", 0.2), ("b", 0.8)], [("d", 0.4),
+                                     ("c", 0.6)]], "all_best", [("b", 0.8),
+                                                                ("c", 0.6)]),
+        # Tests for method "best_until_threshold"
+        (None, "best_until_threshold", []),
+        ([[("a", 0.01), ("aa", 0.4),
+           ("b", 0.59)], [("d", 0.4),
+                          ("c", 0.6)]], "best_until_threshold", [("c", 0.6),
+                                                                 ("b", 0.59),
+                                                                 ("aa", 0.4),
+                                                                 ("d", 0.4)]),
+    ])
 def test_filter_importances(list_of_fimp, method, result):
     """ Test of the importance filtering
 
@@ -92,8 +111,14 @@ def test_extract_feature_importance(input_transformers):
     """
 
     class FakeModel():
+        """ Fake Model object meant to hold the feature importance list only
+        """
+
         def __init__(self):
             self.feature_importances_ = [0.5, 0.2, 0.3]
+
+        def fit(self):
+            pass
 
     model = FakeModel()
     fio = FeatureImportanceOptimization(input_transformers)
@@ -102,7 +127,6 @@ def test_extract_feature_importance(input_transformers):
     result = fio.extract_feature_importance(["A", "B", "C"], model)
     assert len(result) == 3
     assert len(result[0]) == 2
-    print(result)
     assert result[0][0] == "A"
     assert result[0][1] == 0.5
     assert result[1][0] == "C"
