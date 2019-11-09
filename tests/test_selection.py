@@ -110,17 +110,14 @@ def test_extract_feature_importance(input_transformers):
 
     """
 
-    class FakeModel():
+    class FakeModel(object):
         """ Fake Model object meant to hold the feature importance list only
         """
-
-        def __init__(self):
-            self.feature_importances_ = [0.5, 0.2, 0.3]
-
-        def fit(self):
-            pass
+        pass
 
     model = FakeModel()
+    model.feature_importances_ = [0.5, 0.2, 0.3]
+
     fio = FeatureImportanceOptimization(input_transformers)
     assert len(fio.pipelines) == 2
     # Checking if importances are well listed and ordered
