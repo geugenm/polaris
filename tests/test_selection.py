@@ -1,6 +1,8 @@
 """
 Module for testing selection.py script.
 """
+from dataclasses import dataclass
+
 import pandas as pd
 import pytest
 from fets.math import TSIntegrale
@@ -110,13 +112,13 @@ def test_extract_feature_importance(input_transformers):
 
     """
 
-    class FakeModel(object):
+    @dataclass
+    class FakeModel:
         """ Fake Model object meant to hold the feature importance list only
         """
-        pass
+        feature_importances_: None
 
-    model = FakeModel()
-    model.feature_importances_ = [0.5, 0.2, 0.3]
+    model = FakeModel(feature_importances_=[0.5, 0.2, 0.3])
 
     fio = FeatureImportanceOptimization(input_transformers)
     assert len(fio.pipelines) == 2
