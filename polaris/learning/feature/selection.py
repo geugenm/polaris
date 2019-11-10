@@ -191,7 +191,7 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
 
         if method == "all_best":
             for model_list in list_of_fimp:
-                if len(model_list) == 0:
+                if not model_list:
                     continue
                 model_list = sorted(model_list,
                                     reverse=True,
