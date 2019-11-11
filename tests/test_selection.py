@@ -162,11 +162,11 @@ def test_anti_collision_renaming(input_transformers):
     dataframe = pd.DataFrame({"A": [3, 2], "B": [1, "ignition"]})
 
     assert len(dataframe.columns) == 2
-    assert dataframe.columns[0] == "A"
-    assert dataframe.columns[1] == "B"
+    assert dataframe.columns[0] == "A"  # pylint: disable=E1136
+    assert dataframe.columns[1] == "B"  # pylint: disable=E1136
 
     dataframe = fio.anti_collision_renaming(dataframe, col, step_n)
 
     assert len(dataframe.columns) == 2
-    assert dataframe.columns[0] == "ORIGIN_p5_A"
-    assert dataframe.columns[1] == "ORIGIN_p5_B"
+    assert dataframe.columns[0] == "ORIGIN_p5_A"  # pylint: disable=E1136
+    assert dataframe.columns[1] == "ORIGIN_p5_B"  # pylint: disable=E1136
