@@ -2,6 +2,7 @@
 Module for fetching and decoding telemetry data
 """
 import datetime
+import glob
 import importlib
 import json
 import logging
@@ -137,20 +138,17 @@ def merge_csv_files(output_directory, path):
     """
     LOGGER.info('Merging all the csv files into one CSV file.')
     merged_file = os.path.join(output_directory, 'merged_frames.csv')
-    # Command to merge all the csv files from the output directory
-    # into a single CSV file.
-    merge_cmd = 'sed 1d ' \
-                + os.path.join(path, 'demod*/*.csv') \
-                + ' > ' + merged_file
-
-    try:
-        # Using subprocess package to execute merge command to merge CSV files.
-        proc = subprocess.Popen(merge_cmd, shell=True, cwd=output_directory)
-        proc.wait()
-        LOGGER.info('Merge Completed')
-        LOGGER.info('Storing merged CSV file: %s', merged_file)
-    except subprocess.CalledProcessError as err:
-        LOGGER.error(err)
+    for filename in glob.glob(os.path.join(path, 'demod*/*.csv')):
+        with open(filename, 'r') as source:
+            content = source.read()
+            with open(merged_file + '.tmp', 'a') as target:
+                target.write(content)
+    with open(merged_file + '.tmp', 'r') as source:
+        with open(merged_file, 'w') as target:
+            for line in sorted(source):
+                target.write(line)
+    os.remove(merged_file + '.tmp')
+    LOGGER.info('Merge Completed')
 
     return merged_file
 
