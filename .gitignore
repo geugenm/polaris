@@ -14,7 +14,7 @@ __pycache__
 .venv
 /docker/*/data/*
 .tox/
-polaris.egg-info/
+polaris_ml.egg-info/
 *.log
 /build/
 /dist/
