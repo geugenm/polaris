@@ -20,9 +20,9 @@ contrib/               - code that is not directly dependent on Polaris, but is 
 docs/                  - Some documentation on the project (though more is in the wiki)
 docker/                - Docker files for Grafana and InfluxDB
 polaris/               - Project source code
-    data_fetch/        - Module to fetch and prepare data for the analysis
-    data_viz/          - Module to visualize the analysis results
-    learning/          - Module to perform the data analysis
+    fetch/             - Module to fetch and prepare data for the analysis
+    viz/               - Module to visualize the analysis results
+    learn/             - Module to perform the data analysis
     polaris.py         - Polaris entry point
 
 tests/                 - Project unit tests
@@ -67,8 +67,8 @@ Options:
 
 Commands:
   fetch     Download data set(s)
-  learning  learning help
-  viz       data-viz help
+  learn     Analyze data
+  viz       Displaying results
 
 # To fetch and decode data from the SatNOGS network, run:
 $ polaris fetch -s 2019-08-10 -e 2019-10-5 LightSail-2 /tmp/

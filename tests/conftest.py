@@ -4,7 +4,7 @@ Fixtures for pytest tests
 
 import pytest
 
-from polaris.data_fetch import data_fetch_decoder
+from polaris.fetch import data_fetch_decoder
 from polaris.dataset.dataset import PolarisDataset
 from polaris.dataset.frame import PolarisFrame
 from polaris.dataset.metadata import PolarisMetadata

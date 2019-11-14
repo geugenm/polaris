@@ -1,4 +1,4 @@
-# Polaris learning module
+# Polaris learn module
 
 ## Miner: FFlat
 
@@ -12,7 +12,7 @@ Cross Correlation finder.
 
 ```python
 import pandas as pd
-from polaris.learning import XCorr
+from polaris.learn import XCorr
 
 correlator = XCorr()
 

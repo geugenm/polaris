@@ -4,7 +4,7 @@ Module for testing selection.py script.
 import pytest
 from fets.math import TSIntegrale
 
-import polaris.learning.feature.extraction as plfe
+import polaris.learn.feature.extraction as plfe
 
 
 @pytest.mark.parametrize("input_lags,transformer_class,exp_pipes", [

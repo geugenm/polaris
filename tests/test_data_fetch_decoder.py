@@ -1,5 +1,5 @@
 """
-pytest testing framework for data_fetch module
+pytest testing framework for fetch module
 """
 
 import datetime
@@ -7,7 +7,7 @@ import datetime
 import pytest
 
 from contrib.normalizers.common import Field, Normalizer
-from polaris.data_fetch import data_fetch_decoder
+from polaris.fetch import data_fetch_decoder
 
 
 class FixtureNormalizer(Normalizer):

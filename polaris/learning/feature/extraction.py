@@ -10,7 +10,7 @@
 import pandas as pd
 from sklearn.pipeline import Pipeline
 
-from polaris.learning.feature.selection import FeatureImportanceOptimization
+from polaris.learn.feature.selection import FeatureImportanceOptimization
 
 
 def create_list_of_transformers(input_lags, transformer_class):

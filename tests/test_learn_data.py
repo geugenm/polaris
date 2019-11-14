@@ -1,9 +1,9 @@
 """
-Module for testing learning.data.readers.py script.
+Module for testing learn.data.readers.py script.
 """
 import json
 
-import polaris.learning.data.readers as pldr
+import polaris.learn.data.readers as pldr
 
 
 def test_fetch_json_to_pandas_json(polaris_dataset_json, pandas_dataset_dict):
