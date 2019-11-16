@@ -7,8 +7,8 @@ import click
 
 from polaris import __version__
 from polaris.fetch.data_fetch_decoder import data_fetch_decode_normalize
-from polaris.viz.server import launch_webserver
 from polaris.learn.analysis import cross_correlate, feature_extraction
+from polaris.viz.server import launch_webserver
 
 # Logger configuration
 
@@ -80,10 +80,10 @@ def cli_fetch(sat, start_date, end_date, output_directory):
               is_flag=False,
               help='The separator used in the input csv file')
 def cli_learn(input_file,
-                 output_graph_file=None,
-                 graph_link_threshold=0.1,
-                 col=None,
-                 csv_sep=','):
+              output_graph_file=None,
+              graph_link_threshold=0.1,
+              col=None,
+              csv_sep=','):
     """
     Enter learn module
     """
