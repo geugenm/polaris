@@ -265,7 +265,9 @@ def data_fetch_decode_normalize(sat, output_directory, start_date, end_date,
     Main function to download and decode satellite telemetry.
 
     :param sat: a NORAD ID or a satellite name.
-    :param output_directory: only used parameter for now.
+    :param output_directory: where output should go
+    :param start_date: start date of data to fetch
+    :param end_date: end date of data to fetch
     :param import_file: name of file containing data frames to download
     """
     if not os.path.exists(DATA_DIRECTORY):
