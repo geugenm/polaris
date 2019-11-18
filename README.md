@@ -18,7 +18,6 @@ If you want to **know more**:
 ```
 contrib/               - code that is not directly dependent on Polaris, but is used in the project
 docs/                  - Some documentation on the project (though more is in the wiki)
-docker/                - Docker files for Grafana and InfluxDB
 polaris/               - Project source code
     fetch/             - Module to fetch and prepare data for the analysis
     viz/               - Module to visualize the analysis results
@@ -32,34 +31,25 @@ playground/            - Exploratory tests
 ## Installation
 
 ```bash
-# Clone the repo
-$ git clone https://gitlab.com/crespum/polaris.git
-
-# Run `make setup` -- this will:
-# - Create virtual environment
-# - Install project dependencies
-# - Run docker-ksc script to compile KSY to Python code (requires Docker)
-# - Install polaris into your virtual environment
-$ make setup
-
-# To use the virtual environment:
-$ source .venv/bin/activate
+$ pip3 install polaris-ml
 ```
 
-You can also use the deployed PyPI package using:
-
+We recommend to install it inside a Python virtual environment:
 ```bash
-$ pip install polaris-ml
+# Create the virtual env
+$ python3 -m venv .venv
+
+# Activate it
+$ source .venv/bin/activate
+
+# Install Polaris from Pypi
+$ (.venv) pip install polaris-ml
 ```
 
 ## Running the code
-```bash
-# Activate the virtual environment:
-$ source .venv/bin/activate
 
-# Go to the bin directory within this repo and run the command
-$ cd bin
-$ python3 polaris -h
+```bash
+$ (.venv) polaris -h
 Tool for analyzing satellite telemetry
 
 Options:
@@ -71,11 +61,11 @@ Commands:
   viz       Displaying results
 
 # To fetch and decode data from the SatNOGS network, run:
-$ polaris fetch -s 2019-08-10 -e 2019-10-5 LightSail-2 /tmp/
+$ (.venv) polaris fetch -s 2019-08-10 -e 2019-10-5 LightSail-2 /tmp/
 # Note: this may take some time.
 
 # Data will be saved at /tmp/normalized_frames.json
-$ head /tmp/normalized_frames.json
+$ (.venv) head /tmp/normalized_frames.json
 [
     {
         "time": "2019-09-12 08:14:42",
@@ -90,37 +80,37 @@ $ head /tmp/normalized_frames.json
 
 
 # To learn from that data, run:
-$ polaris learn -g /tmp/new_graph.json /tmp/normalized_frames.json
+$ (.venv) polaris learn -g /tmp/new_graph.json /tmp/normalized_frames.json
 # Note: depending on your hardware, this may take some time.
 
 # To see a visualization of these results, run:
-$ polaris viz /tmp/new_graph.json
+$ (.venv) polaris viz /tmp/new_graph.json
 # Then visit http://localhost:8080 in your browser
 ```
 
-### More info for developers
+## More info for developers
 
-Building the package
+Building the package from the sources:
 ```bash
+# Clone the repo
+$ git clone https://gitlab.com/crespum/polaris.git
+
 # Activate the virtual environment:
 $ source .venv/bin/activate
 
 # Build and install the package in editable mode; any changes
 # to your code will be reflected when you run polaris.
-$ pip install -e .
+$ (.venv) pip install -e .
 ```
 
 Format the code before commiting, otherwise the CI engine will fail:
 ```bash
+# Install tox to execute CI tasks
+$ (.venv) pip install tox
+
 # Auto-format the code
-$ tox -e yapf-apply -e isort-apply
+$ (.venv) tox -e yapf-apply -e isort-apply
 
 # Verify CI test passes
-$ tox
+$ (.venv) tox
 ```
-
-## InfluxDB and Grafana
-
-InfluxDB and Grafana have been configured to run with `docker-compose`. (At the moment these are not configured to do much, but they will be useful for future development.)
-
-For more details, see [docs/InfluxDB.md](docs/InfluxDB.md).
