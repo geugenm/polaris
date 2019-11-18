@@ -52,11 +52,18 @@ def cli():
               is_flag=False,
               help='End date of fetching period.'
               ' Default: 1h period from start date.')
-def cli_fetch(sat, start_date, end_date, output_directory):
+@click.option('--import_file',
+              '-i',
+              required=False,
+              default=None,
+              is_flag=False,
+              help='Import data frames downloaded from db.satnogs.org.')
+def cli_fetch(sat, start_date, end_date, output_directory, import_file):
     """ Retrieve and decode the telemetry corresponding to SAT (satellite name
      or NORAD ID) """
     LOGGER.info("output dir: %s", output_directory)
-    data_fetch_decode_normalize(sat, output_directory, start_date, end_date)
+    data_fetch_decode_normalize(sat, output_directory, start_date, end_date,
+                                import_file)
 
 
 @click.command('learn',

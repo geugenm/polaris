@@ -259,12 +259,14 @@ def data_normalize(normalizer, frame_list):
     return normalized_frames
 
 
-def data_fetch_decode_normalize(sat, output_directory, start_date, end_date):
+def data_fetch_decode_normalize(sat, output_directory, start_date, end_date,
+                                import_file):
     """
     Main function to download and decode satellite telemetry.
 
     :param sat: a NORAD ID or a satellite name.
     :param output_directory: only used parameter for now.
+    :param import_file: name of file containing data frames to download
     """
     if not os.path.exists(DATA_DIRECTORY):
         os.makedirs(DATA_DIRECTORY)
@@ -281,8 +283,12 @@ def data_fetch_decode_normalize(sat, output_directory, start_date, end_date):
     LOGGER.info('Fetch period: %s to %s', start_date, end_date)
 
     # Retrieve, decode and normalize frames
-    frames_file = data_fetch(satellite.norad_id, output_directory, start_date,
-                             end_date)
+    if import_file is None:
+        frames_file = data_fetch(satellite.norad_id, output_directory,
+                                 start_date, end_date)
+    else:
+        frames_file = import_file
+
     decoded_file = data_decode(satellite.decoder, output_directory,
                                frames_file)
     decoded_frame_list = load_frames_from_json_file(decoded_file)
