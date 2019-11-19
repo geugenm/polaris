@@ -191,12 +191,20 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
 
         if method == "all_best":
             for model_list in list_of_fimp:
-                all_chosen_features.extend(model_list[0])
+                if not model_list:
+                    continue
+                model_list = sorted(model_list,
+                                    reverse=True,
+                                    key=lambda x: x[1])
+                all_chosen_features.append(model_list[0])
 
         if method == "best_until_threshold":
-            for lst in list_of_fimp:
-                last_significant_index = self.find_gap(lst)
-                tmp_list = lst[:(last_significant_index + 1)]
+            for model_list in list_of_fimp:
+                model_list = sorted(model_list,
+                                    reverse=True,
+                                    key=lambda x: x[1])
+                last_significant_index = self.find_gap(model_list)
+                tmp_list = model_list[:(last_significant_index + 1)]
                 all_chosen_features.extend(tmp_list)
 
         all_chosen_features.sort(key=lambda x: x[1], reverse=True)
@@ -217,6 +225,26 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
             flat_score = 1.0 / nbr_of_importances
             return np.mean(np.abs([(flat_score - k[1]) for k in importances]))
         return flat_score
+
+    @staticmethod
+    def anti_collision_renaming(dataset, col, pipeline_n):
+        """ Renaming column names to avoid collision during pipelines
+        transformations
+
+            :param dataset: pd.Series or pd.DataFrame to be managed
+            :param col: string for initial column name from which this data is
+            originated
+            :param pipeline_n: pipeline stage, an Integer number.
+            :return: the input dataset with changed name or column names.
+        """
+        if isinstance(dataset, pd.Series):
+            dataset.name = "{}_p{}_{}".format(col, pipeline_n, dataset.name)
+        elif isinstance(dataset, pd.DataFrame):
+            dataset.columns = [
+                "{}_p{}_{}".format(col, pipeline_n, subcol)
+                for subcol in dataset.columns
+            ]
+        return dataset
 
     def fit(self, input_x, input_y, method=None):
         """ Fit models for every pipeline and extract best features
@@ -240,14 +268,8 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
             input_dataset = None
             for col in input_x.columns:
                 tmp_dataset = pipeline.transform(input_x[col])
-                if isinstance(tmp_dataset, pd.Series):
-                    tmp_dataset.name = "{}_p{}_{}".format(
-                        col, pipeline_n, tmp_dataset.name)
-                elif isinstance(tmp_dataset, pd.DataFrame):
-                    tmp_dataset.columns = [
-                        "{}_p{}_{}".format(col, pipeline_n, subcol)
-                        for subcol in tmp_dataset.columns
-                    ]
+                tmp_dataset = self.anti_collision_renaming(
+                    tmp_dataset, col, pipeline_n)
                 if input_dataset is None:
                     input_dataset = pd.DataFrame(tmp_dataset)
                 else:
