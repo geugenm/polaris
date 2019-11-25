@@ -114,7 +114,7 @@ def build_start_and_end_dates(start_date, end_date):
     Build start and end dates using either provided string, provided
     datetime object, or choosing default.
 
-    Default period starts one hour before UTC current timei at call.
+    Default period starts one hour before UTC current time at call.
 
     """
     # First start date; if no date provided, set to an hour ago.
