@@ -5,7 +5,7 @@
 import pandas as pd
 from sklearn.pipeline import Pipeline
 
-from polaris.learning.predictor.cross_correlation import XCorr
+from polaris.learn.predictor.cross_correlation import XCorr
 
 
 def test_xcorr():

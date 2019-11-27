@@ -112,20 +112,22 @@ def find_satellite(sat, sat_list):
 def build_start_and_end_dates(start_date, end_date):
     """
     Build start and end dates using either provided string, provided
-    datetime object, or choosing default
+    datetime object, or choosing default.
+
+    Default period starts one hour before UTC current time at call.
+
     """
     # First start date; if no date provided, set to an hour ago.
     if isinstance(start_date, str):
-        start_date = pd.to_datetime(start_date).to_pydatetime()
+        start_date = pd.to_datetime(start_date)
     elif not isinstance(start_date, datetime.datetime):
-        start_date = (datetime.datetime.utcnow() -
-                      datetime.timedelta(seconds=3600))
+        start_date = (pd.Timestamp.utcnow() - pd.to_timedelta(3600, unit="s"))
 
     # Next end date; if no end date provided, set to an hour after start_date
     if isinstance(end_date, str):
-        end_date = pd.to_datetime(end_date).to_pydatetime()
+        end_date = pd.to_datetime(end_date)
     elif not isinstance(end_date, datetime.datetime):
-        end_date = start_date + datetime.timedelta(seconds=3600)
+        end_date = start_date + pd.to_timedelta(3600, unit="s")
 
     return start_date, end_date
 
@@ -163,9 +165,8 @@ def data_fetch(norad_id, output_directory, start_date, end_date):
 
     # Creating a new subdirectory to output directory
     # to collect glouton's data. Using start date to name it.
-    cwd_path = os.path.join(
-        output_directory,
-        "data_" + str(start_date.timestamp()).replace('.', '_'))
+    cwd_path = os.path.join(output_directory,
+                            "data_" + start_date.strftime("%Y-%m-%d_%H-%M-%S"))
     if not os.path.exists(cwd_path):
         os.mkdir(cwd_path)
 

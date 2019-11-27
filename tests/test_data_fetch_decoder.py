@@ -1,13 +1,14 @@
 """
-pytest testing framework for data_fetch module
+pytest testing framework for fetch module
 """
 
 import datetime
 
+import pandas as pd
 import pytest
 
 from contrib.normalizers.common import Field, Normalizer
-from polaris.data_fetch import data_fetch_decoder
+from polaris.fetch import data_fetch_decoder
 
 
 class FixtureNormalizer(Normalizer):
@@ -88,7 +89,13 @@ def test_build_dates_from_string():
     end_date_str = '2019-08-16'
     start_date, end_date = data_fetch_decoder.build_start_and_end_dates(
         start_date_str, end_date_str)
-    assert end_date - start_date == datetime.timedelta(days=2)
+    assert end_date - start_date == pd.to_timedelta(2, unit="D")
+
+    start_date_str = '2019-08-14 11:00:00'
+    end_date_str = '2019-08-16 11:00:00'
+    start_date, end_date = data_fetch_decoder.build_start_and_end_dates(
+        start_date_str, end_date_str)
+    assert end_date - start_date == pd.to_timedelta(2, unit="D")
 
 
 def test_build_dates_from_default():
@@ -96,7 +103,24 @@ def test_build_dates_from_default():
     """
     start_date, end_date = data_fetch_decoder.build_start_and_end_dates(
         None, None)
-    assert end_date - start_date == datetime.timedelta(seconds=3600)
+    assert end_date - start_date == pd.to_timedelta(3600, unit="s")
+
+
+def test_build_dates_from_mix():
+    """Test default dates generation for build_start_and_end_dates()
+       in case called from code with mixture of input types.
+    """
+    start_date_x = '2019-11-14 11:00:00'
+    end_date_x = pd.to_datetime('2019-11-16 11:00:00')
+    start_date, end_date = data_fetch_decoder.build_start_and_end_dates(
+        start_date_x, end_date_x)
+    assert end_date - start_date == pd.to_timedelta(2, unit="D")
+
+    start_date_x = datetime.datetime(2019, 11, 14, 11)
+    end_date_x = pd.to_datetime('2019-11-16 11:00:00')
+    start_date, end_date = data_fetch_decoder.build_start_and_end_dates(
+        start_date_x, end_date_x)
+    assert end_date - start_date == pd.to_timedelta(2, unit="D")
 
 
 def test_data_normalize_empty_list():

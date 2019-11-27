@@ -6,9 +6,9 @@ import logging
 import click
 
 from polaris import __version__
-from polaris.data_fetch.data_fetch_decoder import data_fetch_decode_normalize
-from polaris.data_viz.server import launch_webserver
-from polaris.learning.analysis import cross_correlate, feature_extraction
+from polaris.fetch.data_fetch_decoder import data_fetch_decode_normalize
+from polaris.learn.analysis import cross_correlate, feature_extraction
+from polaris.viz.server import launch_webserver
 
 # Logger configuration
 
@@ -23,10 +23,6 @@ LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 FORMATTER = logging.Formatter(LOG_FORMAT)
 CH.setFormatter(FORMATTER)
 LOGGER.addHandler(CH)
-
-# Uncomment these imports when we're ready to start using them
-# import data_viz
-# import learning
 
 
 @click.version_option(version=__version__)
@@ -56,7 +52,7 @@ def cli():
               is_flag=False,
               help='End date of fetching period.'
               ' Default: 1h period from start date.')
-def cli_data_fetch(sat, start_date, end_date, output_directory):
+def cli_fetch(sat, start_date, end_date, output_directory):
     """ Retrieve and decode the telemetry corresponding to SAT (satellite name
      or NORAD ID) """
     LOGGER.info("output dir: %s", output_directory)
@@ -64,7 +60,7 @@ def cli_data_fetch(sat, start_date, end_date, output_directory):
 
 
 @click.command('learn',
-               short_help='learning help',
+               short_help='Analyze data',
                help='INPUT_FILE in csv or json format')
 @click.argument('input_file', nargs=1, required=True)
 @click.option('--output_graph_file',
@@ -83,13 +79,13 @@ def cli_data_fetch(sat, start_date, end_date, output_directory):
               '-s',
               is_flag=False,
               help='The separator used in the input csv file')
-def cli_learning(input_file,
-                 output_graph_file=None,
-                 graph_link_threshold=0.1,
-                 col=None,
-                 csv_sep=','):
+def cli_learn(input_file,
+              output_graph_file=None,
+              graph_link_threshold=0.1,
+              col=None,
+              csv_sep=','):
     """
-    Enter learning module
+    Enter learn module
     """
     if col is not None:
         feature_extraction(input_file, col)
@@ -104,7 +100,7 @@ def cli_learning(input_file,
 
 @click.command('viz', short_help='Display results')
 @click.argument('graph_file', nargs=1, required=True)
-def cli_data_viz(graph_file):
+def cli_viz(graph_file):
     """ Serving HTML5 visualization from directory with JSON graph file
 
         :param graph_file: JSON data file with graph information about nodes
@@ -115,6 +111,6 @@ def cli_data_viz(graph_file):
 
 # click doesn't automagically add the commands to the group
 # (and thus to the help output); you have to do it manually.
-cli.add_command(cli_data_fetch)
-cli.add_command(cli_learning)
-cli.add_command(cli_data_viz)
+cli.add_command(cli_fetch)
+cli.add_command(cli_learn)
+cli.add_command(cli_viz)

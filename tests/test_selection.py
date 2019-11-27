@@ -7,7 +7,7 @@ import pandas as pd
 import pytest
 from fets.math import TSIntegrale
 
-from polaris.learning.feature.selection import FeatureImportanceOptimization
+from polaris.learn.feature.selection import FeatureImportanceOptimization
 
 
 @pytest.mark.parametrize("list_of_transformers,exp_pipes", [

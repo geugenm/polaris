@@ -3,11 +3,11 @@ Module to launch different data analysis.
 """
 from fets.math import TSIntegrale
 
-from polaris.learning.data.readers import read_polaris_data
-from polaris.learning.data.writers import heatmap_to_graph
-from polaris.learning.feature.extraction import create_list_of_transformers, \
+from polaris.learn.data.readers import read_polaris_data
+from polaris.learn.data.writers import heatmap_to_graph
+from polaris.learn.feature.extraction import create_list_of_transformers, \
     extract_best_features
-from polaris.learning.predictor.cross_correlation import XCorr
+from polaris.learn.predictor.cross_correlation import XCorr
 
 
 def feature_extraction(input_file, param_col):
@@ -28,7 +28,7 @@ def feature_extraction(input_file, param_col):
                                 time_unit="ms")
 
     # out[0] is the FeatureImportanceOptimization object
-    # from polaris.learning.feature.selection
+    # from polaris.learn.feature.selection
     # pylint: disable=E1101
     print(out[0].best_features)
 
