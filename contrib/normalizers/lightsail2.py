@@ -253,3 +253,13 @@ class Lightsail2(Normalizer):
             Field('comm_rxbytes', lambda x: x, None, 'RX Bytes'),
             Field('comm_txbytes', lambda x: x, None, 'TX Bytes'),
         ]
+
+    def validate_frame(self, frame):
+        """ Validate frames for LightSail-2
+
+            The source callsign for this satellite is KK6HIT. [citation needed]
+        """
+        try:
+            return frame['fields']['src_callsign']['value'].lower() == 'kk6hit'
+        except (KeyError, AttributeError):
+            return False
