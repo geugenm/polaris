@@ -253,8 +253,14 @@ def data_normalize(normalizer, frame_list):
     """
     # Normalize values
     normalized_frames = []
+    frame_count = 0
     for frame in frame_list:
+        frame_count += 1
         frame_norm = normalizer.normalize(frame)
+        if not normalizer.validate_frame(frame_norm):
+            LOGGER.debug("Skipping frame %d because validation failed",
+                         frame_count)
+            continue
         normalized_frames.append(frame_norm)
     return normalized_frames
 
