@@ -51,6 +51,14 @@ class Normalizer:
                 return field.unit
         return None
 
+    def validate_frame(self, frame):
+        """ Validate that the frame is valid for the satellite
+
+            :param frame: input frame
+        """
+        # pylint: disable=no-self-use
+        return frame is not None
+
 
 def int2ddn(val):
     """
