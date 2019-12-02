@@ -38,10 +38,9 @@ def cli():
                context_settings={"ignore_unknown_options": True},
                short_help='Download data set(s)')
 @click.argument('sat', nargs=1, required=True)
-@click.argument('output_directory',
-                required=False,
-                default="/tmp",
-                type=click.Path(exists=True, resolve_path=True))
+@click.argument('output_file',
+                required=True,
+                type=click.Path(resolve_path=True))
 @click.option('--start_date',
               '-s',
               is_flag=False,
@@ -52,18 +51,24 @@ def cli():
               is_flag=False,
               help='End date of fetching period.'
               ' Default: 1h period from start date.')
+@click.option('--cache_dir',
+              '-c',
+              required=False,
+              is_flag=False,
+              default='/tmp',
+              type=click.Path(exists=True, resolve_path=True),
+              help='Directory to save temporary downloaded files.')
 @click.option('--import_file',
               '-i',
               required=False,
               default=None,
               is_flag=False,
               help='Import data frames downloaded from db.satnogs.org.')
-def cli_fetch(sat, start_date, end_date, output_directory, import_file):
+def cli_fetch(sat, start_date, end_date, output_file, cache_dir, import_file):
     """ Retrieve and decode the telemetry corresponding to SAT (satellite name
      or NORAD ID) """
-    LOGGER.info("output dir: %s", output_directory)
-    data_fetch_decode_normalize(sat, output_directory, start_date, end_date,
-                                import_file)
+    data_fetch_decode_normalize(sat, start_date, end_date, output_file,
+                                cache_dir, import_file)
 
 
 @click.command('learn',
