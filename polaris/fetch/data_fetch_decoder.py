@@ -274,12 +274,12 @@ def data_fetch_decode_normalize(sat, start_date, end_date, output_file,
         LOGGER.error("Can't find satellite or decoder: %s", exception)
         raise exception
 
-    # Converting dates into datetime objects
-    start_date, end_date = build_start_and_end_dates(start_date, end_date)
-    LOGGER.info('Fetch period: %s to %s', start_date, end_date)
-
     # Retrieve, decode and normalize frames
     if import_file is None:
+        # Converting dates into datetime objects
+        start_date, end_date = build_start_and_end_dates(start_date, end_date)
+        LOGGER.info('Fetch period: %s to %s', start_date, end_date)
+
         frames_file = data_fetch(satellite.norad_id, cache_dir, start_date,
                                  end_date)
     else:
