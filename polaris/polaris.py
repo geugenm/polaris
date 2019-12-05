@@ -64,6 +64,7 @@ def cli():
               default=None,
               is_flag=False,
               help='Import data frames downloaded from db.satnogs.org.')
+# pylint: disable-msg=too-many-arguments
 def cli_fetch(sat, start_date, end_date, output_file, cache_dir, import_file):
     """ Retrieve and decode the telemetry corresponding to SAT (satellite name
      or NORAD ID) """

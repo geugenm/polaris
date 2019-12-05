@@ -251,6 +251,7 @@ def data_normalize(normalizer, frame_list):
     return normalized_frames
 
 
+# pylint: disable-msg=too-many-arguments
 def data_fetch_decode_normalize(sat, start_date, end_date, output_file,
                                 cache_dir, import_file):
     """
