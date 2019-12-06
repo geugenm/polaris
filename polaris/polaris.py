@@ -56,7 +56,7 @@ def cli():
               required=False,
               is_flag=False,
               default='/tmp',
-              type=click.Path(exists=True, resolve_path=True),
+              type=click.Path(resolve_path=True),
               help='Directory to save temporary downloaded files.')
 @click.option('--import_file',
               '-i',
