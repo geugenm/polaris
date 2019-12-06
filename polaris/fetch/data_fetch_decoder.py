@@ -28,23 +28,9 @@ _SATELLITES = json.loads(
     object_hook=lambda d: Satellite(d['norad_id'], d['name'], d['decoder'], d[
         'normalizer']))
 
-DATA_DIRECTORY = '/tmp/polaris'
 NORMALIZER_LIB = 'contrib.normalizers.'
 
 LOGGER = logging.getLogger(__name__)
-
-
-def get_output_directory(data_directory=DATA_DIRECTORY):
-    """
-    Utility function for getting the output directory.
-
-    Currently it looks for the last-modified directory within
-    the DATA_DIRECTORY argument.
-    """
-    os.chdir(data_directory)
-    all_directories = [d for d in os.listdir('.') if os.path.isdir(d)]
-    output_directory = max(all_directories, key=os.path.getmtime)
-    return output_directory
 
 
 def build_decode_cmd(src, dest, decoder):
@@ -265,19 +251,21 @@ def data_normalize(normalizer, frame_list):
     return normalized_frames
 
 
-def data_fetch_decode_normalize(sat, output_directory, start_date, end_date,
-                                import_file):
+# pylint: disable-msg=too-many-arguments
+def data_fetch_decode_normalize(sat, start_date, end_date, output_file,
+                                cache_dir, import_file):
     """
     Main function to download and decode satellite telemetry.
 
     :param sat: a NORAD ID or a satellite name.
-    :param output_directory: where output should go
     :param start_date: start date of data to fetch
     :param end_date: end date of data to fetch
-    :param import_file: name of file containing data frames to download
+    :param output_file: where output should go
+    :param cache_dir: where temp output data should go
+    :param import_file: file containing data frames to import
     """
-    if not os.path.exists(DATA_DIRECTORY):
-        os.makedirs(DATA_DIRECTORY)
+    if not os.path.exists(cache_dir):
+        os.makedirs(cache_dir)
 
     # Check if satellite info available
     try:
@@ -286,19 +274,18 @@ def data_fetch_decode_normalize(sat, output_directory, start_date, end_date,
         LOGGER.error("Can't find satellite or decoder: %s", exception)
         raise exception
 
-    # Converting dates into datetime objects
-    start_date, end_date = build_start_and_end_dates(start_date, end_date)
-    LOGGER.info('Fetch period: %s to %s', start_date, end_date)
-
     # Retrieve, decode and normalize frames
     if import_file is None:
-        frames_file = data_fetch(satellite.norad_id, output_directory,
-                                 start_date, end_date)
+        # Converting dates into datetime objects
+        start_date, end_date = build_start_and_end_dates(start_date, end_date)
+        LOGGER.info('Fetch period: %s to %s', start_date, end_date)
+
+        frames_file = data_fetch(satellite.norad_id, cache_dir, start_date,
+                                 end_date)
     else:
         frames_file = import_file
 
-    decoded_file = data_decode(satellite.decoder, output_directory,
-                               frames_file)
+    decoded_file = data_decode(satellite.decoder, cache_dir, frames_file)
     decoded_frame_list = load_frames_from_json_file(decoded_file)
     try:
         normalizer = load_normalizer(satellite)
@@ -307,12 +294,11 @@ def data_fetch_decode_normalize(sat, output_directory, start_date, end_date,
         raise exception
     LOGGER.info('Loaded normalizer=%s', satellite.normalizer)
     normalized_frames = data_normalize(normalizer(), decoded_frame_list)
-    normalized_file = os.path.join(output_directory, 'normalized_frames.json')
     polaris_dataset = PolarisDataset(metadata={
         "satellite_norad": satellite.norad_id,
         "satellite_name": satellite.name
     },
                                      frames=normalized_frames)
-    with open(normalized_file, 'w') as f_handle:
+    with open(output_file, 'w') as f_handle:
         f_handle.write(polaris_dataset.to_json())
-    LOGGER.info('Output file %s', normalized_file)
+    LOGGER.info('Output file %s', output_file)
