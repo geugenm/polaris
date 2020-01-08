@@ -53,7 +53,7 @@
 
 <body>
   <div id="graph-hud"></div>
-  <div id="graph-search"><input type="text" id="graph-search-input" list="nodeslist" placeholder="search"></div>
+  <div id="graph-search"><input type="text" id="graph-search-input" list="nodeslist" placeholder="search"> <input type="text" id="color-picker-input" placeholder="color"></div>
   <datalist id="nodeslist"></datalist>
 
 
@@ -76,6 +76,7 @@
     const hud_elt = document.getElementById('graph-hud');
     const nodeslist_elt = document.getElementById('nodeslist');
     const search_elt = document.getElementById('graph-search-input');
+    const color_elt = document.getElementById('color-picker-input');
 
     // ---- Graph's routines ---- //
 
@@ -119,9 +120,7 @@
     const Graph = ForceGraph3D()(graph_elt)
         .jsonUrl('JSON_DATA_FILE_HERE')
         .nodeLabel(node => node.name + ':' + node.group)
-        //.nodeAutoColorBy('group')
-        .nodeColor(node => node.id.toString().includes(search_elt.value)
-                       && (search_elt.value.length > 0) ? "#33EE33" : "#BBF")
+        .nodeColor(node => "#BBF")
         .onNodeHover(node => graph_elt.style.cursor = node ? 'pointer' : null)
         .onNodeClick(node => {
           hud_update("clicked", node);
@@ -179,11 +178,9 @@
         if (key === 13) { // 13 is enter
           if (e.ctrlKey) {
             // Control key is pressed: node highligting
-
-            // The field search_elt.value was certainly updated
-            // So we refresh to update color of nodes which contain
-            // the search string.
-            Graph.refresh();
+            Graph.nodeColor(node => node.id.toString().includes(search_elt.value)
+                       && (search_elt.value.length > 0) && (color_elt.value.length > 0)
+                       ? color_elt.value : "#BBF")
           } else {
             // Control key is NOT pressed: jetpacking
             hud_update("searching", search_elt.value);
