@@ -50,8 +50,15 @@ def launch_webserver(json_data_file):
     with open(target_index, "w") as target_fd:
         with open(html_template, "r") as template_fd:
             for line in template_fd:
-                target_fd.write(
-                    line.replace("JSON_DATA_FILE_HERE", target_file))
+                if "JSON_DATA_FILE_HERE" in line:
+                    target_fd.write(
+                        line.replace("JSON_DATA_FILE_HERE", target_file))
+                elif "WINDOW_TITLE_HERE" in line:
+                    target_fd.write(
+                        line.replace("WINDOW_TITLE_HERE",
+                                     "Polaris - {}".format(json_data_file)))
+                else:
+                    target_fd.write(line)
 
     with open(target_icon, "w") as icon_fd:
         icon_fd.write("A")
