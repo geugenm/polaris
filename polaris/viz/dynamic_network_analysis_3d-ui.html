@@ -165,6 +165,18 @@
       return undefined;
     }
 
+    // Highlight nodes based on the nodes names
+    function highlight_nodes(search_str, color) {
+      const { nodes, links } = Graph.graphData();
+      for (node of nodes) {
+          if (node.name.includes(search_str)){
+            node.color = color;
+          } else{
+            // don't change the value
+          } 
+      }
+    }
+
     // search: Click event only to check status of datalist
     search_elt.addEventListener("click", function () {
       if (nodeslist_elt.innerHTML == "") {
@@ -178,9 +190,9 @@
         if (key === 13) { // 13 is enter
           if (e.ctrlKey) {
             // Control key is pressed: node highligting
-            Graph.nodeColor(node => node.id.toString().includes(search_elt.value)
-                       && (search_elt.value.length > 0) && (color_elt.value.length > 0)
-                       ? color_elt.value : "#BBF")
+            hud_update("highlighting", search_elt.value);
+            highlight_nodes(search_elt.value, color_elt.value);
+            Graph.nodeColor(node => (node.color) ? node.color : "#FFF");
           } else {
             // Control key is NOT pressed: jetpacking
             hud_update("searching", search_elt.value);
