@@ -177,6 +177,30 @@
       }
     }
 
+    // Parse keyboard events
+    function inputKeybdEvent(evt) {
+      var key = evt.which || evt.keyCode;
+      if (key === 13) { // 13 is enter
+        if (evt.ctrlKey) {
+          // Control key is pressed: node highligting
+          hud_update("highlighting", search_elt.value);
+          highlight_nodes(search_elt.value, color_elt.value);
+          Graph.nodeColor(node => (node.color) ? node.color : "#BBF");
+        } else {
+          // Control key is NOT pressed: jetpacking
+          hud_update("searching", search_elt.value);
+          const node = find_node(search_elt.value);
+
+          if (node) {
+            hud_update("jetpacking", node);
+            jetpack_to(node);
+          } else {
+            hud_update("search stopped", node);
+          }
+        }
+      }
+    }
+
     // search: Click event only to check status of datalist
     search_elt.addEventListener("click", function () {
       if (nodeslist_elt.innerHTML == "") {
@@ -184,29 +208,9 @@
       }
     });
 
-    // search: Enter press event zoom to node
-    search_elt.addEventListener('keypress', function (e) {
-        var key = e.which || e.keyCode;
-        if (key === 13) { // 13 is enter
-          if (e.ctrlKey) {
-            // Control key is pressed: node highligting
-            hud_update("highlighting", search_elt.value);
-            highlight_nodes(search_elt.value, color_elt.value);
-            Graph.nodeColor(node => (node.color) ? node.color : "#FFF");
-          } else {
-            // Control key is NOT pressed: jetpacking
-            hud_update("searching", search_elt.value);
-            const node = find_node(search_elt.value);
-
-            if (node) {
-              hud_update("jetpacking", node);
-              jetpack_to(node);
-            } else {
-              hud_update("search stopped", node);
-            }
-          }
-        }
-    });
+    // search: Keyboard events
+    search_elt.addEventListener('keypress', inputKeybdEvent);
+    color_elt.addEventListener('keypress', inputKeybdEvent);
 
   </script>
 </body>
