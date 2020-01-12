@@ -61,6 +61,11 @@ class NoNormalizerForSatellite(Exception):
     """Raised when we have no normalizer """
 
 
+class NoDataToFetch(Exception):
+    """Raised when there is no data to fetch or the downloaded
+    data has been modified"""
+
+
 def load_normalizer(sat):
     """
     Load the normalizer selected by name within the NORMALIZER_LIB.
@@ -118,7 +123,7 @@ def build_start_and_end_dates(start_date, end_date):
     return start_date, end_date
 
 
-def merge_csv_files(output_directory, path):
+def merge_csv_files(output_directory, path, start_date, end_date):
     """
     Merge all the CSV files inside path into a single file.
 
@@ -131,6 +136,20 @@ def merge_csv_files(output_directory, path):
             content = source.read()
             with open(merged_file + '.tmp', 'a') as target:
                 target.write(content)
+
+    if os.path.exists(merged_file + '.tmp'):
+        pass
+    else:
+        LOGGER.error(
+            ' '.join([
+                'There are no frames to download in the chosen time',
+                'range: %s to %s. Try a different time range with',
+                'the --start_date and --end_date options. This error',
+                'can also arise if the downloaded files have been',
+                'deleted or modified during execution.'
+            ]), start_date, end_date)
+        raise NoDataToFetch
+
     with open(merged_file + '.tmp', 'r') as source:
         with open(merged_file, 'w') as target:
             for line in sorted(source):
@@ -186,7 +205,7 @@ def data_fetch(norad_id, output_directory, start_date, end_date):
         LOGGER.error("data collection: %s", eee)
 
     LOGGER.info('Saving the dataframes in directory: %s', output_directory)
-    return merge_csv_files(output_directory, cwd_path)
+    return merge_csv_files(output_directory, cwd_path, start_date, end_date)
 
 
 def data_decode(decoder, output_directory, frames_file):
