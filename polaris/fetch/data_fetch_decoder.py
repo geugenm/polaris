@@ -272,7 +272,8 @@ def data_normalize(normalizer, frame_list):
 
 # pylint: disable-msg=too-many-arguments
 def data_fetch_decode_normalize(sat, start_date, end_date, output_file,
-                                cache_dir, import_file):
+                                cache_dir, import_file,
+                                existing_output_file_strategy):
     """
     Main function to download and decode satellite telemetry.
 
@@ -282,6 +283,8 @@ def data_fetch_decode_normalize(sat, start_date, end_date, output_file,
     :param output_file: where output should go
     :param cache_dir: where temp output data should go
     :param import_file: file containing data frames to import
+    :param existing_output_file_strategy: what to do with existing
+           output files: merge, overwrite or error.
     """
     if not os.path.exists(cache_dir):
         os.makedirs(cache_dir)

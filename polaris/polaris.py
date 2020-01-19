@@ -64,12 +64,20 @@ def cli():
               default=None,
               is_flag=False,
               help='Import data frames downloaded from db.satnogs.org.')
+@click.option('--existing-output-file-strategy',
+              type=click.Choice(['merge', 'overwrite', 'error']),
+              default='merge',
+              show_default=True,
+              help='How to handle already-existing output file: ' +
+              'merge with it, overwrite it, or exit with an error.')
 # pylint: disable-msg=too-many-arguments
-def cli_fetch(sat, start_date, end_date, output_file, cache_dir, import_file):
+def cli_fetch(sat, start_date, end_date, output_file, cache_dir, import_file,
+              existing_output_file_strategy):
     """ Retrieve and decode the telemetry corresponding to SAT (satellite name
      or NORAD ID) """
     data_fetch_decode_normalize(sat, start_date, end_date, output_file,
-                                cache_dir, import_file)
+                                cache_dir, import_file,
+                                existing_output_file_strategy)
 
 
 @click.command('learn',
