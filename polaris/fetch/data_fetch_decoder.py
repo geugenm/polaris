@@ -250,6 +250,42 @@ def load_frames_from_json_file(file):
     return decoded_frame_list
 
 
+def write_or_merge(dataset, file, strategy):
+    """Write dataset to output_file; if output file already exists, follow
+    strategy: overwrite, merge or error.
+
+    """
+
+    def write_dataset(dataset, file):
+        with open(file, 'w') as f_handle:
+            f_handle.write(dataset.to_json())
+
+    file_exists = os.path.exists(file)
+
+    if strategy == 'overwrite':
+        LOGGER.info('Overwriting existing file')
+        write_dataset(dataset, file)
+    elif strategy == 'error' and file_exists is True:
+        raise FileExistsError(
+            'Output file already exists, refusing to overwrite.')
+    else:
+        # Default strategy is merge.
+
+        # Take copy of dataset, so that we don't change the original
+        # object.
+        dataset_for_writing = PolarisDataset(metadata=dataset.metadata,
+                                             frames=dataset.frames)
+        if file_exists is True:
+            try:
+                LOGGER.debug('Trying to load dataset from %s', file)
+                existing_dataset = load_frames_from_json_file(file)
+                dataset_for_writing.frames = existing_dataset[
+                    'frames'] + dataset.frames
+            except json.JSONDecodeError:
+                LOGGER.info("File exists but cannot parse it")
+        write_dataset(dataset_for_writing, file)
+
+
 def data_normalize(normalizer, frame_list):
     """
     Normalize the data found in frame_list using the given normalizer.
