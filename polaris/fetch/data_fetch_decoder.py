@@ -8,6 +8,7 @@ import json
 import logging
 import os
 import subprocess
+import sys
 from collections import namedtuple
 
 import pandas as pd
@@ -357,6 +358,14 @@ def data_fetch_decode_normalize(sat, start_date, end_date, output_file,
         "satellite_name": satellite.name
     },
                                      frames=normalized_frames)
-    with open(output_file, 'w') as f_handle:
-        f_handle.write(polaris_dataset.to_json())
-    LOGGER.info('Output file %s', output_file)
+    try:
+        write_or_merge(polaris_dataset, output_file,
+                       existing_output_file_strategy)
+        LOGGER.info('Output file %s', output_file)
+    except FileExistsError:
+        LOGGER.critical(' '.join([
+            'Output file exists and told not to overwrite it.',
+            'Remove it, or try a different argument',
+            'for --existing-output-file-strategy.'
+        ]))
+        sys.exit(1)
