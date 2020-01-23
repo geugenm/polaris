@@ -8,6 +8,7 @@ import json
 import logging
 import os
 import subprocess
+import sys
 from collections import namedtuple
 
 import pandas as pd
@@ -250,6 +251,42 @@ def load_frames_from_json_file(file):
     return decoded_frame_list
 
 
+def write_or_merge(dataset, file, strategy):
+    """Write dataset to output_file; if output file already exists, follow
+    strategy: overwrite, merge or error.
+
+    """
+
+    def write_dataset(dataset, file):
+        with open(file, 'w') as f_handle:
+            f_handle.write(dataset.to_json())
+
+    file_exists = os.path.exists(file)
+
+    if strategy == 'overwrite':
+        LOGGER.info('Overwriting existing file')
+        write_dataset(dataset, file)
+    elif strategy == 'error' and file_exists is True:
+        raise FileExistsError(
+            'Output file already exists, refusing to overwrite.')
+    else:
+        # Default strategy is merge.
+
+        # Take copy of dataset, so that we don't change the original
+        # object.
+        dataset_for_writing = PolarisDataset(metadata=dataset.metadata,
+                                             frames=dataset.frames)
+        if file_exists is True:
+            try:
+                LOGGER.debug('Trying to load dataset from %s', file)
+                existing_dataset = load_frames_from_json_file(file)
+                dataset_for_writing.frames = existing_dataset[
+                    'frames'] + dataset.frames
+            except json.JSONDecodeError:
+                LOGGER.info("File exists but cannot parse it")
+        write_dataset(dataset_for_writing, file)
+
+
 def data_normalize(normalizer, frame_list):
     """
     Normalize the data found in frame_list using the given normalizer.
@@ -272,7 +309,8 @@ def data_normalize(normalizer, frame_list):
 
 # pylint: disable-msg=too-many-arguments
 def data_fetch_decode_normalize(sat, start_date, end_date, output_file,
-                                cache_dir, import_file):
+                                cache_dir, import_file,
+                                existing_output_file_strategy):
     """
     Main function to download and decode satellite telemetry.
 
@@ -282,6 +320,8 @@ def data_fetch_decode_normalize(sat, start_date, end_date, output_file,
     :param output_file: where output should go
     :param cache_dir: where temp output data should go
     :param import_file: file containing data frames to import
+    :param existing_output_file_strategy: what to do with existing
+           output files: merge, overwrite or error.
     """
     if not os.path.exists(cache_dir):
         os.makedirs(cache_dir)
@@ -318,6 +358,14 @@ def data_fetch_decode_normalize(sat, start_date, end_date, output_file,
         "satellite_name": satellite.name
     },
                                      frames=normalized_frames)
-    with open(output_file, 'w') as f_handle:
-        f_handle.write(polaris_dataset.to_json())
-    LOGGER.info('Output file %s', output_file)
+    try:
+        write_or_merge(polaris_dataset, output_file,
+                       existing_output_file_strategy)
+        LOGGER.info('Output file %s', output_file)
+    except FileExistsError:
+        LOGGER.critical(' '.join([
+            'Output file exists and told not to overwrite it.',
+            'Remove it, or try a different argument',
+            'for --existing-output-file-strategy.'
+        ]))
+        sys.exit(1)
