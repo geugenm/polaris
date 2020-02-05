@@ -3,6 +3,7 @@
 <title>WINDOW_TITLE_HERE</title>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <script src="3d-force-graph.js"></script>
+<script src="d3.v5.min.js"></script>
 
 <style type="text/css">
 
@@ -55,7 +56,7 @@
 
 <body>
   <div id="graph-hud"></div>
-  <div id="graph-search"><input type="text" id="graph-search-input" list="nodeslist" placeholder="search"> <input type="text" id="color-picker-input" placeholder="color"></div>
+  <div id="graph-search"><input type="text" id="graph-search-input" list="nodeslist" placeholder="search"></div>
   <datalist id="nodeslist"></datalist>
 
 
@@ -78,7 +79,12 @@
     const hud_elt = document.getElementById('graph-hud');
     const nodeslist_elt = document.getElementById('nodeslist');
     const search_elt = document.getElementById('graph-search-input');
-    const color_elt = document.getElementById('color-picker-input');
+    const node_base_color = "#BBF";
+    // unused collection of nicely separated colors
+    const polaris_color_set = ["#8dd3c7", "#fdb462", "#b3de69", "#bc80bd"];
+    const color_scale = d3.scaleOrdinal().domain([1, 12]).range(d3.schemeSet3);
+    var color_step = 0;
+    var color_limit = 12;
 
     // ---- Graph's routines ---- //
 
@@ -122,7 +128,7 @@
     const Graph = ForceGraph3D()(graph_elt)
         .jsonUrl('JSON_DATA_FILE_HERE')
         .nodeLabel(node => node.name + ':' + node.group)
-        .nodeColor(node => "#BBF")
+        .nodeColor(node => node_base_color)
         .onNodeHover(node => graph_elt.style.cursor = node ? 'pointer' : null)
         .onNodeClick(node => {
           hud_update("clicked", node);
@@ -168,26 +174,43 @@
     }
 
     // Highlight nodes based on the nodes names
-    function highlight_nodes(search_str, color) {
+    function highlight_nodes(search_str, color, reset_color = false) {
       const { nodes, links } = Graph.graphData();
       for (node of nodes) {
           if (node.name.includes(search_str)){
             node.color = color;
-          } else{
-            // don't change the value
+          } else {
+            if (reset_color) {
+              node.color = color;
+            }
+            // else don't change the value
           } 
       }
     }
 
-    // Parse keyboard events
-    function inputKeybdEvent(evt) {
-      var key = evt.which || evt.keyCode;
-      if (key === 13) { // 13 is enter
+    // Catching keypress events and launching actions 
+    function searchInputCallback(evt) {
+
+      // evt.key is the named key so here we're looking for "Enter"
+      // NB: evt.which is deprecated so using only keyCode here.
+      // NB: evt.code should be what evt.keyCode is according to W3C standards.
+      //     Watch that for eventual future changes.
+      if (evt.keyCode === 13 || evt.key == "Enter") {
+        // ASCII for Enter (Return Carriage) is 13 (Firefox)
+        // For line feed this is 10 (chrome) in UIs generally ctrl+Enter is a linefeed.
         if (evt.ctrlKey) {
+          if (evt.shiftKey) {
+            // highlight nothing and reset
+            highlight_nodes("", node_base_color, true);
+            Graph.refresh();
+          }
           // Control key is pressed: node highligting
           hud_update("highlighting", search_elt.value);
-          highlight_nodes(search_elt.value, color_elt.value);
-          Graph.nodeColor(node => (node.color) ? node.color : "#BBF");
+
+          color_step += 1;
+          // if (color_step > color_limit) prompt for user input
+          highlight_nodes(search_elt.value, color_scale(color_step));
+          Graph.nodeColor(node => (node.color) ? node.color : node_base_color);
         } else {
           // Control key is NOT pressed: jetpacking
           hud_update("searching", search_elt.value);
@@ -200,7 +223,11 @@
             hud_update("search stopped", node);
           }
         }
-      }
+        // Stop processing of the event here.
+        evt.stopPropagation();
+        evt.preventDefault();
+      } // --- end of "Enter" event and derivatives
+
     }
 
     // search: Click event only to check status of datalist
@@ -211,8 +238,7 @@
     });
 
     // search: Keyboard events
-    search_elt.addEventListener('keypress', inputKeybdEvent);
-    color_elt.addEventListener('keypress', inputKeybdEvent);
+    search_elt.addEventListener('keypress', searchInputCallback);
 
   </script>
 </body>
