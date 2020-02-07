@@ -20,3 +20,11 @@ All other parameters are optional for the graph structure construction. However 
 ## Run the server locally
 
 Execute `polaris viz` and open the indicated host and port, generally this would work: `http://0.0.0.0:8000/dynamic_network_analysis_3d-ui.html`.
+
+## User Interface guide for the the graph HTML5 page
+
+### From the search input field
+
+ - **CTRL+RETURN**: every node with the entered pattern will be colored. It can be repeated and colors will rotate.
+ - **CTRL+SHIFT+RETURN**: reset node color highlighting completely if the search field is empty, or with one color to highlight only the current pattern.
+
