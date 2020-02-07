@@ -41,6 +41,7 @@ def launch_webserver(json_data_file):
     target_index = os.path.join(target_directory, "index.html")
     target_icon = os.path.join(target_directory, "favicon.ico")
     target_lib = os.path.join(target_directory, "3d-force-graph.js")
+    target_d3lib = os.path.join(target_directory, "d3.v5.min.js")
 
     # Read path for source template
     html_template = os.path.join(os.path.dirname(os.path.abspath(__file__)),
@@ -68,6 +69,12 @@ def launch_webserver(json_data_file):
         with open(target_lib, "w") as lib_fd:
             LOGGER.info("Downloading dependency: %s", target_lib)
             req = requests.get('https://deepchaos.space/3d-force-graph.js')
+            lib_fd.write(req.text)
+
+    if not os.path.isfile(target_d3lib):
+        with open(target_d3lib, "w") as lib_fd:
+            LOGGER.info("Downloading dependency: %s", target_d3lib)
+            req = requests.get('https://deepchaos.space/d3.v5.min.js')
             lib_fd.write(req.text)
 
     # Setup web directory
