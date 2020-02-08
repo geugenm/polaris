@@ -7,6 +7,7 @@ Dataframe.
 
 import json
 import logging
+import os
 
 import pandas as pd
 
@@ -19,19 +20,23 @@ def read_polaris_data(path, csv_sep=','):
 
         :param path: File path for the input file.
         :param csv_sep: The csv separator used for the input csv file.
-        :return: Pandas dataframe with all frames fields values
+        :return: Pandas dataframe with all frames fields values and
+        the data source name.
     """
+    source = None
     dataframe = None
 
     try:
         if path.lower().endswith('.csv'):
             dataframe = pd.read_csv(path, sep=csv_sep)
             dataframe = normalize_dataframe(dataframe)
-            return dataframe
+            source = os.path.splitext(path)[0]
+            return source, dataframe
 
         with open(path, "r") as json_file:
             # converting frames to pandas compatible records
             json_data = json.load(json_file)
+            source = json_data["metadata"]["satellite_name"]
             json_records = records_from_satnogs_frames(json_data)
 
             # Creating a pandas dataframe
@@ -40,7 +45,7 @@ def read_polaris_data(path, csv_sep=','):
     except FileNotFoundError as exception_error:
         LOGGER.warning(exception_error)
 
-    return dataframe
+    return source, dataframe
 
 
 def records_from_satnogs_frames(json_data):

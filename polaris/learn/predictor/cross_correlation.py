@@ -2,11 +2,20 @@
 Cross Correlation module
 """
 
+import logging
+
+import numpy as np
 import pandas as pd
+# Used for tracking ML process results
+from mlflow import log_metric, log_param, log_params, start_run
 # Used for the pipeline interface of scikit learn
 from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.metrics import mean_squared_error
+from sklearn.model_selection import train_test_split
 # eXtreme Gradient Boost algorithm
 from xgboost import XGBRegressor
+
+LOGGER = logging.getLogger(__name__)
 
 
 class XCorr(BaseEstimator, TransformerMixin):
@@ -22,6 +31,7 @@ class XCorr(BaseEstimator, TransformerMixin):
         self.models = None
         self._importances_map = None
         self.early_stopping_rounds = 5
+        self.random_state = 42
 
         # Model parameters in use for all iterations
         # These parameters could be optimized with
@@ -67,9 +77,10 @@ class XCorr(BaseEstimator, TransformerMixin):
 
         self.reset_importance_map(X.columns)
 
-        for column in X.columns:
-            self.models.append(
-                self.regression(X.drop([column], axis=1), X[column]))
+        with start_run(run_name='cross_correlate'):
+            for column in X.columns:
+                self.models.append(
+                    self.regression(X.drop([column], axis=1), X[column]))
 
     def transform(self):
         """ Unused method in this predictor """
@@ -83,10 +94,31 @@ class XCorr(BaseEstimator, TransformerMixin):
             :param target_series: pandas series of the target variable. Share
             the same indexes as the df_in dataframe.
         """
+        # Split df_in and target to train and test dataset
+        df_in_train, df_in_test, target_train, target_test = train_test_split(
+            df_in,
+            target_series,
+            test_size=0.2,
+            random_state=self.random_state)
+
+        log_param('Train test split ratio', '80/20')
+        log_param('Model', 'XGBRegressor')
+        log_params(self.model_params)
+
         # Create and train a XGBoost regressor
         regr_m = XGBRegressor(**self.model_params)
         # , early_stopping_rounds=self.early_stopping_rounds)
-        regr_m.fit(df_in, target_series)
+        regr_m.fit(df_in_train, target_train)
+
+        # Make predictions
+        target_series_predict = regr_m.predict(df_in_test)
+
+        mse = mean_squared_error(target_test, target_series_predict)
+        rmse = np.sqrt(mse)
+
+        log_metric(target_series.name, rmse)
+        LOGGER.info('Making predictions for : %s', target_series.name)
+        LOGGER.info('Root Mean Square Error : %s', str(rmse))
 
         # indices = np.argsort(regr_m.feature_importances_)[::-1]
         # After the model is trained

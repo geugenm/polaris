@@ -17,5 +17,7 @@ def test_fetch_json_to_pandas_json(polaris_dataset_json, pandas_dataset_dict):
 def test_read_polaris_data():
     """ Test file reading function
     """
-    none_output = pldr.read_polaris_data("/tmp/tmp/tmp/a/b/a/b/NOTINSPACE")
+    source_none, none_output = pldr.read_polaris_data(
+        "/tmp/tmp/tmp/a/b/a/b/NOTINSPACE")
     assert none_output is None
+    assert source_none is None

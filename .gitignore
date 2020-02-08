@@ -18,5 +18,6 @@ polaris_ml.egg-info/
 *.log
 /build/
 /dist/
+/mlruns/
 .coverage
 .coverage.*
