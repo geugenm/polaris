@@ -2,6 +2,7 @@
 Module to launch different data analysis.
 """
 from fets.math import TSIntegrale
+from mlflow import set_experiment
 
 from polaris.learn.data.readers import read_polaris_data
 from polaris.learn.data.writers import heatmap_to_graph
@@ -46,7 +47,9 @@ def cross_correlate(input_file,
     """
 
     # Reading input file - index is considered on first column
-    input_data = read_polaris_data(input_file, csv_sep)
+    source, input_data = read_polaris_data(input_file, csv_sep)
+
+    set_experiment(experiment_name=source)
 
     # Creating and fitting cross-correlator
     xcorr = XCorr(model_params)

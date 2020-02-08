@@ -87,6 +87,15 @@ $ (.venv) polaris learn -g /tmp/new_graph.json /tmp/normalized_frames.json
 $ (.venv) polaris viz /tmp/new_graph.json
 # Then visit http://localhost:8080 in your browser
 ```
+## MLflow
+
+Installing Polaris will install MLflow as a dependency. At this time Polaris is using MLflow during the cross check dependencies process and the database is stored in the current working directory under the mlruns folder.
+
+To view the logs into MLflow, you have to run that command line from where the mlruns folder is located : 
+```bash
+$ mlflow ui
+```
+This command will start the tracking ui server at http://localhost:5000.
 
 ## More info for developers
 
