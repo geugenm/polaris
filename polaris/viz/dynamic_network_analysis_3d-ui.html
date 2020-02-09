@@ -81,7 +81,9 @@
     const search_elt = document.getElementById('graph-search-input');
     const node_base_color = "#BBF";
     // unused collection of nicely separated colors
-    const polaris_color_set = ["#8dd3c7", "#fdb462", "#b3de69", "#bc80bd"];
+    const polaris_color_set = ["#9A6324", "#fffac8", "#3cb44b", "#e6beff",
+                               "#aaffc3", "#e6194B", "#42d4f4", "#f032e6",
+                               "#ffe119", "#f58231", "#ffffff"];
     const color_scale = d3.scaleOrdinal().domain([1, 12]).range(d3.schemeSet3);
     var color_step = 0;
     var color_limit = 12;
@@ -184,11 +186,11 @@
               node.color = color;
             }
             // else don't change the value
-          } 
+          }
       }
     }
 
-    // Catching keypress events and launching actions 
+    // Catching keypress events and launching actions
     function searchInputCallback(evt) {
 
       // evt.key is the named key so here we're looking for "Enter"
