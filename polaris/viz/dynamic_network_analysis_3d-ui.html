@@ -81,10 +81,10 @@
     const search_elt = document.getElementById('graph-search-input');
     const node_base_color = "#BBF";
     // unused collection of nicely separated colors
-    const polaris_color_set = ["#9A6324", "#fffac8", "#3cb44b", "#e6beff",
+    const polaris_color_set = ["#9A6324", "#fffac8", "#3cb44b", "#4644c0",
                                "#aaffc3", "#e6194B", "#42d4f4", "#f032e6",
                                "#ffe119", "#f58231", "#ffffff"];
-    const color_scale = d3.scaleOrdinal().domain([1, 12]).range(d3.schemeSet3);
+    const color_scale = d3.scaleOrdinal().domain([1, 12]).range(polaris_color_set);
     var color_step = 0;
     var color_limit = 12;
 
@@ -92,10 +92,11 @@
 
     // Converts node info to HTML for screen display
     function node_to_html(node) {
-      if (node.hasOwnProperty("id"))
+      if (node && typeof node == "object" && node.hasOwnProperty("id"))
         return "id: " + node.id
              + ", name: <b>" + node.name
              + "</b>/" + node.group;
+      // If "node" is already just a string
       return node;
     }
 
@@ -204,10 +205,9 @@
           if (evt.shiftKey) {
             // highlight nothing and reset
             highlight_nodes("", node_base_color, true);
-            Graph.refresh();
           }
           // Control key is pressed: node highligting
-          hud_update("highlighting", search_elt.value);
+          hud_update("highlighting search pattern", search_elt.value);
 
           color_step += 1;
           // if (color_step > color_limit) prompt for user input
