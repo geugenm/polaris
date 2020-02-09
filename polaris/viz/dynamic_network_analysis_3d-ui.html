@@ -84,9 +84,8 @@
     const polaris_color_set = ["#9A6324", "#fffac8", "#3cb44b", "#4644c0",
                                "#aaffc3", "#e6194B", "#42d4f4", "#f032e6",
                                "#ffe119", "#f58231", "#ffffff"];
-    const color_scale = d3.scaleOrdinal().domain([1, 12]).range(polaris_color_set);
+    const color_scale = d3.scaleOrdinal().domain([1, polaris_color_set.length]).range(polaris_color_set);
     var color_step = 0;
-    var color_limit = 12;
 
     // ---- Graph's routines ---- //
 
@@ -210,7 +209,8 @@
           hud_update("highlighting search pattern", search_elt.value);
 
           color_step += 1;
-          // if (color_step > color_limit) prompt for user input
+          // if (color_step > polaris_color_set.length) prompt for user input
+          // to give a new color or do nothing: colors will rotate then.
           highlight_nodes(search_elt.value, color_scale(color_step));
           Graph.nodeColor(node => (node.color) ? node.color : node_base_color);
         } else {
