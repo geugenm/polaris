@@ -107,3 +107,9 @@ class PolarisConfig():
         """Batch settings
         """
         return self._data['satellite']['batch']
+
+    def should_batch_run(self, cmd):
+        """Return True if the configuration for batch says we should run this
+        command; else, return False
+        """
+        return self.batch_settings[cmd]
