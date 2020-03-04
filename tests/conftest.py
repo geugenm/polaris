@@ -2,6 +2,8 @@
 Fixtures for pytest tests
 """
 
+import json
+
 import pytest
 
 from polaris.dataset.dataset import PolarisDataset
@@ -234,3 +236,41 @@ def pandas_dataset_dict():
         "bat1_ctlflags": 0,
         "time": 1563741837
     }]
+
+
+@pytest.fixture
+def polaris_config():
+    """Polaris configuration JSON to be used in testing
+    """
+    return json.dumps({
+        'file_layout': {
+            'root_dir': '/tmp/polaris'
+        },
+        'satellite': {
+            'name': 'LightSail-2',
+            '_comment': 'This is a comment',
+            'batch': {
+                'fetch': True,
+                'learn': True,
+                'viz': False
+            }
+        }
+    })
+
+
+@pytest.fixture
+def polaris_config_defaults():
+    """Polaris configuration defaults dict to be used in testing
+    """
+    return {
+        'file_layout': {
+            'root_dir': '/default_root_dir'
+        },
+        'satellite': {
+            'batch': {
+                'fetch': True,
+                'learn': True,
+                'viz': False
+            }
+        }
+    }
