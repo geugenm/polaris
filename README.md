@@ -19,9 +19,11 @@ If you want to **know more**:
 contrib/               - code that is not directly dependent on Polaris, but is used in the project
 docs/                  - Some documentation on the project (though more is in the wiki)
 polaris/               - Project source code
+    common/            - Modules common to all of Polaris
     fetch/             - Module to fetch and prepare data for the analysis
     viz/               - Module to visualize the analysis results
     learn/             - Module to perform the data analysis
+    batch/             - Module to perform batch operations
     polaris.py         - Polaris entry point
 
 tests/                 - Project unit tests
@@ -59,10 +61,10 @@ Options:
   --help      Show this message and exit.
 
 Commands:
-  fetch       Download data set(s)
-  learn       Analyze data
-  viz         Display results
-
+  batch     Run polaris commands in batch mode
+  fetch     Download data set(s)
+  learn     Analyze data
+  viz       Displaying results
 
 # To fetch and decode data from the SatNOGS network, run:
 $ (.venv) polaris fetch -s 2019-08-10 -e 2019-10-5 LightSail-2 /tmp/
@@ -91,11 +93,27 @@ $ (.venv) polaris learn -g /tmp/new_graph.json /tmp/normalized_frames.json
 $ (.venv) polaris viz /tmp/new_graph.json
 # Then visit http://localhost:8080 in your browser
 ```
+
+## Batch operations
+
+Batch operations allow automation of repeated steps.  For example:
+
+- running `polaris fetch` so that it fetches the latest data for a particular satellite, then running `polaris learn` to update the model
+
+- running `polaris fetch`, `polaris learn` and `polaris viz` as part of an integration test
+
+The `polaris batch` command is controlled by a JSON configuration file; an example can be found at `polaris/common/polaris_config.json.EXAMPLE`.
+
+```bash
+$ (.venv) polaris batch --config_file polaris/common/polaris_config.json.EXAMPLE
+```
+
 ## MLflow
 
-Installing Polaris will install MLflow as a dependency. At this time Polaris is using MLflow during the cross check dependencies process and the database is stored in the current working directory under the mlruns folder.
+Installing Polaris will install MLflow as a dependency. At this time Polaris is using MLflow during the cross check dependencies process, and the database is stored in the current working directory under the mlruns folder.
 
-To view the logs into MLflow, you have to run that command line from where the mlruns folder is located : 
+To view the logs in MLflow, run this command in the directory that holds the `mlruns` folder (by default, this is the project root directory):
+
 ```bash
 $ mlflow ui
 ```
