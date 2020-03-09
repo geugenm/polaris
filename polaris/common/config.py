@@ -121,3 +121,11 @@ class PolarisConfig():
         command; else, return False
         """
         return self.batch_settings[cmd]
+
+    @property
+    def batch_stop_at_first_failure(self):
+        """Setting for whether batch should stop if a subcommand fails.
+
+        Hardcoded for now, but we can change that later if needed.
+        """
+        return True
