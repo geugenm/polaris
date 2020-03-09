@@ -143,6 +143,13 @@ def maybe_run(cmd=None, config=None, dry_run=False):
     process_info = subprocess.run(full_cmd.split())
     log_batch_operation(config, full_cmd, process_info.returncode)
 
+    try:
+        process_info.check_returncode()
+    except subprocess.CalledProcessError:
+        LOGGER.warning("%s failed")
+        if config.batch_stop_at_first_failure is True:
+            LOGGER.critical("Batch configured to exit on failure")
+
 
 def batch(config_file, dry_run):
     """Run polaris fetch and learn non-interactively, based on configuration file.
