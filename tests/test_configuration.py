@@ -69,3 +69,23 @@ def test_polaris_configuration_normalized_file_path(polaris_config, tmp_path):
     config_from_file = PolarisConfig(file=fullpath)
     expected_path = '/tmp/polaris/LightSail-2/cache/normalized_frames.json'
     assert config_from_file.normalized_file_path == expected_path
+
+
+def test_should_batch_run(polaris_config, tmp_path):
+    """Test should_batch_run(), including updates
+    """
+    fullpath = tmp_path / 'simple_config.json'
+    with open(fullpath.as_posix(), 'w') as f_handle:
+        f_handle.write(polaris_config)
+
+    config_from_file = PolarisConfig(file=fullpath)
+    # Supply our own batch settings, and test those
+    config_from_file.batch_settings = {
+        'fetch': True,
+        'learn': False,
+        'viz': True
+    }
+
+    assert config_from_file.should_batch_run('fetch') is True
+    assert config_from_file.should_batch_run('learn') is False
+    assert config_from_file.should_batch_run('viz') is True

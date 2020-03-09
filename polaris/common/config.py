@@ -108,6 +108,14 @@ class PolarisConfig():
         """
         return self._data['satellite']['batch']
 
+    @batch_settings.setter
+    def batch_settings(self, new_settings):
+        """Update batch settings
+
+        @param new_settings: dictionary of all fetch settings
+        """
+        self._data['satellite']['batch'] = new_settings
+
     def should_batch_run(self, cmd):
         """Return True if the configuration for batch says we should run this
         command; else, return False
