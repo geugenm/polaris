@@ -4,6 +4,8 @@ Helpers to write data file as input for different targets.
 """
 
 import json
+import os
+from pathlib import Path
 
 import numpy as np
 
@@ -63,5 +65,15 @@ def heatmap_to_graph(heatmap,
                         mdict[source][target]
                     })
 
+        # Create parent directory if not already present
+        create_parent_directory(output_graph_file)
+
         with open(output_graph_file, "w") as graph_file:
             json.dump(graph_dict, graph_file, indent=constants.JSON_INDENT)
+
+
+def create_parent_directory(file_name):
+    """Create parent directory for file if needed
+    """
+    directory = os.path.dirname(file_name)
+    Path(directory).mkdir(parents=True, exist_ok=True)
