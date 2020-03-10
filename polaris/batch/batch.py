@@ -149,6 +149,7 @@ def maybe_run(cmd=None, config=None, dry_run=False):
         LOGGER.warning("%s failed")
         if config.batch_stop_at_first_failure is True:
             LOGGER.critical("Batch configured to exit on failure")
+            exit(1)
 
 
 def batch(config_file, dry_run):
