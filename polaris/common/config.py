@@ -6,6 +6,11 @@ import json
 from mergedeep import merge
 
 
+class InvalidConfigurationFile(Exception):
+    """Raised when the config file is invalid
+    """
+
+
 # Disabling check for public methods; the python_json_config class has
 # all the methods we need, and we're explicitly deferring to it.
 class PolarisConfig():
@@ -38,7 +43,10 @@ class PolarisConfig():
         defaults = defaults or self._DEFAULT_SETTINGS
         with open(file) as f_handle:
             # data from file overrides the defaults
-            self._data = merge({}, defaults, json.load(f_handle))
+            try:
+                self._data = merge({}, defaults, json.load(f_handle))
+            except json.decoder.JSONDecodeError:
+                raise InvalidConfigurationFile
 
     @property
     def root_dir(self):
