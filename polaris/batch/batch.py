@@ -7,7 +7,7 @@ import logging
 import subprocess
 import time
 
-from polaris.common.config import PolarisConfig
+from polaris.common.config import InvalidConfigurationFile, PolarisConfig
 
 LOGGER = logging.getLogger(__name__)
 
@@ -158,7 +158,14 @@ def batch(config_file, dry_run):
     :param config_file: path to config file for batch
     :param dry_run: Bool for dry run mode
     """
-    config = PolarisConfig(file=config_file)
+    try:
+        config = PolarisConfig(file=config_file)
+    except FileNotFoundError:
+        LOGGER.critical("Cannot find or open config file %s", config_file)
+        exit(1)
+    except InvalidConfigurationFile:
+        LOGGER.critical("Configuration file %s is invalid", config_file)
+        exit(1)
 
     for cmd in ['fetch', 'learn', 'viz']:
         maybe_run(cmd=cmd, config=config, dry_run=dry_run)
