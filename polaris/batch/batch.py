@@ -5,6 +5,7 @@ import datetime
 import json
 import logging
 import subprocess
+import sys
 import time
 
 from polaris.common.config import InvalidConfigurationFile, PolarisConfig
@@ -149,7 +150,7 @@ def maybe_run(cmd=None, config=None, dry_run=False):
         LOGGER.warning("%s failed")
         if config.batch_stop_at_first_failure is True:
             LOGGER.critical("Batch configured to exit on failure")
-            exit(1)
+            sys.exit(1)
 
 
 def batch(config_file, dry_run):
@@ -162,10 +163,10 @@ def batch(config_file, dry_run):
         config = PolarisConfig(file=config_file)
     except FileNotFoundError:
         LOGGER.critical("Cannot find or open config file %s", config_file)
-        exit(1)
+        sys.exit(1)
     except InvalidConfigurationFile:
         LOGGER.critical("Configuration file %s is invalid", config_file)
-        exit(1)
+        sys.exit(1)
 
     for cmd in ['fetch', 'learn', 'viz']:
         maybe_run(cmd=cmd, config=config, dry_run=dry_run)
