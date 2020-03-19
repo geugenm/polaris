@@ -116,14 +116,34 @@ $ source .venv/bin/activate
 $ (.venv) pip install -e .
 ```
 
-Format the code before commiting, otherwise the CI engine will fail:
+It is important to format the code before commiting, otherwise the
+CI engine will fail. We have a tox command setup to run tests before
+committing so you will never have to push failing pipelines. Code
+linting is also done to ensure the code does not have any errors
+before committing:
+
 ```bash
 # Install tox to execute CI tasks
 $ (.venv) pip install tox
 
 # Auto-format the code
 $ (.venv) tox -e yapf-apply -e isort-apply
+______________________ summary______________________
+  yapf-apply: commands succeeded
+  isort: commands succeeded
+  congratulations :)
 
 # Verify CI test passes
 $ (.venv) tox
+# If all goes well, you will get something like this:
+______________________ summary______________________
+  flake8: commands succeeded
+  isort: commands succeeded
+  yapf: commands succeeded
+  pylint: commands succeeded
+  build: commands succeeded
+  pytest: commands succeeded
+  congratulations :)
+
 ```
+You can learn more about tox [here](https://tox.readthedocs.io/en/latest/).
