@@ -49,16 +49,20 @@ $ (.venv) pip install polaris-ml
 ## Running the code
 
 ```bash
-$ (.venv) polaris -h
-Tool for analyzing satellite telemetry
+$ (.venv) polaris --help
+Usage: polaris [OPTIONS] COMMAND [ARGS]...
+
+  Tool for analyzing satellite telemetry
 
 Options:
-  --help  Show this message and exit.
+  --version   Show the version and exit.
+  --help      Show this message and exit.
 
 Commands:
-  fetch     Download data set(s)
-  learn     Analyze data
-  viz       Displaying results
+  fetch       Download data set(s)
+  learn       Analyze data
+  viz         Display results
+
 
 # To fetch and decode data from the SatNOGS network, run:
 $ (.venv) polaris fetch -s 2019-08-10 -e 2019-10-5 LightSail-2 /tmp/
