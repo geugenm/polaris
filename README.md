@@ -49,16 +49,20 @@ $ (.venv) pip install polaris-ml
 ## Running the code
 
 ```bash
-$ (.venv) polaris -h
-Tool for analyzing satellite telemetry
+$ (.venv) polaris --help
+Usage: polaris [OPTIONS] COMMAND [ARGS]...
+
+  Tool for analyzing satellite telemetry
 
 Options:
-  --help  Show this message and exit.
+  --version   Show the version and exit.
+  --help      Show this message and exit.
 
 Commands:
-  fetch     Download data set(s)
-  learn     Analyze data
-  viz       Displaying results
+  fetch       Download data set(s)
+  learn       Analyze data
+  viz         Display results
+
 
 # To fetch and decode data from the SatNOGS network, run:
 $ (.venv) polaris fetch -s 2019-08-10 -e 2019-10-5 LightSail-2 /tmp/
@@ -112,14 +116,34 @@ $ source .venv/bin/activate
 $ (.venv) pip install -e .
 ```
 
-Format the code before commiting, otherwise the CI engine will fail:
+It is important to format the code before commiting, otherwise the
+CI engine will fail. We have a tox command setup to run tests before
+committing so you will never have to push failing pipelines. Code
+linting is also done to ensure the code does not have any errors
+before committing:
+
 ```bash
 # Install tox to execute CI tasks
 $ (.venv) pip install tox
 
 # Auto-format the code
 $ (.venv) tox -e yapf-apply -e isort-apply
+______________________ summary______________________
+  yapf-apply: commands succeeded
+  isort: commands succeeded
+  congratulations :)
 
 # Verify CI test passes
 $ (.venv) tox
+# If all goes well, you will get something like this:
+______________________ summary______________________
+  flake8: commands succeeded
+  isort: commands succeeded
+  yapf: commands succeeded
+  pylint: commands succeeded
+  build: commands succeeded
+  pytest: commands succeeded
+  congratulations :)
+
 ```
+You can learn more about tox [here](https://tox.readthedocs.io/en/latest/).
