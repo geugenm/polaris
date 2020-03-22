@@ -188,6 +188,7 @@
             // else don't change the value
           }
       }
+      Graph.nodeColor(node => (node.color) ? node.color : node_base_color);
     }
 
     // Catching keypress events and launching actions
@@ -204,15 +205,15 @@
           if (evt.shiftKey) {
             // highlight nothing and reset
             highlight_nodes("", node_base_color, true);
+          } else {
+            // Control key is pressed: node highligting
+            hud_update("highlighting search pattern", search_elt.value);
+            color_step += 1;
+            // if (color_step > polaris_color_set.length) prompt for user input
+            // to give a new color or do nothing: colors will rotate then.
+            highlight_nodes(search_elt.value, color_scale(color_step));
+            
           }
-          // Control key is pressed: node highligting
-          hud_update("highlighting search pattern", search_elt.value);
-
-          color_step += 1;
-          // if (color_step > polaris_color_set.length) prompt for user input
-          // to give a new color or do nothing: colors will rotate then.
-          highlight_nodes(search_elt.value, color_scale(color_step));
-          Graph.nodeColor(node => (node.color) ? node.color : node_base_color);
         } else {
           // Control key is NOT pressed: jetpacking
           hud_update("searching", search_elt.value);
@@ -240,7 +241,7 @@
     });
 
     // search: Keyboard events
-    search_elt.addEventListener('keypress', searchInputCallback);
+    search_elt.addEventListener('keydown', searchInputCallback);
 
   </script>
 </body>
