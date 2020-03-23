@@ -1,138 +1,169 @@
 <html>
-<head>
-<title>WINDOW_TITLE_HERE</title>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<script src="3d-force-graph.js"></script>
-<script src="d3.v5.min.js"></script>
+  <head>
+    <title>WINDOW_TITLE_HERE</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="3d-force-graph.js"></script>
+    <script src="d3.v5.min.js"></script>
 
-<style type="text/css">
+    <style type="text/css">
+      body {
+        margin: 0;
+      }
 
-  body { margin: 0; }
+      #graph-search,
+      #graph-hud {
+        z-index: 100;
+        color: lavender;
+        opacity: 0.7;
+        font-size: 16px;
+        font-family: Sans-serif;
+      }
 
-  #graph-search, #graph-hud {
-    z-index: 100;
-    color: lavender;
-    opacity: 0.7;
-    font-size: 16px;
-    font-family: Sans-serif;
-  }
+      #graph-hud {
+        position: absolute;
+        top: 10px;
+        right: 10px;
 
-  #graph-hud {
-    position: absolute;
-    top: 10px;
-    right: 10px;
+        text-align: right;
+        pointer-events: none;
+      }
 
-    text-align: right;
-    pointer-events: none;
-  }
+      #graph-search {
+        position: absolute;
+        top: 10px;
+        left: 10px;
 
-  #graph-search {
-    position: absolute;
-    top: 10px;
-    left: 10px;
+        text-align: left;
+      }
 
-    text-align: left;
-  }
+      #graph-search-input {
+        color: black;
+        text-align: left;
+      }
 
-  #graph-search-input {
-    color: black;
-    text-align: left;
-  }
+      .scene-nav-info {
+        bottom: 5px;
+        width: 100%;
+        text-align: center;
+        color: slategrey;
+        opacity: 0.7;
+        font-size: 10px;
+        position: absolute;
+        font-family: sans-serif;
+      }
+    </style>
+  </head>
 
-  .scene-nav-info {
-    bottom: 5px;
-    width: 100%;
-    text-align: center;
-    color: slategrey;
-    opacity: 0.7;
-    font-size: 10px;
-    position: absolute;
-    font-family: sans-serif;
-  }
+  <body>
+    <div id="graph-hud"></div>
+    <div id="graph-search">
+      <input
+        type="text"
+        id="graph-search-input"
+        list="nodeslist"
+        placeholder="search"
+      />
+    </div>
+    <datalist id="nodeslist"></datalist>
 
-</style>
-
-</head>
-
-<body>
-  <div id="graph-hud"></div>
-  <div id="graph-search"><input type="text" id="graph-search-input" list="nodeslist" placeholder="search"></div>
-  <datalist id="nodeslist"></datalist>
-
-
-  <div id="3d-graph" style="">
-    <div style="position: relative;">
-      <div>
-        <div style="position: relative; width: 1920px; height: 893px;">
-          <div class="scene-nav-info">Left-click: rotate, Mouse-wheel/middle-click: zoom, Right-click: pan, Shift-Click on node: MoveAt node</div>
-          <canvas width="1920" height="893" style="width: 1920px; height: 893px;" class=""></canvas>
+    <div id="3d-graph" style="">
+      <div style="position: relative;">
+        <div>
+          <div style="position: relative; width: 1920px; height: 893px;">
+            <div class="scene-nav-info">
+              Left-click: rotate, Mouse-wheel/middle-click: zoom, Right-click:
+              pan, Shift-Click on node: MoveAt node
+            </div>
+            <canvas
+              width="1920"
+              height="893"
+              style="width: 1920px; height: 893px;"
+              class=""
+            ></canvas>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
+    <script language="javascript">
+      // ---- Global constants
+      const graph_elt = document.getElementById("3d-graph");
+      const hud_elt = document.getElementById("graph-hud");
+      const nodeslist_elt = document.getElementById("nodeslist");
+      const search_elt = document.getElementById("graph-search-input");
+      const node_base_color = "#BBF";
+      // unused collection of nicely separated colors
+      const polaris_color_set = [
+        "#9A6324",
+        "#fffac8",
+        "#3cb44b",
+        "#4644c0",
+        "#aaffc3",
+        "#e6194B",
+        "#42d4f4",
+        "#f032e6",
+        "#ffe119",
+        "#f58231",
+        "#ffffff",
+      ];
+      const color_scale = d3
+        .scaleOrdinal()
+        .domain([1, polaris_color_set.length])
+        .range(polaris_color_set);
+      var color_step = 0;
 
-  <script language="javascript">
+      // ---- Graph's routines ---- //
 
-    // ---- Global constants
-    const graph_elt = document.getElementById('3d-graph');
-    const hud_elt = document.getElementById('graph-hud');
-    const nodeslist_elt = document.getElementById('nodeslist');
-    const search_elt = document.getElementById('graph-search-input');
-    const node_base_color = "#BBF";
-    // unused collection of nicely separated colors
-    const polaris_color_set = ["#9A6324", "#fffac8", "#3cb44b", "#4644c0",
-                               "#aaffc3", "#e6194B", "#42d4f4", "#f032e6",
-                               "#ffe119", "#f58231", "#ffffff"];
-    const color_scale = d3.scaleOrdinal().domain([1, polaris_color_set.length]).range(polaris_color_set);
-    var color_step = 0;
+      // Converts node info to HTML for screen display
+      function node_to_html(node) {
+        if (node && typeof node == "object" && node.hasOwnProperty("id"))
+          return (
+            "id: " + node.id + ", name: <b>" + node.name + "</b>/" + node.group
+          );
+        // If "node" is already just a string
+        return node;
+      }
 
-    // ---- Graph's routines ---- //
+      // This function updates the HUD in a custom way
+      function hud_update(action, node) {
+        let action_header = "<tiny>" + action + "</tiny>";
+        let br = "<br/>";
+        let info = node_to_html(node);
+        hud_elt.innerHTML = action_header + br + info + br;
+      }
 
-    // Converts node info to HTML for screen display
-    function node_to_html(node) {
-      if (node && typeof node == "object" && node.hasOwnProperty("id"))
-        return "id: " + node.id
-             + ", name: <b>" + node.name
-             + "</b>/" + node.group;
-      // If "node" is already just a string
-      return node;
-    }
+      // A zoom and fly to node function
+      function jetpack_to(node) {
+        // node: this is the clicked node to lookAt. {x,y,z}
+        // Aim at node from outside it
+        const distance = 40;
+        const distRatio = 1 + distance / Math.hypot(node.x, node.y, node.z);
 
-    // This function updates the HUD in a custom way
-    function hud_update(action, node) {
-      let action_header = "<tiny>"+action+"</tiny>";
-      let br = "<br/>";
-      let info = node_to_html(node);
-      hud_elt.innerHTML = action_header+br+info+br;
-    }
+        Graph.cameraPosition(
+          // aiming at new position
+          {
+            x: node.x * distRatio,
+            y: node.y * distRatio,
+            z: node.z * distRatio,
+          },
+          // lookAt point
+          node,
+          // transition duration in ms
+          3000
+        );
+      }
 
-    // A zoom and fly to node function
-    function jetpack_to(node) {
-      // node: this is the clicked node to lookAt. {x,y,z}
-      // Aim at node from outside it
-      const distance = 40;
-      const distRatio = 1 + distance/Math.hypot(node.x, node.y, node.z);
+      // ---- Graph creation and customization ---- //
 
-      Graph.cameraPosition(
-        // aiming at new position
-        { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio },
-        // lookAt point
-        node,
-        // transition duration in ms
-        3000
-      );
-    }
-
-    // ---- Graph creation and customization ---- //
-
-    // Creationg of the 3D graph which loads the corresponding data file
-    const Graph = ForceGraph3D()(graph_elt)
-        .jsonUrl('JSON_DATA_FILE_HERE')
-        .nodeLabel(node => node.name + ':' + node.group)
-        .nodeColor(node => node_base_color)
-        .onNodeHover(node => graph_elt.style.cursor = node ? 'pointer' : null)
-        .onNodeClick(node => {
+      // Creationg of the 3D graph which loads the corresponding data file
+      const Graph = ForceGraph3D()(graph_elt)
+        .jsonUrl("JSON_DATA_FILE_HERE")
+        .nodeLabel((node) => node.name + ":" + node.group)
+        .nodeColor((node) => node_base_color)
+        .onNodeHover(
+          (node) => (graph_elt.style.cursor = node ? "pointer" : null)
+        )
+        .onNodeClick((node) => {
           hud_update("clicked", node);
           jetpack_to(node);
         })
@@ -143,43 +174,47 @@
         // Speed as a ratio of link length per frame
         // and d.value is included in [0;1]
         // as per input definition: feature importance.
-        .linkDirectionalParticleSpeed(d => d.value*0.01);
+        .linkDirectionalParticleSpeed((d) => d.value * 0.01);
 
+      // ---- Search events and routines ---- //
 
-    // ---- Search events and routines ---- //
-
-    // This function will be used to fill the datalist
-    // The datalist is the database for the input auto-complete
-    function fill_nodeslist() {
-      nodeslist_elt.innerHTML = "";
-      const { nodes, links } = Graph.graphData();
-      for (node of nodes) {
-        nodeslist_elt.innerHTML += "<option value=\""
-                                +node.id+":"+node.name+"/"+node.group
-                                +"\"/>";
-      }
-    }
-
-    // Multi-function search for string
-    // for now search by ID.
-    function find_node(search_str) {
-      var node_id = search_str.split(":")[0];
-
-      const { nodes, links } = Graph.graphData();
-      for (node of nodes) {
-        if (node.id.toString() == node_id) {
-          return node;
+      // This function will be used to fill the datalist
+      // The datalist is the database for the input auto-complete
+      function fill_nodeslist() {
+        nodeslist_elt.innerHTML = "";
+        const { nodes, links } = Graph.graphData();
+        for (node of nodes) {
+          nodeslist_elt.innerHTML +=
+            '<option value="' +
+            node.id +
+            ":" +
+            node.name +
+            "/" +
+            node.group +
+            '"/>';
         }
       }
 
-      return undefined;
-    }
+      // Multi-function search for string
+      // for now search by ID.
+      function find_node(search_str) {
+        var node_id = search_str.split(":")[0];
 
-    // Highlight nodes based on the nodes names
-    function highlight_nodes(search_str, color, reset_color = false) {
-      const { nodes, links } = Graph.graphData();
-      for (node of nodes) {
-          if (node.name.includes(search_str)){
+        const { nodes, links } = Graph.graphData();
+        for (node of nodes) {
+          if (node.id.toString() == node_id) {
+            return node;
+          }
+        }
+
+        return undefined;
+      }
+
+      // Highlight nodes based on the nodes names
+      function highlight_nodes(search_str, color, reset_color = false) {
+        const { nodes, links } = Graph.graphData();
+        for (node of nodes) {
+          if (node.name.includes(search_str)) {
             node.color = color;
           } else {
             if (reset_color) {
@@ -187,62 +222,58 @@
             }
             // else don't change the value
           }
-      }
-      Graph.nodeColor(node => (node.color) ? node.color : node_base_color);
-    }
-
-    // Catching keypress events and launching actions
-    function searchInputCallback(evt) {
-
-      // evt.key is the named key so here we're looking for "Enter"
-      // NB: evt.which is deprecated so using only keyCode here.
-      // NB: evt.code should be what evt.keyCode is according to W3C standards.
-      //     Watch that for eventual future changes.
-      if (evt.keyCode === 13 || evt.key == "Enter") {
-        // ASCII for Enter (Return Carriage) is 13 (Firefox)
-        // For line feed this is 10 (chrome) in UIs generally ctrl+Enter is a linefeed.
-        if (evt.ctrlKey) {
-          if (evt.shiftKey) {
-            // highlight nothing and reset
-            highlight_nodes("", node_base_color, true);
-          } else {
-            // Control key is pressed: node highligting
-            hud_update("highlighting search pattern", search_elt.value);
-            color_step += 1;
-            // if (color_step > polaris_color_set.length) prompt for user input
-            // to give a new color or do nothing: colors will rotate then.
-            highlight_nodes(search_elt.value, color_scale(color_step));
-            
-          }
-        } else {
-          // Control key is NOT pressed: jetpacking
-          hud_update("searching", search_elt.value);
-          const node = find_node(search_elt.value);
-
-          if (node) {
-            hud_update("jetpacking", node);
-            jetpack_to(node);
-          } else {
-            hud_update("search stopped", node);
-          }
         }
-        // Stop processing of the event here.
-        evt.stopPropagation();
-        evt.preventDefault();
-      } // --- end of "Enter" event and derivatives
-
-    }
-
-    // search: Click event only to check status of datalist
-    search_elt.addEventListener("click", function () {
-      if (nodeslist_elt.innerHTML == "") {
-        fill_nodeslist();
+        Graph.nodeColor((node) => (node.color ? node.color : node_base_color));
       }
-    });
 
-    // search: Keyboard events
-    search_elt.addEventListener('keydown', searchInputCallback);
+      // Catching keypress events and launching actions
+      function searchInputCallback(evt) {
+        // evt.key is the named key so here we're looking for "Enter"
+        // NB: evt.which is deprecated so using only keyCode here.
+        // NB: evt.code should be what evt.keyCode is according to W3C standards.
+        //     Watch that for eventual future changes.
+        if (evt.keyCode === 13 || evt.key == "Enter") {
+          // ASCII for Enter (Return Carriage) is 13 (Firefox)
+          // For line feed this is 10 (chrome) in UIs generally ctrl+Enter is a linefeed.
+          if (evt.ctrlKey) {
+            if (evt.shiftKey) {
+              // highlight nothing and reset
+              highlight_nodes("", node_base_color, true);
+            } else {
+              // Control key is pressed: node highligting
+              hud_update("highlighting search pattern", search_elt.value);
+              color_step += 1;
+              // if (color_step > polaris_color_set.length) prompt for user input
+              // to give a new color or do nothing: colors will rotate then.
+              highlight_nodes(search_elt.value, color_scale(color_step));
+            }
+          } else {
+            // Control key is NOT pressed: jetpacking
+            hud_update("searching", search_elt.value);
+            const node = find_node(search_elt.value);
 
-  </script>
-</body>
+            if (node) {
+              hud_update("jetpacking", node);
+              jetpack_to(node);
+            } else {
+              hud_update("search stopped", node);
+            }
+          }
+          // Stop processing of the event here.
+          evt.stopPropagation();
+          evt.preventDefault();
+        } // --- end of "Enter" event and derivatives
+      }
+
+      // search: Click event only to check status of datalist
+      search_elt.addEventListener("click", function () {
+        if (nodeslist_elt.innerHTML == "") {
+          fill_nodeslist();
+        }
+      });
+
+      // search: Keyboard events
+      search_elt.addEventListener("keydown", searchInputCallback);
+    </script>
+  </body>
 </html>
