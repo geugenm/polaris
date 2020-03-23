@@ -2,11 +2,20 @@ variables:
   GITLAB_CI_IMAGE_PYTHON: 'python:3.7.4'
   GITLAB_CI_PYPI_TOX: 'tox~=3.8.0'
   GITLAB_CI_PYPI_TWINE: 'twine~=1.13.0'
+  GITLAB_CI_IMAGE_NODE: 'node:12.13.1'
 stages:
   - static
   - build
   - test
   - deploy
+
+static_js_css:
+  stage: static
+  image: ${GITLAB_CI_IMAGE_NODE}
+  script:
+    - npm install prettier
+    - prettier --check "./polaris/**/*.html"
+  
 static:
   stage: static
   image: ${GITLAB_CI_IMAGE_PYTHON}
