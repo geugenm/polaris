@@ -120,17 +120,25 @@ It is important to format the code before commiting, otherwise the
 CI engine will fail. We have a tox command setup to run tests before
 committing so you will never have to push failing pipelines. Code
 linting is also done to ensure the code does not have any errors
-before committing:
+before committing.
+
+First you will have to install prettier :
+
+```bash
+$ npm install -g prettier
+```
+You can learn more about npm [here](https://www.npmjs.com/).
 
 ```bash
 # Install tox to execute CI tasks
 $ (.venv) pip install tox
 
 # Auto-format the code
-$ (.venv) tox -e yapf-apply -e isort-apply
+$ (.venv) tox -e yapf-apply -e isort-apply -e prettier-apply
 ______________________ summary______________________
   yapf-apply: commands succeeded
   isort: commands succeeded
+  prettier-apply: commands succeeded
   congratulations :)
 
 # Verify CI test passes
@@ -143,6 +151,7 @@ ______________________ summary______________________
   pylint: commands succeeded
   build: commands succeeded
   pytest: commands succeeded
+  prettier: commands succeeded
   congratulations :)
 
 ```

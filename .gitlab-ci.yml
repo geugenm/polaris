@@ -14,11 +14,14 @@ static:
   image: ${GITLAB_CI_IMAGE_PYTHON}
   before_script:
     - pip install "$GITLAB_CI_PYPI_TOX"
-    - apt update
-    - apt install npm -y
-    - npm install -g prettier
   script:
-    - tox -e "flake8,isort,yapf,pylint,prettier"
+    - tox -e "flake8,isort,yapf,pylint"
+static_js_css:
+  stage: static
+  image: ${GITLAB_CI_IMAGE_NODE}
+  script:
+    - npm install -g prettier
+    - prettier --check "./polaris/**/*.html"
 build:
   stage: build
   image: ${GITLAB_CI_IMAGE_PYTHON}
