@@ -73,16 +73,18 @@ def cli():
 # pylint: disable-msg=too-many-arguments
 def cli_fetch(sat, start_date, end_date, output_file, cache_dir, import_file,
               existing_output_file_strategy):
-    """ Retrieve and decode the telemetry corresponding to SAT (satellite name
-     or NORAD ID) """
+    """ Obtain telemetry data
+
+    Retrieve and decode the telemetry corresponding to
+    SAT (satellite name or NORAD ID) and stores in
+    OUTPUT_FILE (path to the output folder)
+    """
     data_fetch_decode_normalize(sat, start_date, end_date, output_file,
                                 cache_dir, import_file,
                                 existing_output_file_strategy)
 
 
-@click.command('learn',
-               short_help='Analyze data',
-               help='INPUT_FILE in csv or json format')
+@click.command('learn', short_help='Analyze data')
 @click.argument('input_file', nargs=1, required=True)
 @click.option('--output_graph_file',
               '-g',
@@ -105,8 +107,10 @@ def cli_learn(input_file,
               graph_link_threshold=0.1,
               col=None,
               csv_sep=','):
-    """
-    Enter learn module
+    """ Analyze telemetry data
+
+    Apply machine learning and feature engineering
+    to analyse data from INPUT_FILE (path to input json file)
     """
     if col is not None:
         feature_extraction(input_file, col)
@@ -122,10 +126,10 @@ def cli_learn(input_file,
 @click.command('viz', short_help='Display results')
 @click.argument('graph_file', nargs=1, required=True)
 def cli_viz(graph_file):
-    """ Serving HTML5 visualization from directory with JSON graph file
+    """ Visualize the results of the learn command
 
-        :param graph_file: JSON data file with graph information about nodes
-        and edges.
+    Serves HTML5 visualization of GRAPH_FILE (JSON data
+    file with graph information about nodes and edges)
     """
     launch_webserver(graph_file)
 
