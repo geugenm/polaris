@@ -6,6 +6,11 @@ import json
 from mergedeep import merge
 
 
+class InvalidConfigurationFile(Exception):
+    """Raised when the config file is invalid
+    """
+
+
 # Disabling check for public methods; the python_json_config class has
 # all the methods we need, and we're explicitly deferring to it.
 class PolarisConfig():
@@ -38,7 +43,10 @@ class PolarisConfig():
         defaults = defaults or self._DEFAULT_SETTINGS
         with open(file) as f_handle:
             # data from file overrides the defaults
-            self._data = merge({}, defaults, json.load(f_handle))
+            try:
+                self._data = merge({}, defaults, json.load(f_handle))
+            except json.decoder.JSONDecodeError:
+                raise InvalidConfigurationFile
 
     @property
     def root_dir(self):
@@ -107,3 +115,25 @@ class PolarisConfig():
         """Batch settings
         """
         return self._data['satellite']['batch']
+
+    @batch_settings.setter
+    def batch_settings(self, new_settings):
+        """Update batch settings
+
+        @param new_settings: dictionary of all fetch settings
+        """
+        self._data['satellite']['batch'] = new_settings
+
+    def should_batch_run(self, cmd):
+        """Return True if the configuration for batch says we should run this
+        command; else, return False
+        """
+        return self.batch_settings[cmd]
+
+    @property
+    def batch_stop_at_first_failure(self):
+        """Setting for whether batch should stop if a subcommand fails.
+
+        Hardcoded for now, but we can change that later if needed.
+        """
+        return True
