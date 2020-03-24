@@ -122,7 +122,7 @@ committing so you will never have to push failing pipelines. Code
 linting is also done to ensure the code does not have any errors
 before committing.
 
-First you will have to install prettier :
+First you will have to install Prettier. Be sure to have a node version equal or greater than version 10.13.0 :
 
 ```bash
 $ npm install -g prettier
