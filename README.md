@@ -122,7 +122,16 @@ committing so you will never have to push failing pipelines. Code
 linting is also done to ensure the code does not have any errors
 before committing.
 
-First you will have to install Prettier. Be sure to have a node version equal or greater than version 10.13.0 :
+First you will have to install Prettier. Be sure to have a node version equal or greater than version 10.13.0. In case you don't have a good node version here is how to install/update it:
+```bash
+$ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+
+# Feel free to install any version you like, but >= 10.13.0
+$ nvm install v13.8.0
+$ nvm use v13.8.0
+```
+After the installation of node, you have to restart your terminal.
+Then, to install Prettier:
 
 ```bash
 $ npm install -g prettier
