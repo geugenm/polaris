@@ -55,7 +55,7 @@ def heatmap_to_graph(heatmap,
                 if (np.isnan(mdict[source][target])
                         or isinstance(mdict[source][target], str)):
                     continue
-                elif mdict[source][target] >= graph_link_threshold:
+                if mdict[source][target] >= graph_link_threshold:
                     graph_dict[links_key].append({
                         source_key:
                         source,
