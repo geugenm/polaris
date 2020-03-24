@@ -1,6 +1,6 @@
 variables:
   GITLAB_CI_IMAGE_PYTHON: 'python:3.8.2'
-  GITLAB_CI_PYPI_TOX: 'tox~=3.8.0'
+  GITLAB_CI_PYPI_TOX: 'tox~=3.14.5'
   GITLAB_CI_PYPI_TWINE: 'twine~=1.13.0'
   GITLAB_CI_IMAGE_NODE: 'node:12.13.1'
 stages:
