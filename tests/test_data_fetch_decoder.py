@@ -15,7 +15,6 @@ from polaris.fetch import data_fetch_decoder
 class FixtureNormalizer(Normalizer):
     """Normalizer fixture for pytest
     """
-
     def __init__(self):
         super().__init__()
         self.normalizers = [
@@ -26,7 +25,6 @@ class FixtureNormalizer(Normalizer):
 class FixtureNormalizerWithValidator(FixtureNormalizer):
     """Normalizer fixture with a validator
     """
-
     def validate_frame(self, frame):
         try:
             return frame['fields']['src_callsign']['value'].lower() == 'a1b2c3'

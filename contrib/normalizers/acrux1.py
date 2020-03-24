@@ -12,7 +12,6 @@ class Acrux1(Normalizer):
     """
     The class providing equations for the satellite telemetry
     """
-
     def __init__(self):
         super(Acrux1, self).__init__()
         self.normalizers = [  # pylint: disable=R0801

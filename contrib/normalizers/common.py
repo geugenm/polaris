@@ -14,7 +14,6 @@ class Normalizer:
         Transforms frame values according to embedded equations
 
     """
-
     def __init__(self):
         self.normalizers = []
 

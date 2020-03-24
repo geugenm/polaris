@@ -256,7 +256,6 @@ def write_or_merge(dataset, file, strategy):
     strategy: overwrite, merge or error.
 
     """
-
     def write_dataset(dataset, file):
         with open(file, 'w') as f_handle:
             f_handle.write(dataset.to_json())

@@ -12,7 +12,6 @@ from polaris.dataset.metadata import PolarisMetadata
 class PolarisDataset(dict, JsonSerializable):
     """Class for dataset frames
     """
-
     def __init__(self, metadata=None, frames=None):
         """Initialize a PolarisDataset object
 
