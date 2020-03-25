@@ -18,7 +18,6 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
     augmentation (or distribution flattening).
 
     """
-
     def __init__(self, list_of_transformers):
         """ The constructor will help parameterize all options of this
         transformer

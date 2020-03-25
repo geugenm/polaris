@@ -7,7 +7,6 @@ from polaris.common.json_serializable import JsonSerializable
 class PolarisFrame(dict, JsonSerializable):
     """Class for Polaris frames
     """
-
     def __init__(self, frame=None):
         """Initialize a Polaris Frame object
         """

@@ -12,7 +12,6 @@ class Lightsail2(Normalizer):
     """
     The class providing equations for the satellite telemetry
     """
-
     def __init__(self):
         super(Lightsail2, self).__init__()
         self.normalizers = [  # pylint: disable=R0801

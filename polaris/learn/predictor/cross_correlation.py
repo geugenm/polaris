@@ -21,7 +21,6 @@ LOGGER = logging.getLogger(__name__)
 class XCorr(BaseEstimator, TransformerMixin):
     """ Cross Correlation predictor class
     """
-
     def __init__(self, model_params=None):
         """
             :param models: list of tuples (target column, model)

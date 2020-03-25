@@ -9,7 +9,6 @@ from polaris.common import constants
 class JsonSerializable():
     """Class for JSON-serializable objects
     """
-
     def to_json(self):
         """Write a dataset object to JSON.
         """

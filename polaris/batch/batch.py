@@ -66,7 +66,6 @@ def build_date_arg(last_fetch_date=None):
 
     :param last_fetch_date: Date of last successful fetch.
     """
-
     def tformat(timestamp):
         """Standard format for time arguments
         """
@@ -141,7 +140,7 @@ def maybe_run(cmd=None, config=None, dry_run=False):
     LOGGER.debug(full_cmd)
     if dry_run is True:
         return
-    process_info = subprocess.run(full_cmd.split())
+    process_info = subprocess.run(full_cmd.split(), check=False)
     log_batch_operation(config, full_cmd, process_info.returncode)
 
     try:

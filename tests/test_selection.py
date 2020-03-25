@@ -111,7 +111,6 @@ def test_extract_feature_importance(input_transformers):
         :param input_transformers: fixtures for input transformers
 
     """
-
     @dataclass
     class FakeModel:
         """ Fake Model object meant to hold the feature importance list only
