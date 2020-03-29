@@ -146,7 +146,7 @@ def maybe_run(cmd=None, config=None, dry_run=False):
     try:
         process_info.check_returncode()
     except subprocess.CalledProcessError:
-        LOGGER.warning("%s failed")
+        LOGGER.warning("%s failed", cmd)
         if config.batch_stop_at_first_failure is True:
             LOGGER.critical("Batch configured to exit on failure")
             sys.exit(1)
