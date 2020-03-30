@@ -21,12 +21,12 @@ LOGGER = logging.getLogger(__name__)
 class XCorr(BaseEstimator, TransformerMixin):
     """ Cross Correlation predictor class
     """
-
     def __init__(self, model_params=None, use_gridsearch=False):
         """
-            :param models: list of tuples (target column, model)
             :param importances_map: dataframe representing the heatmap of corrs
             :param model_params: parameters for each model
+            :param use_gridsearch: specify if gridsearch will be used during
+            predictions
         """
         self.models = None
         self._importances_map = None
