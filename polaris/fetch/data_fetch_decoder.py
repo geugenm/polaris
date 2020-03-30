@@ -67,6 +67,12 @@ class NoCSVFilesToMerge(Exception):
     CSV files have been modified"""
 
 
+class NoDecodedFramesFile(Exception):
+    """Raised when there is no file of decoded frames after attempting to
+    download new frames.
+    """
+
+
 def load_normalizer(sat):
     """
     Load the normalizer selected by name within the NORMALIZER_LIB.
@@ -143,11 +149,9 @@ def merge_csv_files(output_directory, path):
     else:
         LOGGER.warning(' '.join([
             'There are no CSV files to merge.  This can happen',
-            'if the time range specified had no frames to download;'
-            'you may want to try specifying a different time range',
-            'with the --start_date and --end_date options. This',
-            'can also arise if the downloaded files have been',
-            'deleted or modified during execution.'
+            'if the time range specified had no frames to download,'
+            'or if the downloaded files were deleted or modified',
+            'during exeution.'
         ]))
         raise NoCSVFilesToMerge
 
@@ -249,8 +253,21 @@ def data_merge_and_decode(decoder, output_directory, new_frames_file=""):
         except subprocess.CalledProcessError as err:
             LOGGER.error('Error running %s: %s', decode_cmd, err)
 
-    LOGGER.info('Decoded data stored at %s', decoded_file)
-    return decoded_file
+    if os.path.exists(decoded_file):
+        LOGGER.info('Decoded data stored at %s', decoded_file)
+        return decoded_file
+
+    LOGGER.error(' '.join([
+        'There is no file of decoded frames at ' + decoded_file,
+        'This can happen if the time range specified had no frames'
+        'to download, and you have not imported frames already.'
+        'You may want to specify a different time range'
+        'with the --start_date and --end_date options, or import'
+        'frames downloaded directly from SatNOGS.  This',
+        'can also arise if the downloaded files have been',
+        'deleted or modified during execution.'
+    ]))
+    raise NoDecodedFramesFile
 
 
 def load_frames_from_json_file(file):
