@@ -206,7 +206,10 @@ def data_fetch(norad_id, output_directory, start_date, end_date):
         LOGGER.error("data collection: %s", eee)
 
     LOGGER.info('Saving the dataframes in directory: %s', output_directory)
-    return merge_csv_files(output_directory, cwd_path, start_date, end_date)
+    try:
+        return merge_csv_files(output_directory, cwd_path)
+    except NoCSVFilesToMerge:
+        return ""
 
 
 def build_decoded_file_path(directory):
