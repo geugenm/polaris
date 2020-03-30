@@ -62,9 +62,9 @@ class NoNormalizerForSatellite(Exception):
     """Raised when we have no normalizer """
 
 
-class NoDataToFetch(Exception):
-    """Raised when there is no data to fetch or the downloaded
-    data has been modified"""
+class NoCSVFilesToMerge(Exception):
+    """Raised when there are no CSV files to merge or the downloaded
+    CSV files have been modified"""
 
 
 def load_normalizer(sat):
@@ -124,7 +124,7 @@ def build_start_and_end_dates(start_date, end_date):
     return start_date, end_date
 
 
-def merge_csv_files(output_directory, path, start_date, end_date):
+def merge_csv_files(output_directory, path):
     """
     Merge all the CSV files inside path into a single file.
 
@@ -141,15 +141,15 @@ def merge_csv_files(output_directory, path, start_date, end_date):
     if os.path.exists(merged_file + '.tmp'):
         pass
     else:
-        LOGGER.error(
-            ' '.join([
-                'There are no frames to download in the chosen time',
-                'range: %s to %s. Try a different time range with',
-                'the --start_date and --end_date options. This error',
-                'can also arise if the downloaded files have been',
-                'deleted or modified during execution.'
-            ]), start_date, end_date)
-        raise NoDataToFetch
+        LOGGER.warning(' '.join([
+            'There are no CSV files to merge.  This can happen',
+            'if the time range specified had no frames to download;'
+            'you may want to try specifying a different time range',
+            'with the --start_date and --end_date options. This',
+            'can also arise if the downloaded files have been',
+            'deleted or modified during execution.'
+        ]))
+        raise NoCSVFilesToMerge
 
     with open(merged_file + '.tmp', 'r') as source:
         with open(merged_file, 'w') as target:
