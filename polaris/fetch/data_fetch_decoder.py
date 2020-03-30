@@ -354,14 +354,15 @@ def data_fetch_decode_normalize(sat, start_date, end_date, output_file,
         start_date, end_date = build_start_and_end_dates(start_date, end_date)
         LOGGER.info('Fetch period: %s to %s', start_date, end_date)
 
-        frames_file = data_fetch(satellite.norad_id, cache_dir, start_date,
-                                 end_date)
+        new_frames_file = data_fetch(satellite.norad_id, cache_dir, start_date,
+                                     end_date)
     else:
-        frames_file = import_file
+        new_frames_file = import_file
 
-    decoded_file = data_merge_and_decode(satellite.decoder, cache_dir,
-                                         frames_file)
-    decoded_frame_list = load_frames_from_json_file(decoded_file)
+    decoded_frames_file = data_merge_and_decode(satellite.decoder, cache_dir,
+                                                new_frames_file)
+    decoded_frame_list = load_frames_from_json_file(decoded_frames_file)
+
     try:
         normalizer = load_normalizer(satellite)
     except Exception as exception:
