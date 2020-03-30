@@ -209,7 +209,17 @@ def data_fetch(norad_id, output_directory, start_date, end_date):
     return merge_csv_files(output_directory, cwd_path, start_date, end_date)
 
 
-def data_decode(decoder, output_directory, frames_file):
+def build_decoded_file_path(directory):
+    """Return path to decoded files within directory
+
+    :param directory: full path to directory for decoded frames
+
+    :returns: path of the file that contains the decoded data.
+    """
+    return os.path.join(directory, 'decoded_frames.json')
+
+
+def data_merge_and_decode(decoder, output_directory, new_frames_file=""):
     """
     Decode the data found in frames_file using the given decoder. Put it in
     output_directory.
@@ -219,16 +229,22 @@ def data_decode(decoder, output_directory, frames_file):
 
     # Using satnogs-decoders to decode the CSV files containing
     # multiple dataframes and store them as JSON objects.
-    LOGGER.info('Starting decoding of the data')
-    decoded_file = os.path.join(output_directory, 'decoded_frames.json')
-    decode_cmd = build_decode_cmd(frames_file, decoded_file, decoder)
 
-    try:
-        proc3 = subprocess.Popen(decode_cmd, shell=True, cwd=output_directory)
-        proc3.wait()
-        LOGGER.info('Decoding of data finished.')
-    except subprocess.CalledProcessError as err:
-        LOGGER.info('ERROR: %s', err)
+    decoded_file = build_decoded_file_path(output_directory)
+
+    if new_frames_file == "":
+        LOGGER.info('No new frames to decode and merge')
+    else:
+        LOGGER.info('Starting decoding and merging of the new frames')
+        decode_cmd = build_decode_cmd(new_frames_file, decoded_file, decoder)
+        try:
+            proc3 = subprocess.Popen(decode_cmd,
+                                     shell=True,
+                                     cwd=output_directory)
+            proc3.wait()
+            LOGGER.info('Decoding of data finished.')
+        except subprocess.CalledProcessError as err:
+            LOGGER.error('Error running %s: %s', decode_cmd, err)
 
     LOGGER.info('Decoded data stored at %s', decoded_file)
     return decoded_file
@@ -343,7 +359,8 @@ def data_fetch_decode_normalize(sat, start_date, end_date, output_file,
     else:
         frames_file = import_file
 
-    decoded_file = data_decode(satellite.decoder, cache_dir, frames_file)
+    decoded_file = data_merge_and_decode(satellite.decoder, cache_dir,
+                                         frames_file)
     decoded_frame_list = load_frames_from_json_file(decoded_file)
     try:
         normalizer = load_normalizer(satellite)
