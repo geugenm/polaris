@@ -34,10 +34,12 @@ def feature_extraction(input_file, param_col):
     print(out[0].best_features)
 
 
+# pylint: disable-msg=too-many-arguments
 def cross_correlate(input_file,
                     output_graph_file=None,
                     graph_link_threshold=0.1,
                     model_params=None,
+                    use_gridsearch=False,
                     csv_sep=','):
     """
     Catch linear and non-linear correlations between all columns of the
@@ -52,7 +54,7 @@ def cross_correlate(input_file,
     set_experiment(experiment_name=source)
 
     # Creating and fitting cross-correlator
-    xcorr = XCorr(model_params)
+    xcorr = XCorr(model_params, use_gridsearch)
     xcorr.fit(input_data)
 
     if output_graph_file is None:

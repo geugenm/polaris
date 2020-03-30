@@ -6,7 +6,6 @@ import logging
 import click
 
 from polaris import __version__
-from polaris.batch.batch import batch
 from polaris.fetch.data_fetch_decoder import data_fetch_decode_normalize
 from polaris.learn.analysis import cross_correlate, feature_extraction
 from polaris.viz.server import launch_webserver
@@ -99,14 +98,20 @@ def cli_fetch(sat, start_date, end_date, output_file, cache_dir, import_file,
               '-c',
               is_flag=False,
               help='Target column to extract features for')
+@click.option('--use_gridsearch',
+              '-d',
+              is_flag=True,
+              help='Using gridsearch to perform predictions')
 @click.option('--csv_sep',
               '-s',
               is_flag=False,
               help='The separator used in the input csv file')
+# pylint: disable-msg=too-many-arguments
 def cli_learn(input_file,
               output_graph_file=None,
               graph_link_threshold=0.1,
               col=None,
+              use_gridsearch=False,
               csv_sep=','):
     """ Analyze telemetry data
 
@@ -119,6 +124,7 @@ def cli_learn(input_file,
         cross_correlate(input_file,
                         output_graph_file,
                         graph_link_threshold,
+                        use_gridsearch=use_gridsearch,
                         csv_sep=csv_sep)
     else:
         LOGGER.warning("Nothing learnt from file: %s", input_file)
@@ -135,29 +141,8 @@ def cli_viz(graph_file):
     launch_webserver(graph_file)
 
 
-@click.command('batch', short_help='Run polaris commands in batch mode')
-@click.option('--config_file',
-              is_flag=False,
-              required=False,
-              default='polaris_config.json',
-              type=click.Path(resolve_path=True),
-              help='Config file for polaris batch.')
-@click.option('--dry-run/--no-dry-run',
-              required=False,
-              default=False,
-              help='Show what would be run in batch mode')
-def cli_batch(config_file, dry_run):
-    """ Run polaris from batch: runs polaris commands non-interactively
-
-        :param config_file: path to configuration file
-        :param dry_run: Bool for dry run mode
-    """
-    batch(config_file, dry_run)
-
-
 # click doesn't automagically add the commands to the group
 # (and thus to the help output); you have to do it manually.
 cli.add_command(cli_fetch)
 cli.add_command(cli_learn)
 cli.add_command(cli_viz)
-cli.add_command(cli_batch)
