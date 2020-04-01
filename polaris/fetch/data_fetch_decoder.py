@@ -62,9 +62,15 @@ class NoNormalizerForSatellite(Exception):
     """Raised when we have no normalizer """
 
 
-class NoDataToFetch(Exception):
-    """Raised when there is no data to fetch or the downloaded
-    data has been modified"""
+class NoCSVFilesToMerge(Exception):
+    """Raised when there are no CSV files to merge or the downloaded
+    CSV files have been modified"""
+
+
+class NoDecodedFramesFile(Exception):
+    """Raised when there is no file of decoded frames after attempting to
+    download new frames.
+    """
 
 
 def load_normalizer(sat):
@@ -124,7 +130,7 @@ def build_start_and_end_dates(start_date, end_date):
     return start_date, end_date
 
 
-def merge_csv_files(output_directory, path, start_date, end_date):
+def merge_csv_files(output_directory, path):
     """
     Merge all the CSV files inside path into a single file.
 
@@ -141,15 +147,13 @@ def merge_csv_files(output_directory, path, start_date, end_date):
     if os.path.exists(merged_file + '.tmp'):
         pass
     else:
-        LOGGER.error(
-            ' '.join([
-                'There are no frames to download in the chosen time',
-                'range: %s to %s. Try a different time range with',
-                'the --start_date and --end_date options. This error',
-                'can also arise if the downloaded files have been',
-                'deleted or modified during execution.'
-            ]), start_date, end_date)
-        raise NoDataToFetch
+        LOGGER.warning(' '.join([
+            'There are no CSV files to merge.  This can happen',
+            'if the time range specified had no frames to download,'
+            'or if the downloaded files were deleted or modified',
+            'during exeution.'
+        ]))
+        raise NoCSVFilesToMerge
 
     with open(merged_file + '.tmp', 'r') as source:
         with open(merged_file, 'w') as target:
@@ -206,10 +210,23 @@ def data_fetch(norad_id, output_directory, start_date, end_date):
         LOGGER.error("data collection: %s", eee)
 
     LOGGER.info('Saving the dataframes in directory: %s', output_directory)
-    return merge_csv_files(output_directory, cwd_path, start_date, end_date)
+    try:
+        return merge_csv_files(output_directory, cwd_path)
+    except NoCSVFilesToMerge:
+        return ""
 
 
-def data_decode(decoder, output_directory, frames_file):
+def build_decoded_file_path(directory):
+    """Return path to decoded files within directory
+
+    :param directory: full path to directory for decoded frames
+
+    :returns: path of the file that contains the decoded data.
+    """
+    return os.path.join(directory, 'decoded_frames.json')
+
+
+def data_merge_and_decode(decoder, output_directory, new_frames_file=""):
     """
     Decode the data found in frames_file using the given decoder. Put it in
     output_directory.
@@ -219,19 +236,38 @@ def data_decode(decoder, output_directory, frames_file):
 
     # Using satnogs-decoders to decode the CSV files containing
     # multiple dataframes and store them as JSON objects.
-    LOGGER.info('Starting decoding of the data')
-    decoded_file = os.path.join(output_directory, 'decoded_frames.json')
-    decode_cmd = build_decode_cmd(frames_file, decoded_file, decoder)
 
-    try:
-        proc3 = subprocess.Popen(decode_cmd, shell=True, cwd=output_directory)
-        proc3.wait()
-        LOGGER.info('Decoding of data finished.')
-    except subprocess.CalledProcessError as err:
-        LOGGER.info('ERROR: %s', err)
+    decoded_file = build_decoded_file_path(output_directory)
 
-    LOGGER.info('Decoded data stored at %s', decoded_file)
-    return decoded_file
+    if new_frames_file == "":
+        LOGGER.info('No new frames to decode and merge')
+    else:
+        LOGGER.info('Starting decoding and merging of the new frames')
+        decode_cmd = build_decode_cmd(new_frames_file, decoded_file, decoder)
+        try:
+            proc3 = subprocess.Popen(decode_cmd,
+                                     shell=True,
+                                     cwd=output_directory)
+            proc3.wait()
+            LOGGER.info('Decoding of data finished.')
+        except subprocess.CalledProcessError as err:
+            LOGGER.error('Error running %s: %s', decode_cmd, err)
+
+    if os.path.exists(decoded_file):
+        LOGGER.info('Decoded data stored at %s', decoded_file)
+        return decoded_file
+
+    LOGGER.error(' '.join([
+        'There is no file of decoded frames at ' + decoded_file,
+        'This can happen if the time range specified had no frames'
+        'to download, and you have not imported frames already.'
+        'You may want to specify a different time range'
+        'with the --start_date and --end_date options, or import'
+        'frames downloaded directly from SatNOGS.  This',
+        'can also arise if the downloaded files have been',
+        'deleted or modified during execution.'
+    ]))
+    raise NoDecodedFramesFile
 
 
 def load_frames_from_json_file(file):
@@ -338,13 +374,15 @@ def data_fetch_decode_normalize(sat, start_date, end_date, output_file,
         start_date, end_date = build_start_and_end_dates(start_date, end_date)
         LOGGER.info('Fetch period: %s to %s', start_date, end_date)
 
-        frames_file = data_fetch(satellite.norad_id, cache_dir, start_date,
-                                 end_date)
+        new_frames_file = data_fetch(satellite.norad_id, cache_dir, start_date,
+                                     end_date)
     else:
-        frames_file = import_file
+        new_frames_file = import_file
 
-    decoded_file = data_decode(satellite.decoder, cache_dir, frames_file)
-    decoded_frame_list = load_frames_from_json_file(decoded_file)
+    decoded_frames_file = data_merge_and_decode(satellite.decoder, cache_dir,
+                                                new_frames_file)
+    decoded_frame_list = load_frames_from_json_file(decoded_frames_file)
+
     try:
         normalizer = load_normalizer(satellite)
     except Exception as exception:
