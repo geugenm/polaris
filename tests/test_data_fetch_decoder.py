@@ -126,6 +126,25 @@ def test_find_satellite_no_decoder(satellite_list):
         _ = data_fetch_decoder.find_satellite(test_satellite, satellite_list)
 
 
+def test_find_alternatives_happy(satellite_list):
+    """Test happy path for find_alternatives
+    """
+    test_satellite = 'EXAMPLEsat'
+    alt_sat = data_fetch_decoder.find_alternatives(test_satellite,
+                                                   satellite_list)
+    act_sat = 'ExampleSat'
+    assert alt_sat == act_sat
+
+
+def test_find_alternatives_sad(satellite_list):
+    """Test sad path for find_alternatives
+    """
+    test_satellite = 'DoesNotExist'
+    alt_sat = data_fetch_decoder.find_alternatives(test_satellite,
+                                                   satellite_list)
+    assert alt_sat is None
+
+
 def test_load_normalizer_no_normalizer(satellite_list):
     """Test no_normlizer path for find_satellite()
     """
