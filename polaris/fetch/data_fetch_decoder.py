@@ -7,6 +7,7 @@ import importlib
 import json
 import logging
 import os
+import re
 import subprocess
 import sys
 from collections import namedtuple
@@ -342,7 +343,32 @@ def data_normalize(normalizer, frame_list):
     return normalized_frames
 
 
+def normalize_satname(sat_name):
+    """
+    Normalize satellite name for comparison or searching
+
+    :param sat_name: Satellite name
+    """
+    return re.sub('[^A-Za-z0-9]+', '', sat_name).lower()
+
+
+def find_alternatives(sat_name, list_of_satellites):
+    """
+    Find an alternative for sat_name from dict_of_satellites
+
+    :param sat_name: Name of satellite to check
+    :param list_of_satellites: Dictionary containing
+           all satellite details
+    """
+    for sat_present in list_of_satellites:
+        if normalize_satname(sat_name) == normalize_satname(sat_present.name):
+            return sat_present.name
+
+    return None
+
+
 # pylint: disable-msg=too-many-arguments
+# pylint: disable-msg=too-many-locals
 def data_fetch_decode_normalize(sat, start_date, end_date, output_file,
                                 cache_dir, import_file,
                                 existing_output_file_strategy):
@@ -366,6 +392,12 @@ def data_fetch_decode_normalize(sat, start_date, end_date, output_file,
         satellite = find_satellite(sat, _SATELLITES)
     except Exception as exception:
         LOGGER.error("Can't find satellite or decoder: %s", exception)
+        LOGGER.info("You can check for your satellite 'name' in %s",
+                    str(os.path.join(SATELLITE_DATA_DIR, SATELLITE_DATA_FILE)))
+        # Check if there is a satellite with a similar name
+        alt_sat = find_alternatives(sat, _SATELLITES)
+        if alt_sat is not None:
+            LOGGER.info("Did you mean: %s?", alt_sat)
         raise exception
 
     # Retrieve, decode and normalize frames
