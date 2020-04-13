@@ -36,9 +36,9 @@ class XCorr(BaseEstimator, TransformerMixin):
         if use_gridsearch:
             self.model_params = {
                 "objective": ["reg:squarederror"],
-                "n_estimators": [70, 75, 80, 85, 90],
-                "learning_rate": [0.05, 0.1, 0.5],
-                "max_depth": [2, 5, 8, 15, 20]
+                "n_estimators": [50, 100, 300],
+                "learning_rate": [0.005, 0.05, 0.1, 0.2],
+                "max_depth": [3, 5, 8, 15]
             }
             self.method = self.gridsearch
             self.mlf_logging = self.gridsearch_mlf_logging
