@@ -94,7 +94,7 @@ class XCorr(BaseEstimator, TransformerMixin):
         with start_run(run_name='cross_correlate'):
             self.mlf_logging()
             for column in X.columns:
-                print(column)
+                LOGGER.info(column)
                 self.models.append(
                     self.method(X.drop([column], axis=1), X[column],
                                 self.model_params))
