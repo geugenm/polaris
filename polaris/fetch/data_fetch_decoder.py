@@ -74,6 +74,11 @@ class NoDecodedFramesFile(Exception):
     """
 
 
+class SpecifiedImportFileDoesNotExist(Exception):
+    """Raised when a specified file to be imported does not exist.
+    """
+
+
 def load_normalizer(sat):
     """
     Load the normalizer selected by name within the NORMALIZER_LIB.
@@ -367,6 +372,47 @@ def find_alternatives(sat_name, list_of_satellites):
     return None
 
 
+def fetch_or_import(import_file, satellite, start_date, end_date, cache_dir):
+    """
+    Its a import_file validation function,
+    it checks if variable import_file variable is empty or not,
+    if its not empty then it checks if the file exists or not,
+    if the file does not exit, it will raise an error.
+
+    :param import_file: file to be checked if exists or not
+    :param satellite: satellite whose data is to be fetch
+    :param start_date: start date of data to fetch
+    :param end_date: end date of data to fetch
+    :param cache_dir: where temp output data should go
+    returns: file if exists
+    """
+    # Retrieve, decode and normalize frames
+    if import_file is None:
+        # Converting dates into datetime objects
+        start_date, end_date = build_start_and_end_dates(start_date, end_date)
+        LOGGER.info('Fetch period: %s to %s', start_date, end_date)
+
+        new_frames_file = data_fetch(satellite.norad_id, cache_dir, start_date,
+                                     end_date)
+    else:
+        if not os.path.isfile(import_file):
+            raise SpecifiedImportFileDoesNotExist(
+                'Import file does not exist.')
+        new_frames_file = import_file
+    return new_frames_file
+
+
+def files_in_current_dir():
+    """
+    returns: list of csv and json files in the current directory.
+    """
+    candidate_files = [
+        f for f in os.listdir()
+        if os.path.isfile(f) and (f[-3:] == 'csv' or f[-4:] == 'json')
+    ]
+    return candidate_files
+
+
 # pylint: disable-msg=too-many-arguments
 # pylint: disable-msg=too-many-locals
 def data_fetch_decode_normalize(sat, start_date, end_date, output_file,
@@ -400,16 +446,15 @@ def data_fetch_decode_normalize(sat, start_date, end_date, output_file,
             LOGGER.info("Did you mean: %s?", alt_sat)
         raise exception
 
-    # Retrieve, decode and normalize frames
-    if import_file is None:
-        # Converting dates into datetime objects
-        start_date, end_date = build_start_and_end_dates(start_date, end_date)
-        LOGGER.info('Fetch period: %s to %s', start_date, end_date)
-
-        new_frames_file = data_fetch(satellite.norad_id, cache_dir, start_date,
-                                     end_date)
-    else:
-        new_frames_file = import_file
+    try:
+        new_frames_file = fetch_or_import(import_file, satellite, start_date,
+                                          end_date, cache_dir)
+    except SpecifiedImportFileDoesNotExist:
+        LOGGER.critical(' '.join([
+            'Import file does not exist.', 'Some Suggestions:- ',
+            ' '.join(files_in_current_dir())
+        ]))
+        sys.exit(1)
 
     decoded_frames_file = data_merge_and_decode(satellite.decoder, cache_dir,
                                                 new_frames_file)
