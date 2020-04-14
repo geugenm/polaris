@@ -36,6 +36,9 @@ class XCorr(BaseEstimator, TransformerMixin):
             "random_state": 42,
             "test_size": 0.2,
             "gridsearch_scoring": "neg_mean_squared_error",
+            # The split number was obtained through trial-and-error,
+            # it shoud be reviewed in the future to adapt to
+            # the targeted satellite.
             "gridsearch_n_splits": 18
         }
 
