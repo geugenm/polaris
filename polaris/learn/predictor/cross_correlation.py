@@ -3,6 +3,7 @@ Cross Correlation module
 """
 
 import logging
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -16,6 +17,7 @@ from sklearn.model_selection import GridSearchCV, KFold, train_test_split
 from xgboost import XGBRegressor
 
 LOGGER = logging.getLogger(__name__)
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
 class XCorr(BaseEstimator, TransformerMixin):
@@ -30,8 +32,12 @@ class XCorr(BaseEstimator, TransformerMixin):
         """
         self.models = None
         self._importances_map = None
-        self.random_state = 42
-        self.gridsearch_scoring = "neg_mean_squared_error"
+        self.xcorr_params = {
+            "random_state": 42,
+            "test_size": 0.2,
+            "gridsearch_scoring": "neg_mean_squared_error",
+            "gridsearch_n_splits": 18
+        }
 
         if use_gridsearch:
             self.model_params = {
@@ -116,7 +122,7 @@ class XCorr(BaseEstimator, TransformerMixin):
             df_in,
             target_series,
             test_size=0.2,
-            random_state=self.random_state)
+            random_state=self.xcorr_params['random_state'])
 
         # Create and train a XGBoost regressor
         regr_m = XGBRegressor(**model_params)
@@ -162,10 +168,11 @@ class XCorr(BaseEstimator, TransformerMixin):
             :param params: the hyperparameters to use on the gridsearch
             method.
         """
-        kfolds = KFold(n_splits=18,
+        random_state = self.xcorr_params['random_state']
+        kfolds = KFold(n_splits=self.xcorr_params['gridsearch_n_splits'],
                        shuffle=True,
-                       random_state=self.random_state)
-        regr_m = XGBRegressor(random_state=self.random_state,
+                       random_state=random_state)
+        regr_m = XGBRegressor(random_state=random_state,
                               predictor="cpu_predictor",
                               tree_method="auto",
                               n_jobs=-1)
@@ -173,7 +180,7 @@ class XCorr(BaseEstimator, TransformerMixin):
         gs_regr = GridSearchCV(regr_m,
                                param_grid=params,
                                cv=kfolds,
-                               scoring=self.gridsearch_scoring,
+                               scoring=self.xcorr_params['gridsearch_scoring'],
                                verbose=1)
         gs_regr.fit(df_in, target_series)
 
@@ -189,25 +196,25 @@ class XCorr(BaseEstimator, TransformerMixin):
         if self._importances_map is None:
             self._importances_map = pd.DataFrame(data={}, columns=columns)
 
-    @staticmethod
-    def commont_mlf_logging():
+    def common_mlf_logging(self):
         """ Log the parameters used for gridsearch and regression
             in mlflow
         """
-        log_param('Train test split ratio', '80/20')
+        log_param('Test size', self.xcorr_params['test_size'])
         log_param('Model', 'XGBRegressor')
 
     def gridsearch_mlf_logging(self):
         """ Log the parameters used for gridsearch
             in mlflow
         """
-        log_param('Gridsearch scoring', self.gridsearch_scoring)
+        log_param('Gridsearch scoring',
+                  self.xcorr_params['gridsearch_scoring'])
         log_param('Gridsearch parameters', self.model_params)
-        self.commont_mlf_logging()
+        self.common_mlf_logging()
 
     def regression_mlf_logging(self):
         """ Log the parameters used for regression
             in mlflow.
         """
-        self.commont_mlf_logging()
+        self.common_mlf_logging()
         log_params(self.model_params)
