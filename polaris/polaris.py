@@ -99,14 +99,20 @@ def cli_fetch(sat, start_date, end_date, output_file, cache_dir, import_file,
               '-c',
               is_flag=False,
               help='Target column to extract features for')
+@click.option('--use_gridsearch',
+              '-d',
+              is_flag=True,
+              help='Using gridsearch to perform predictions')
 @click.option('--csv_sep',
               '-s',
               is_flag=False,
               help='The separator used in the input csv file')
+# pylint: disable-msg=too-many-arguments
 def cli_learn(input_file,
               output_graph_file=None,
               graph_link_threshold=0.1,
               col=None,
+              use_gridsearch=False,
               csv_sep=','):
     """ Analyze telemetry data
 
@@ -119,6 +125,7 @@ def cli_learn(input_file,
         cross_correlate(input_file,
                         output_graph_file,
                         graph_link_threshold,
+                        use_gridsearch=use_gridsearch,
                         csv_sep=csv_sep)
     else:
         LOGGER.warning("Nothing learnt from file: %s", input_file)
