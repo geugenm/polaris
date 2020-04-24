@@ -23,7 +23,10 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 class XCorr(BaseEstimator, TransformerMixin):
     """ Cross Correlation predictor class
     """
-    def __init__(self, model_params=None, use_gridsearch=False):
+    def __init__(self,
+                 model_params=None,
+                 use_gridsearch=False,
+                 xcorr_params=None):
         """
             :param importances_map: dataframe representing the heatmap of corrs
             :param model_params: parameters for each model
@@ -70,6 +73,9 @@ class XCorr(BaseEstimator, TransformerMixin):
 
             self.method = self.regression
             self.mlf_logging = self.regression_mlf_logging
+
+        if xcorr_params is not None:
+            self.xcorr_params = xcorr_params
 
     @property
     def importances_map(self):
@@ -171,6 +177,11 @@ class XCorr(BaseEstimator, TransformerMixin):
             :param params: the hyperparameters to use on the gridsearch
             method.
         """
+        if not isinstance(df_in, pd.DataFrame):
+            LOGGER.error("Expected %s got %s for df_in in gridsearch",
+                         pd.DataFrame, type(df_in))
+            raise TypeError
+
         random_state = self.xcorr_params['random_state']
         kfolds = KFold(n_splits=self.xcorr_params['gridsearch_n_splits'],
                        shuffle=True,
