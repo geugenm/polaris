@@ -1,5 +1,7 @@
 # Polaris
 
+![Polaris logo](img/polaris_logo_small.png "Polaris")
+
 [![pipeline status](https://gitlab.com/crespum/polaris/badges/master/pipeline.svg)](https://gitlab.com/crespum/polaris/commits/master)
 [![coverage report](https://gitlab.com/crespum/polaris/badges/master/coverage.svg)](https://gitlab.com/crespum/polaris/commits/master)
 
@@ -12,6 +14,8 @@ If you want to **know more**:
 - read the [project wiki](https://gitlab.com/crespum/polaris/wikis/Home)
 
 - read the blog post [Analyzing Lightsail-2 Telemetry with Polaris](https://blog.crespum.eu/analyzing-lightsail-2-telemetry-with-polaris/)
+
+- look at the [demo site](https://deepchaos.space)
 
 ## Project structure
 
