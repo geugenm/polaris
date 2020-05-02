@@ -5,6 +5,7 @@ Cross Correlation module
 import logging
 import warnings
 
+import GPUtil
 import numpy as np
 import pandas as pd
 # Used for tracking ML process results
@@ -26,7 +27,8 @@ class XCorr(BaseEstimator, TransformerMixin):
     def __init__(self,
                  model_params=None,
                  use_gridsearch=False,
-                 xcorr_params=None):
+                 xcorr_params=None,
+                 force_cpu=False):
         """
             :param importances_map: dataframe representing the heatmap of corrs
             :param model_params: parameters for each model
@@ -61,15 +63,31 @@ class XCorr(BaseEstimator, TransformerMixin):
                 # Model parameters in use for all iterations
                 # These parameters could be optimized with
                 # with a search method, such as the grid search.
-                self.model_params = {
-                    "objective": "reg:squarederror",
-                    "n_estimators": 80,
-                    "learning_rate": 0.1,
-                    "n_jobs": -1,
-                    "predictor": "cpu_predictor",
-                    "tree_method": "auto",
-                    "max_depth": 8
-                }
+                gpu_ids = GPUtil.getAvailable()
+
+                if gpu_ids != [] and not force_cpu:
+                    # For the params chosen, refer:
+                    # https://xgboost.readthedocs.io/en/latest/gpu/
+
+                    self.model_params = {
+                        "objective": "reg:squarederror",
+                        "n_estimators": 80,
+                        "learning_rate": 0.1,
+                        "predictor": "gpu_predictor",
+                        "tree_method": "gpu_hist",
+                        "max_depth": 8,
+                        "gpu_id": gpu_ids[0]
+                    }
+                else:
+                    self.model_params = {
+                        "objective": "reg:squarederror",
+                        "n_estimators": 80,
+                        "learning_rate": 0.1,
+                        "n_jobs": -1,
+                        "predictor": "cpu_predictor",
+                        "tree_method": "auto",
+                        "max_depth": 8
+                    }
 
             self.method = self.regression
             self.mlf_logging = self.regression_mlf_logging
