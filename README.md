@@ -71,7 +71,7 @@ Commands:
   viz       Displaying results
 
 # To fetch and decode data from the SatNOGS network, run:
-$ (.venv) polaris fetch -s 2019-08-10 -e 2019-10-5 LightSail-2 /tmp/
+$ (.venv) polaris fetch -s 2019-08-10 -e 2019-10-5 --cache_dir /tmp/LightSail_2 LightSail-2 /tmp/normalized_frames.json
 # Note: this may take some time.
 
 # Data will be saved at /tmp/normalized_frames.json
