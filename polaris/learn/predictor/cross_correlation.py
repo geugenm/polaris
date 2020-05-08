@@ -58,6 +58,7 @@ class XCorr(BaseEstimator, TransformerMixin):
             self.mlf_logging = self.gridsearch_mlf_logging
         else:
             if model_params is not None:
+                LOGGER.info(" ".join(["Using custom model parameters"]))
                 self.model_params = model_params
             else:
                 # Model parameters in use for all iterations
@@ -66,6 +67,10 @@ class XCorr(BaseEstimator, TransformerMixin):
                 gpu_ids = GPUtil.getAvailable()
 
                 if gpu_ids != [] and not force_cpu:
+                    LOGGER.info(" ".join([
+                        "GPU detected! Using GPU parameters",
+                        "for XGB Regressor :)"
+                    ]))
                     # For the params chosen, refer:
                     # https://xgboost.readthedocs.io/en/latest/gpu/
 
@@ -79,6 +84,10 @@ class XCorr(BaseEstimator, TransformerMixin):
                         "gpu_id": gpu_ids[0]
                     }
                 else:
+                    LOGGER.info(" ".join([
+                        "No GPU detected! Using CPU parameters",
+                        "for XGB Regressor :)"
+                    ]))
                     self.model_params = {
                         "objective": "reg:squarederror",
                         "n_estimators": 80,
