@@ -137,9 +137,27 @@ class XCorr(BaseEstimator, TransformerMixin):
             self.mlf_logging()
             for column in X.columns:
                 LOGGER.info(column)
-                self.models.append(
-                    self.method(X.drop([column], axis=1), X[column],
-                                self.model_params))
+                try:
+                    self.models.append(
+                        self.method(X.drop([column], axis=1), X[column],
+                                    self.model_params))
+                except Exception as err:  # pylint: disable-msg=broad-except
+                    if self.model_params.get("predictor") == "gpu_predictor":
+                        LOGGER.info(" ".join([
+                            "Encountered error using GPU.",
+                            "Trying with CPU parameters now!"
+                        ]))
+                        self.model_params = {
+                            "objective": "reg:squarederror",
+                            "n_estimators": 80,
+                            "learning_rate": 0.1,
+                            "n_jobs": -1,
+                            "predictor": "cpu_predictor",
+                            "tree_method": "auto",
+                            "max_depth": 8
+                        }
+                    else:
+                        raise err
 
     def transform(self):
         """ Unused method in this predictor """
