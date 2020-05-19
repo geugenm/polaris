@@ -128,7 +128,10 @@ def cli_learn(input_file,
                         use_gridsearch=use_gridsearch,
                         csv_sep=csv_sep)
     else:
-        LOGGER.warning("Nothing learnt from file: %s", input_file)
+        LOGGER.warning(" ".join([
+            "You must provide either --col",
+            "or --output-graph-file arguments!"
+        ]))
 
 
 @click.command('viz', short_help='Display results')
