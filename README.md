@@ -93,6 +93,10 @@ $ (.venv) head /tmp/normalized_frames.json
 $ (.venv) polaris learn -g /tmp/new_graph.json /tmp/normalized_frames.json
 # Note: depending on your hardware, this may take some time.
 
+# Note: `polaris learn` uses your dedicated (CUDA enabled) GPU by default
+#       to suppress this behaviour, you can utilise the --force-cpu flag.
+$ (.venv) polaris learn -g /tmp/new_graph.json /tmp/normalized_frames.json --force_cpu
+
 # To see a visualization of these results, run:
 $ (.venv) polaris viz /tmp/new_graph.json
 # Then visit http://localhost:8080 in your browser
