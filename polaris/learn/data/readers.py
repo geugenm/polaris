@@ -14,6 +14,11 @@ import pandas as pd
 LOGGER = logging.getLogger(__name__)
 
 
+class PolarisUnknownFileFormatError(Exception):
+    """Raised when we don't know how to read the file format
+    """
+
+
 def read_polaris_data(path, csv_sep=','):
     """
         Read a JSON or CSV file and creates a pandas dataframe out of it.
