@@ -14,37 +14,73 @@ import pandas as pd
 LOGGER = logging.getLogger(__name__)
 
 
-def read_polaris_data(path, csv_sep=','):
+class PolarisUnknownFileFormatError(Exception):
+    """Raised when we don't know how to read the file format
     """
-        Read a JSON or CSV file and creates a pandas dataframe out of it.
 
-        :param path: File path for the input file.
-        :param csv_sep: The csv separator used for the input csv file.
-        :return: Pandas dataframe with all frames fields values and
-        the data source name.
+
+def read_polaris_data(path, csv_sep=','):
+    """Read a JSON or CSV file and creates a pandas dataframe out of it.
+
+    :param path: File path for the input file.
+    :param csv_sep: The csv separator used for the input csv file.
+    :return: Pandas dataframe with all frames fields values and
+    the data source name.
     """
     source = None
     dataframe = None
 
+    if path.lower().endswith('.csv'):
+        source, dataframe = read_polaris_data_from_csv(path, csv_sep)
+
+    elif path.lower().endswith('.json'):
+        source, dataframe = read_polaris_data_from_json(path)
+
+    else:
+        LOGGER.critical("Don't know how to load from file %s ", path)
+        raise PolarisUnknownFileFormatError
+
+    return source, dataframe
+
+
+def read_polaris_data_from_csv(path, csv_sep=','):
+    """Read Polaris data from CSV
+
+    :param path: File path for the input file.
+    :param csv_sep: The csv separator used for the input csv file.
+    :return: Pandas dataframe with all frames fields values and
+    the data source name.
+    """
     try:
-        if path.lower().endswith('.csv'):
-            dataframe = pd.read_csv(path, sep=csv_sep)
-            dataframe = normalize_dataframe(dataframe)
-            source = os.path.splitext(path)[0]
-            return source, dataframe
+        dataframe = pd.read_csv(path, sep=csv_sep)
+        dataframe = normalize_dataframe(dataframe)
+        source = os.path.splitext(path)[0]
+        return source, dataframe
 
-        with open(path, "r") as json_file:
-            # converting frames to pandas compatible records
-            json_data = json.load(json_file)
-            source = json_data["metadata"]["satellite_name"]
-            json_records = records_from_satnogs_frames(json_data)
-
-            # Creating a pandas dataframe
-            dataframe = pd.DataFrame(json_records)
-            dataframe = normalize_dataframe(dataframe)
     except FileNotFoundError as exception_error:
-        LOGGER.warning(exception_error)
+        LOGGER.critical(exception_error)
+        raise exception_error
 
+
+def read_polaris_data_from_json(path):
+    """Read Polaris data from JSON
+
+    :param path: File path for the input file.
+    :return: Pandas dataframe with all frames fields values and
+    the data source name.
+    """
+    try:
+        with open(path, "r") as json_file:
+            json_data = json.load(json_file)
+    except Exception as exception_error:
+        LOGGER.critical(exception_error)
+        raise exception_error
+
+    source = json_data["metadata"]["satellite_name"]
+    json_records = records_from_satnogs_frames(json_data)
+    # Creating a pandas dataframe
+    dataframe = pd.DataFrame(json_records)
+    dataframe = normalize_dataframe(dataframe)
     return source, dataframe
 
 

@@ -3,6 +3,8 @@ Module for testing learn.data.readers.py script.
 """
 import json
 
+import pytest
+
 import polaris.learn.data.readers as pldr
 
 
@@ -14,10 +16,17 @@ def test_fetch_json_to_pandas_json(polaris_dataset_json, pandas_dataset_dict):
         polaris_dataset_dict)
 
 
-def test_read_polaris_data():
-    """ Test file reading function
+def test_read_polaris_data_missing_file():
+    """Test reading polaris data, missing file
     """
-    source_none, none_output = pldr.read_polaris_data(
-        "/tmp/tmp/tmp/a/b/a/b/NOTINSPACE")
-    assert none_output is None
-    assert source_none is None
+    with pytest.raises(FileNotFoundError):
+        _, _ = pldr.read_polaris_data("/tmp/tmp/tmp/a/b/a/b/NOTINSPACE.csv")
+    with pytest.raises(FileNotFoundError):
+        _, _ = pldr.read_polaris_data("/tmp/tmp/tmp/a/b/a/b/NOTINSPACE.json")
+
+
+def test_read_polaris_data_unknown_format():
+    """Test reading polaris data, unknown format
+    """
+    with pytest.raises(pldr.PolarisUnknownFileFormatError):
+        _, _ = pldr.read_polaris_data("/tmp/tmp/tmp/a/b/a/b/NOTINSPACE")
