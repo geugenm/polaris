@@ -19,6 +19,8 @@ from xgboost import XGBRegressor
 
 LOGGER = logging.getLogger(__name__)
 warnings.simplefilter(action='ignore', category=FutureWarning)
+# Remove this line when feature engineering is in place
+np.seterr(divide='ignore', invalid='ignore')
 
 
 class XCorr(BaseEstimator, TransformerMixin):
