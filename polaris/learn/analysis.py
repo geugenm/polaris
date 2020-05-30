@@ -40,7 +40,8 @@ def cross_correlate(input_file,
                     graph_link_threshold=0.1,
                     model_params=None,
                     use_gridsearch=False,
-                    csv_sep=','):
+                    csv_sep=',',
+                    force_cpu=False):
     """
     Catch linear and non-linear correlations between all columns of the
     input data.
@@ -54,7 +55,7 @@ def cross_correlate(input_file,
     set_experiment(experiment_name=source)
 
     # Creating and fitting cross-correlator
-    xcorr = XCorr(model_params, use_gridsearch)
+    xcorr = XCorr(model_params, use_gridsearch, force_cpu=force_cpu)
     xcorr.fit(input_data)
 
     if output_graph_file is None:

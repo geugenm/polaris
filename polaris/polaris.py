@@ -107,13 +107,17 @@ def cli_fetch(sat, start_date, end_date, output_file, cache_dir, import_file,
               '-s',
               is_flag=False,
               help='The separator used in the input csv file')
+@click.option('--force_cpu',
+              is_flag=True,
+              help='For force running on CPU (on machines with NVIDIA GPUs)')
 # pylint: disable-msg=too-many-arguments
 def cli_learn(input_file,
               output_graph_file=None,
               graph_link_threshold=0.1,
               col=None,
               use_gridsearch=False,
-              csv_sep=','):
+              csv_sep=',',
+              force_cpu=False):
     """ Analyze telemetry data
 
     Apply machine learning and feature engineering
@@ -126,7 +130,8 @@ def cli_learn(input_file,
                         output_graph_file,
                         graph_link_threshold,
                         use_gridsearch=use_gridsearch,
-                        csv_sep=csv_sep)
+                        csv_sep=csv_sep,
+                        force_cpu=force_cpu)
     else:
         LOGGER.warning(" ".join([
             "You must provide either --col",
