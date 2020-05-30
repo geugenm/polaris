@@ -24,3 +24,7 @@ print(correlator.importances_map)
 ```
 
 The XCorr class can be incorporated into a Scikit-learn pipeline.
+
+### XCorr : warnings
+
+The `RuntimeWarning: invalid value encountered in true_divide` has been deactivated. It appears because at this time we are not doing feature engineering before making predictions (explanations [here](https://gitlab.com/librespacefoundation/polaris/polaris/-/issues/84) ). This warning should be reactivated once we are doing feature engineering.
