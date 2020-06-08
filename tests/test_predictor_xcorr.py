@@ -2,11 +2,13 @@
 `pytest` testing framework file for xcorr predictor
 """
 
+import itertools
+
 import pandas as pd
 import pytest
 from sklearn.pipeline import Pipeline
 
-from polaris.learn.predictor.cross_correlation import XCorr
+from polaris.learn.predictor.cross_correlation import XCorr, set_model_params
 
 
 def test_xcorr():
@@ -76,3 +78,55 @@ def test_gridsearch_incompatible_input():
     correlator = XCorr(use_gridsearch=True)
     with pytest.raises(TypeError):
         correlator.fit(test_df)
+
+
+@pytest.mark.parametrize("use_gridsearch, force_cpu, use_sample_model_params",
+                         list(itertools.product((True, False), repeat=3)))
+def test_set_model_params_no_exception(use_gridsearch, force_cpu,
+                                       use_sample_model_params):
+    """
+    Test for set_model_params when no exception occurs
+    """
+    if use_sample_model_params:
+        if not use_gridsearch:
+            model_params_good = {
+                "objective": "reg:squarederror",
+                "n_estimators": 80,
+            }
+
+        else:
+            model_params_good = {
+                "objective": ["reg:squarederror"],
+                "n_estimators": [80],
+            }
+
+        _ = set_model_params(model_params=model_params_good,
+                             force_cpu=force_cpu,
+                             use_gridsearch=use_gridsearch)
+
+    else:
+        _ = set_model_params(force_cpu=force_cpu,
+                             use_gridsearch=use_gridsearch)
+
+
+@pytest.mark.parametrize("use_gridsearch, force_cpu, use_sample_model_params",
+                         list(itertools.product((True, False), repeat=3)))
+def test_set_model_params_exception(use_gridsearch, force_cpu,
+                                    use_sample_model_params):
+    """
+    Test for set_model_params when exception occurs
+    """
+    if use_sample_model_params:
+        model_params_bad = [[1, 2, 'this is bad']]
+
+        if use_gridsearch:
+            model_params_bad.append({
+                "objective": "reg:squarederror",
+                "n_estimators": 80,
+            })
+
+        for model_params in model_params_bad:
+            with pytest.raises(TypeError):
+                _ = set_model_params(model_params=model_params,
+                                     force_cpu=force_cpu,
+                                     use_gridsearch=use_gridsearch)

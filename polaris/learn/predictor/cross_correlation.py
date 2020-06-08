@@ -50,58 +50,15 @@ class XCorr(BaseEstimator, TransformerMixin):
         }
 
         if use_gridsearch:
-            self.model_params = {
-                "objective": ["reg:squarederror"],
-                "n_estimators": [50, 100, 300],
-                "learning_rate": [0.005, 0.05, 0.1, 0.2],
-                "max_depth": [3, 5, 8, 15]
-            }
             self.method = self.gridsearch
             self.mlf_logging = self.gridsearch_mlf_logging
         else:
-            if model_params is not None:
-                LOGGER.info(" ".join(["Using custom model parameters"]))
-                self.model_params = model_params
-            else:
-                # Model parameters in use for all iterations
-                # These parameters could be optimized with
-                # with a search method, such as the grid search.
-                gpu_ids = GPUtil.getAvailable()
-
-                if gpu_ids != [] and not force_cpu:
-                    LOGGER.info(" ".join([
-                        "GPU detected! Using GPU parameters",
-                        "for XGB Regressor :)"
-                    ]))
-                    # For the params chosen, refer:
-                    # https://xgboost.readthedocs.io/en/latest/gpu/
-
-                    self.model_params = {
-                        "objective": "reg:squarederror",
-                        "n_estimators": 80,
-                        "learning_rate": 0.1,
-                        "predictor": "gpu_predictor",
-                        "tree_method": "gpu_hist",
-                        "max_depth": 8,
-                        "gpu_id": gpu_ids[0]
-                    }
-                else:
-                    LOGGER.info(" ".join([
-                        "No GPU detected! Using CPU parameters",
-                        "for XGB Regressor :)"
-                    ]))
-                    self.model_params = {
-                        "objective": "reg:squarederror",
-                        "n_estimators": 80,
-                        "learning_rate": 0.1,
-                        "n_jobs": -1,
-                        "predictor": "cpu_predictor",
-                        "tree_method": "auto",
-                        "max_depth": 8
-                    }
-
             self.method = self.regression
             self.mlf_logging = self.regression_mlf_logging
+
+        self.model_params = set_model_params(model_params=model_params,
+                                             force_cpu=force_cpu,
+                                             use_gridsearch=use_gridsearch)
 
         if xcorr_params is not None:
             self.xcorr_params = xcorr_params
@@ -279,3 +236,87 @@ class XCorr(BaseEstimator, TransformerMixin):
         """
         self.common_mlf_logging()
         log_params(self.model_params)
+
+
+# pylint: disable-msg=too-many-branches
+def set_model_params(model_params=None, force_cpu=False, use_gridsearch=False):
+    """Sets model params
+
+    :param model_params: Custom parameters (user specified)
+    :param force_cpu: If True, doesn't check GPU availability
+    :param use_gridsearch: If models are for gridsearch
+    """
+    if model_params is not None:
+        LOGGER.info(" ".join(["Using custom model parameters!"]))
+        if not isinstance(model_params, dict):
+            raise TypeError("Expected {} got {}".format(
+                dict, type(model_params)))
+
+        if use_gridsearch:
+            for param in model_params.keys():
+                if not isinstance(model_params[param], list):
+                    raise TypeError("Expected {} got {} for key {}".format(
+                        list, type(model_params[param]), param))
+
+        return model_params
+
+    if use_gridsearch:
+        LOGGER.info(" ".join(["Using gridsearch parameters!"]))
+        model_params = {
+            "objective": ["reg:squarederror"],
+            "n_estimators": [50, 100, 300],
+            "learning_rate": [0.005, 0.05, 0.1, 0.2],
+            "max_depth": [3, 5, 8, 15],
+        }
+
+    else:
+        LOGGER.info(" ".join(["Plain old gridsearch parameters!"]))
+        model_params = {
+            "objective": "reg:squarederror",
+            "n_estimators": 80,
+            "learning_rate": 0.1,
+            "n_jobs": -1,
+            "max_depth": 8
+        }
+
+    if not force_cpu:
+        try:
+            gpu_ids = GPUtil.getAvailable()
+        except ValueError:
+            # As reported at
+            # https://github.com/anderskm/gputil/issues/26, GPUtil
+            # will throw ValueError if NVidia hardware is detected,
+            # but the driver is not loaded.  This is not terribly
+            # helpful.  As a workaround, we'll set the list of gpus to
+            # [].
+            LOGGER.warning("".join([
+                "GPU requested but not detected.",
+                "Are you sure you have the proper drivers installed?"
+            ]))
+            gpu_ids = []
+
+        if gpu_ids != []:
+            LOGGER.info(" ".join(["GPU detected! Adding GPU parameters :)"]))
+
+            # For the params chosen, refer:
+            # https://xgboost.readthedocs.io/en/latest/gpu/
+            if use_gridsearch:
+                model_params['tree_method'] = ['gpu_hist']
+                model_params['predictor'] = ['gpu_predictor']
+                model_params['gpu_id'] = [gpu_ids[0]]
+            else:
+                model_params['tree_method'] = 'gpu_hist'
+                model_params['predictor'] = 'gpu_predictor'
+                model_params['gpu_id'] = gpu_ids[0]
+            return model_params
+
+    LOGGER.info(" ".join(["No GPU detected! Adding CPU parameters :)"]))
+    if use_gridsearch:
+        model_params['tree_method'] = ['approx']
+        model_params['predictor'] = ['cpu_predictor']
+        model_params['n_jobs'] = [-1]
+    else:
+        model_params['tree_method'] = 'approx'
+        model_params['predictor'] = 'cpu_predictor'
+        model_params['n_jobs'] = -1
+    return model_params
