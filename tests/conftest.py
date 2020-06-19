@@ -4,6 +4,7 @@ Fixtures for pytest tests
 
 import json
 
+import pandas as pd
 import pytest
 
 from polaris.dataset.dataset import PolarisDataset
@@ -274,3 +275,52 @@ def polaris_config_defaults():
             }
         }
     }
+
+
+@pytest.fixture
+def polaris_heatmap_fixture():
+    """Polaris heatmap to be used in testing, plus testing info
+    """
+    feature_names = [
+        'ZerothFeature', 'FirstFeature', 'SecondFeature', 'ThirdFeature'
+    ]
+
+    zeroth_col_data = [1.0, None, 0.01, 0.75]
+    first_col_data = [0.75, 1.0, None, 0.01]
+    second_col_data = [0.01, 0.75, 1.0, None]
+    third_col_data = [None, 0.01, 0.75, 1.0]
+
+    # The expected links are determined by PolarisGraph.to_heatmap()
+    expected_links = [
+        {
+            'source': 'ZerothFeature',
+            'target': 'FirstFeature',
+            'value': 0.75
+        },
+        {
+            'source': 'FirstFeature',
+            'target': 'SecondFeature',
+            'value': 0.75
+        },
+        {
+            'source': 'SecondFeature',
+            'target': 'ThirdFeature',
+            'value': 0.75
+        },
+        {
+            'source': 'ThirdFeature',
+            'target': 'ZerothFeature',
+            'value': 0.75
+        },
+    ]
+
+    fixture = {}
+    fixture['data'] = [
+        zeroth_col_data, first_col_data, second_col_data, third_col_data
+    ]
+    fixture['columns'] = feature_names
+    fixture['df'] = pd.DataFrame(fixture['data'], fixture['columns'],
+                                 fixture['columns'])
+    fixture['expected_links'] = expected_links
+
+    return fixture
