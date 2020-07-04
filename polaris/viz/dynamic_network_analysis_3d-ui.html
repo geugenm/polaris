@@ -111,6 +111,7 @@
         .domain([1, polaris_color_set.length])
         .range(polaris_color_set);
       var color_step = 0;
+      var Graph; // Will be filled in up ahead
 
       // ---- Graph's routines ---- //
 
@@ -155,26 +156,52 @@
 
       // ---- Graph creation and customization ---- //
 
-      // Creationg of the 3D graph which loads the corresponding data file
-      const Graph = ForceGraph3D()(graph_elt)
-        .jsonUrl("JSON_DATA_FILE_HERE")
-        .nodeLabel((node) => node.name + ":" + node.group)
-        .nodeColor((node) => node_base_color)
-        .onNodeHover(
-          (node) => (graph_elt.style.cursor = node ? "pointer" : null)
-        )
-        .onNodeClick((node) => {
-          hud_update("clicked", node);
-          jetpack_to(node);
-        })
-        .linkOpacity(0.4)
-        .linkWidth(1)
-        // visible traveling particule(s) per link
-        .linkDirectionalParticles(2)
-        // Speed as a ratio of link length per frame
-        // and d.value is included in [0;1]
-        // as per input definition: feature importance.
-        .linkDirectionalParticleSpeed((d) => d.value * 0.01);
+      // Data loading
+      async function loadGraphData(jsonUrl) {
+        return await fetch(jsonUrl)
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            if (data.hasOwnProperty("nodes") && data.hasOwnProperty("links")) {
+              // The original format for Polaris Graph files: bare nodes &
+              // links.  Return as-is.
+              return data;
+            } else if (data.hasOwnProperty("graph")) {
+              if (data.graph.data_format_version === 1) {
+                // Version 1 of Polaris Graph format
+                return data.graph;
+              }
+            } else {
+              // Unknown format for graph file. Returning loaded data untouched.
+              return data;
+            }
+          });
+      }
+
+      async function createGraph(dataFile) {
+        loadGraphData(dataFile).then((data) => {
+          Graph = ForceGraph3D()(graph_elt)
+            .graphData(data)
+            .nodeLabel((node) => node.name + ":" + node.group)
+            .nodeColor((node) => node_base_color)
+            .onNodeHover(
+              (node) => (graph_elt.style.cursor = node ? "pointer" : null)
+            )
+            .onNodeClick((node) => {
+              hud_update("clicked", node);
+              jetpack_to(node);
+            })
+            .linkOpacity(0.4)
+            .linkWidth(1)
+            // visible traveling particule(s) per link
+            .linkDirectionalParticles(2)
+            // Speed as a ratio of link length per frame
+            // and d.value is included in [0;1]
+            // as per input definition: feature importance.
+            .linkDirectionalParticleSpeed((d) => d.value * 0.01);
+        });
+      }
 
       // ---- Search events and routines ---- //
 
@@ -274,6 +301,9 @@
 
       // search: Keyboard events
       search_elt.addEventListener("keydown", searchInputCallback);
+
+      // Finally: create the graph
+      createGraph("JSON_DATA_FILE_HERE");
     </script>
   </body>
 </html>

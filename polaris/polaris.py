@@ -93,6 +93,7 @@ def cli_fetch(sat, start_date, end_date, output_file, cache_dir, import_file,
               help='Output json graph file')
 @click.option('--graph_link_threshold',
               '-t',
+              default=0.1,
               is_flag=False,
               help='Threshold of influence to show edges')
 @click.option('--col',
