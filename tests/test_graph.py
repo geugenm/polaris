@@ -16,6 +16,7 @@ def test_polaris_graph_json_serializable():
     assert "graph" in exported_from_json.keys()
     assert "nodes" in exported_from_json['graph'].keys()
     assert "links" in exported_from_json['graph'].keys()
+    assert "data_format_version" in exported_from_json['graph'].keys()
 
 
 def test_polaris_graph_json_init(polaris_heatmap_fixture):
@@ -47,7 +48,8 @@ def test_polaris_graph_from_heatmap(polaris_heatmap_fixture):
 
     assert "nodes" in pgraph.graph.keys()
     assert "links" in pgraph.graph.keys()
-    assert len(pgraph.graph.keys()) == 2
+    assert "data_format_version" in pgraph.graph.keys()
+    assert len(pgraph.graph.keys()) == 3
 
 
 def test_polaris_graph__add_nodes(polaris_heatmap_fixture):

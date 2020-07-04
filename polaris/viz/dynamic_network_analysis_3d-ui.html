@@ -164,13 +164,14 @@
           })
           .then((data) => {
             if (data.hasOwnProperty("nodes") && data.hasOwnProperty("links")) {
-              // The old format for Polaris Graph files: bare nodes &
+              // The original format for Polaris Graph files: bare nodes &
               // links.  Return as-is.
               return data;
             } else if (data.hasOwnProperty("graph")) {
-              // The new format for Polaris Graph files: object inside
-              // named "graph".  Return that.
-              return data.graph;
+              if (data.graph.data_format_version === 1) {
+                // Version 1 of Polaris Graph format
+                return data.graph;
+              }
             } else {
               // Unknown format for graph file. Returning loaded data untouched.
               return data;

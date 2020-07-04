@@ -17,6 +17,14 @@ class PolarisGraph(dict, JsonSerializable):
 
     DEFAULT_GRAPH_LINK_THRESHOLD = 0.1
 
+    # The original format looked like this:
+    #
+    # {"nodes": [ ...], "links": [ ... ]}
+    #
+    # This was to match what is needed by the ForceGraph3D library.
+    # We'll designate that format as '0'.
+    DATA_FORMAT_VERSION = 1
+
     def __init__(self, metadata=None, **kwargs):
         """Initialize a new object
 
@@ -32,7 +40,11 @@ class PolarisGraph(dict, JsonSerializable):
         self._source_key = kwargs.get('source', "source")
         self._value_key = kwargs.get('value', "value")
         self.metadata = PolarisMetadata(metadata)
-        self.graph = {self._nodes_key: [], self._links_key: []}
+        self.graph = {
+            'data_format_version': self.DATA_FORMAT_VERSION,
+            self._nodes_key: [],
+            self._links_key: []
+        }
 
     def from_heatmap(self,
                      heatmap,
