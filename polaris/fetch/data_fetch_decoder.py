@@ -11,12 +11,16 @@ import re
 import subprocess
 import sys
 from collections import namedtuple
+from dateutil import parser
 
 import pandas as pd
 # import glouton dependencies
 from glouton.domain.parameters.programCmd import ProgramCmd
 from glouton.services.observation.observationsService import \
     ObservationsService
+# from vinvelivaanilai.orbit import tle_fetch, predict_orbit
+from vinvelivaanilai.storage import retrieve
+from vinvelivaanilai.space_weather import sw_file_fetch, sw_extractor
 
 from polaris.data.fetched_data_preprocessor import FetchedDataPreProcessor
 from polaris.dataset.dataset import PolarisDataset
@@ -32,6 +36,8 @@ _SATELLITES = json.loads(
         'normalizer']))
 
 NORMALIZER_LIB = 'contrib.normalizers.'
+
+SUPPORTED_INDICES = ('DGD', 'DPD', 'DSD')
 
 LOGGER = logging.getLogger(__name__)
 
@@ -294,6 +300,19 @@ def load_frames_from_json_file(file):
     return decoded_frame_list
 
 
+def get_times_from_frames_list(list_of_frames, key='time'):
+    """Gets the time list from decoded_frames list
+
+    :param list_of_frames: List containing the decoded frames
+    :type list_of_frames: list
+    :param key: Name of the time key in the dictionares, defaults to 'time'
+    :type key: str, optional
+    :return: List of timestamps taken from list_of_frames
+    :rtype: list
+    """
+    return [frame[key] for frame in list_of_frames]
+
+
 def write_or_merge(dataset, file, strategy):
     """Write dataset to output_file; if output file already exists, follow
     strategy: overwrite, merge or error.
@@ -373,6 +392,95 @@ def find_alternatives(sat_name, list_of_satellites):
     return None
 
 
+def filter_data(start_date, end_date, data):
+    """
+    Filters data based on date
+
+    :param start_date: Initial date for filtering
+    :type start_date: datetime.datetime
+    :param end_date: Final date for filtering
+    :type end_date: datetime.datetime
+    :param data: Data to filter
+    :type data: pd.DataFrame
+    :raises ValueError: If data.index is not pd.DatetimeIndex
+    :return: Filtered data with index between start_date and end_date
+    :rtype: pd.DataFrame
+    """
+    if data.index is not pd.DatetimeIndex:
+        raise ValueError("Expected {} for index".format(pd.DatetimeIndex))
+
+    f_data = data[(data.index > start_date) & (data.index <= end_date)]
+
+    return f_data
+
+
+def fetch_sw(start_date, end_date, cache_dir, indices=SUPPORTED_INDICES):
+    """
+    Fetch Space Weather indices using vinvelivaanilai.
+
+    :param start_date: Start date of space weather data to fetch
+    :type start_date: datetime.datetime
+    :param end_date: End date of space weather data to fetch
+    :type end_date: datetime.datetime
+    :param cache_dir: Cache directory where downloaded files are stored
+    :type cache_dir: str
+    :param indices: List of indices to fetch, defaults to SUPPORTED_INDICES
+    :type indices: list, optional
+    :return: Dictionary of dataframes containing indices fetched
+    :rtype: dict of pd.DataFrame
+    """
+    data = {}
+    for index in indices:
+        print(start_date, end_date)
+        logging.getLogger().setLevel(logging.DEBUG)
+        data[index] = sw_file_fetch.fetch_indices(index, start_date, end_date,
+                                                  cache_dir)
+
+    return data
+
+
+def fetch_or_import_sw(start_date, end_date, cache_dir, **kwargs):
+    """
+    Fetch/import space weather from vinvelivaanilai/txt/influxdb.
+
+    :param start_date: Start date of data to fetch
+    :type start_date: str
+    :param end_date: End date of data to fetch
+    :type end_date: str
+    :param cache_dir: Path to cache directory
+    :type cache_dir: str
+
+    :return: Dictionary with index as space_weather indices and values as
+        corresponding pd.DataFrame
+    :rtype: dict of pd.DataFrame
+    """
+    # Get the times as datetime objects
+    local_start_date = parser.parse(start_date)
+    local_end_date = parser.parse(end_date)
+
+    # Download the data
+    data = fetch_sw(local_start_date, local_end_date, cache_dir)
+
+    for index in data:
+        # vv fetches data per year/quarter. This reduces the data to that
+        # between start and end dates
+        data[index] = filter_data(local_start_date, local_end_date,
+                                  data[index])
+
+    return data
+
+
+def fetch_nearest_sw(sw_data, time_list):
+
+    time_df = pd.to_datetime(time_list)
+    processed_data = {}
+    for index in sw_data:
+        processed_data[index] = retrieve.get_multiple_nearest_from_df(
+            time_df, sw_data[index])
+
+    return processed_data
+
+
 def fetch_or_import(import_file, satellite, start_date, end_date, cache_dir):
     """
     Its a import_file validation function,
@@ -396,6 +504,7 @@ def fetch_or_import(import_file, satellite, start_date, end_date, cache_dir):
         new_frames_file = data_fetch(satellite.norad_id, cache_dir, start_date,
                                      end_date)
     else:
+        # If file is specified, retrieve from file
         if not os.path.isfile(import_file):
             raise SpecifiedImportFileDoesNotExist(
                 'Import file does not exist.')
@@ -447,6 +556,7 @@ def data_fetch_decode_normalize(sat, start_date, end_date, output_file,
             LOGGER.info("Did you mean: %s?", alt_sat)
         raise exception
 
+    # Try fetching data (from glouton/file)
     try:
         new_frames_file = fetch_or_import(import_file, satellite, start_date,
                                           end_date, cache_dir)
@@ -460,12 +570,19 @@ def data_fetch_decode_normalize(sat, start_date, end_date, output_file,
     decoded_frames_file = data_merge_and_decode(satellite.decoder, cache_dir,
                                                 new_frames_file)
     decoded_frame_list = load_frames_from_json_file(decoded_frames_file)
+    sw_data = fetch_or_import_sw(start_date, end_date, cache_dir)
+    time_list = get_times_from_frames_list(decoded_frame_list)
+
+    pro_sw_data = fetch_nearest_sw(sw_data, time_list)
+
+    print(pro_sw_data)
 
     try:
         normalizer = load_normalizer(satellite)
     except Exception as exception:
         LOGGER.error("Can't load satellite normalizer: %s", exception)
         raise exception
+
     LOGGER.info('Loaded normalizer=%s', satellite.normalizer)
     normalized_frames = data_normalize(normalizer(), decoded_frame_list)
     polaris_dataset = PolarisDataset(metadata={
