@@ -4,8 +4,8 @@ Module to launch different data analysis.
 from fets.math import TSIntegrale
 from mlflow import set_experiment
 
-from polaris.learn.data.graph import PolarisGraph
-from polaris.learn.data.readers import read_polaris_data
+from polaris.data.graph import PolarisGraph
+from polaris.data.readers import read_polaris_data
 from polaris.learn.feature.extraction import create_list_of_transformers, \
     extract_best_features
 from polaris.learn.predictor.cross_correlation import XCorr
@@ -48,9 +48,10 @@ def cross_correlate(input_file,
 
         :param model_params: XGBoost parameters dictionary
     """
-
     # Reading input file - index is considered on first column
-    source, input_data = read_polaris_data(input_file, csv_sep)
+    source, dataframe = read_polaris_data(input_file, csv_sep)
+
+    input_data = normalize_dataframe(dataframe)
 
     set_experiment(experiment_name=source)
 
@@ -65,3 +66,20 @@ def cross_correlate(input_file,
     graph.from_heatmap(xcorr.importances_map, graph_link_threshold)
     with open(output_graph_file, 'w') as graph_file:
         graph_file.write(graph.to_json())
+
+
+def normalize_dataframe(dataframe):
+    """
+        Apply dataframe modification for being used
+        by the learn module.
+
+        :param dataframe: the pandas dataframe to normalize
+        :return: Pandas dataframe normalized
+    """
+    dataframe.index = dataframe.time
+    dataframe.drop(['time'], axis=1, inplace=True)
+
+    # Keep numeric values only
+    dataframe = dataframe.select_dtypes(include=['number', 'datetime'])
+
+    return dataframe

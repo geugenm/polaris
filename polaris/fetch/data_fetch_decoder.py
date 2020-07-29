@@ -18,6 +18,7 @@ from glouton.domain.parameters.programCmd import ProgramCmd
 from glouton.services.observation.observationsService import \
     ObservationsService
 
+from polaris.data.fetched_data_preprocessor import FetchedDataPreProcessor
 from polaris.dataset.dataset import PolarisDataset
 
 Satellite = namedtuple('Satellite',
@@ -469,9 +470,17 @@ def data_fetch_decode_normalize(sat, start_date, end_date, output_file,
     normalized_frames = data_normalize(normalizer(), decoded_frame_list)
     polaris_dataset = PolarisDataset(metadata={
         "satellite_norad": satellite.norad_id,
-        "satellite_name": satellite.name
+        "satellite_name": satellite.name,
+        "total_frames": len(normalized_frames)
     },
                                      frames=normalized_frames)
+
+    LOGGER.info('Tagging columns')
+    tagger = FetchedDataPreProcessor()
+    tags = tagger.tag_columns(polaris_dataset)
+    polaris_dataset.metadata["analysis"] = tags
+    LOGGER.info('Tagging Completed')
+
     try:
         write_or_merge(polaris_dataset, output_file,
                        existing_output_file_strategy)
