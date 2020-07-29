@@ -38,6 +38,7 @@ POLARIS_METADATA_DICT = {
     'cli_options': '',
     'satellite_norad': '44420',
     'satellite_name': 'LightSail-2',
+    'total_frames': 2
 }
 
 
@@ -115,6 +116,65 @@ POLARIS_FRAME_DICT = {
     }
 }
 
+POLARIS_FRAME_DICT_FOR_TAGGING = {
+    "time": "2019-07-21 15:42:50",
+    "measurement": "",
+    "tags": {
+        "satellite": "",
+        "decoder": "Lightsail2",
+        "station": "",
+        "observer": "",
+        "source": "",
+        "version": "0.15.1"
+    },
+    "fields": {
+        "dest_callsign": {
+            "value": "N6CP  ",
+            "unit": None
+        },
+        "src_callsign": {
+            "value": "KK6HIT",
+            "unit": None
+        },
+        "src_ssid": {
+            "value": 2,
+            "unit": None
+        },
+        "dest_ssid": {
+            "value": 1,
+            "unit": None
+        },
+        "ctl": {
+            "value": 3,
+            "unit": None
+        },
+        "pid": {
+            "value": 204,
+            "unit": None
+        },
+        "type": {
+            "value": 1,
+            "unit": None
+        },
+        "bat1_volt": {
+            "value": 2.932,
+            "unit": "V"
+        },
+        "bat1_temp": {
+            "value": 10.0,
+            "unit": "degC"
+        },
+        "bat1_flags": {
+            "value": 164,
+            "unit": None
+        },
+        "bat1_ctlflags": {
+            "value": 0,
+            "unit": None
+        }
+    }
+}
+
 
 @pytest.fixture
 def polaris_frame_dict():
@@ -144,6 +204,18 @@ def polaris_dataset_obj():
     return POLARIS_DATASET_OBJ
 
 
+POLARIS_FRAMES_DATASET_OBJ = PolarisDataset(
+    metadata=POLARIS_METADATA_DICT,
+    frames=[POLARIS_FRAME_DICT, POLARIS_FRAME_DICT_FOR_TAGGING])
+
+
+@pytest.fixture
+def polaris_m_frames_dataset_obj():
+    """PolarisDataset object to be used in testing
+    """
+    return POLARIS_FRAMES_DATASET_OBJ
+
+
 @pytest.fixture
 def polaris_dataset_json():
     """PolarisDataset JSON to be used in testing
@@ -154,7 +226,8 @@ def polaris_dataset_json():
         "date": 1567460994,
         "cli_options": "",
         "satellite_norad": "44420",
-        "satellite_name": "LightSail-2"
+        "satellite_name": "LightSail-2",
+        "total_frames": 2
     },
     "frames": [
         {
@@ -217,26 +290,6 @@ def polaris_dataset_json():
         }
     ]
 }"""
-
-
-@pytest.fixture
-def pandas_dataset_dict():
-    """PolarisDataset JSON to be used in testing
-    """
-    return [{
-        "dest_callsign": "N6CP  ",
-        "src_callsign": "KK6HIT",
-        "src_ssid": 2,
-        "dest_ssid": 1,
-        "ctl": 3,
-        "pid": 204,
-        "type": 1,
-        "bat1_volt": 3.875,
-        "bat1_temp": 13.0,
-        "bat1_flags": 165,
-        "bat1_ctlflags": 0,
-        "time": 1563741837
-    }]
 
 
 @pytest.fixture

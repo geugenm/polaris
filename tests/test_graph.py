@@ -3,7 +3,7 @@
 
 import json
 
-from polaris.learn.data.graph import PolarisGraph
+from polaris.data.graph import PolarisGraph
 
 
 def test_polaris_graph_json_serializable():

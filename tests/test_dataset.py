@@ -1,6 +1,8 @@
 """pytest framework for dataset module
 """
 
+import pandas as pd
+
 from polaris.dataset.dataset import PolarisDataset
 from polaris.dataset.frame import PolarisFrame
 from polaris.dataset.metadata import PolarisMetadata
@@ -81,10 +83,60 @@ def test_dataset_creation_from_single_frame(polaris_metadata_dict,
 
 
 def test_dataset_creation_from_objs(polaris_metadata_obj, polaris_frame_obj,
-                                    polaris_dataset_obj, polaris_dataset_json):
+                                    polaris_dataset_obj):
+    """Test dataset conversion to pandas dataframe
+    """
+    new_dataset_obj = PolarisDataset(metadata=polaris_metadata_obj,
+                                     frames=polaris_frame_obj)
+    dataframe = new_dataset_obj.to_pandas_dataframe()
+    assert new_dataset_obj == polaris_dataset_obj
+    assert isinstance(dataframe, pd.DataFrame)
+
+
+def test_dataset_to_pandas_dataframe(polaris_metadata_obj, polaris_frame_obj,
+                                     polaris_dataset_obj):
     """Test dataset creation from metadata and frame objects
     """
     new_dataset_obj = PolarisDataset(metadata=polaris_metadata_obj,
                                      frames=polaris_frame_obj)
+    dataframe = new_dataset_obj.to_pandas_dataframe()
     assert new_dataset_obj == polaris_dataset_obj
-    assert new_dataset_obj.to_json() == polaris_dataset_json
+    assert isinstance(dataframe, pd.DataFrame)
+    assert dataframe.to_dict() == {
+        "dest_callsign": {
+            0: "N6CP  "
+        },
+        "src_callsign": {
+            0: "KK6HIT"
+        },
+        "src_ssid": {
+            0: 2
+        },
+        "dest_ssid": {
+            0: 1
+        },
+        "ctl": {
+            0: 3
+        },
+        "pid": {
+            0: 204
+        },
+        "type": {
+            0: 1
+        },
+        "bat1_volt": {
+            0: 3.875
+        },
+        "bat1_temp": {
+            0: 13
+        },
+        "bat1_flags": {
+            0: 165
+        },
+        "bat1_ctlflags": {
+            0: 0
+        },
+        "time": {
+            0: 1563741837
+        }
+    }

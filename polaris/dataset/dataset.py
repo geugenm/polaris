@@ -3,6 +3,8 @@
 
 import json
 
+import pandas as pd
+
 from polaris.common import constants
 from polaris.common.json_serializable import JsonSerializable
 from polaris.dataset.frame import PolarisFrame
@@ -48,3 +50,19 @@ class PolarisDataset(dict, JsonSerializable):
         """Write a dataset object to JSON.
         """
         return json.dumps(self.__repr__(), indent=constants.JSON_INDENT)
+
+    def to_pandas_dataframe(self):
+        """Convert Polaris dataset to panda dataframe.
+        """
+        records = []
+        for frame in self.frames:
+            fields = {}
+            for field in frame['fields']:
+                fields[field] = frame['fields'][field]['value']
+
+            if "time" not in fields:
+                fields['time'] = pd.to_datetime(frame['time']).timestamp()
+
+            records.append(fields)
+
+        return pd.DataFrame(records)
