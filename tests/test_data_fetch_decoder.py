@@ -9,7 +9,7 @@ import pytest
 
 from contrib.normalizers.common import Field, Normalizer
 from polaris.dataset.dataset import PolarisDataset
-from polaris.fetch import data_fetch_decoder
+from polaris.fetch import data_fetch_decoder, fetch_import_telemetry
 
 
 class FixtureNormalizer(Normalizer):
@@ -149,8 +149,8 @@ def test_load_normalizer_no_normalizer(satellite_list):
     """Test no_normlizer path for find_satellite()
     """
     test_satellite = satellite_list[2]
-    with pytest.raises(data_fetch_decoder.NoNormalizerForSatellite):
-        _ = data_fetch_decoder.load_normalizer(test_satellite)
+    with pytest.raises(fetch_import_telemetry.NoNormalizerForSatellite):
+        _ = fetch_import_telemetry.load_normalizer(test_satellite)
 
 
 def test_build_dates_from_string():
@@ -158,13 +158,13 @@ def test_build_dates_from_string():
     """
     start_date_str = '2019-08-14'
     end_date_str = '2019-08-16'
-    start_date, end_date = data_fetch_decoder.build_start_and_end_dates(
+    start_date, end_date = fetch_import_telemetry.build_start_and_end_dates(
         start_date_str, end_date_str)
     assert end_date - start_date == pd.to_timedelta(2, unit="D")
 
     start_date_str = '2019-08-14 11:00:00'
     end_date_str = '2019-08-16 11:00:00'
-    start_date, end_date = data_fetch_decoder.build_start_and_end_dates(
+    start_date, end_date = fetch_import_telemetry.build_start_and_end_dates(
         start_date_str, end_date_str)
     assert end_date - start_date == pd.to_timedelta(2, unit="D")
 
@@ -172,7 +172,7 @@ def test_build_dates_from_string():
 def test_build_dates_from_default():
     """Test default dates generation for build_start_and_end_dates()
     """
-    start_date, end_date = data_fetch_decoder.build_start_and_end_dates(
+    start_date, end_date = fetch_import_telemetry.build_start_and_end_dates(
         None, None)
     assert end_date - start_date == pd.to_timedelta(3600, unit="s")
 
@@ -183,13 +183,13 @@ def test_build_dates_from_mix():
     """
     start_date_x = '2019-11-14 11:00:00'
     end_date_x = pd.to_datetime('2019-11-16 11:00:00')
-    start_date, end_date = data_fetch_decoder.build_start_and_end_dates(
+    start_date, end_date = fetch_import_telemetry.build_start_and_end_dates(
         start_date_x, end_date_x)
     assert end_date - start_date == pd.to_timedelta(2, unit="D")
 
     start_date_x = datetime.datetime(2019, 11, 14, 11)
     end_date_x = pd.to_datetime('2019-11-16 11:00:00')
-    start_date, end_date = data_fetch_decoder.build_start_and_end_dates(
+    start_date, end_date = fetch_import_telemetry.build_start_and_end_dates(
         start_date_x, end_date_x)
     assert end_date - start_date == pd.to_timedelta(2, unit="D")
 
@@ -199,7 +199,7 @@ def test_data_normalize_empty_list():
     """
     frame_list = []
 
-    normalized_frames = data_fetch_decoder.data_normalize(
+    normalized_frames = fetch_import_telemetry.data_normalize(
         FixtureNormalizer(), frame_list)
     assert normalized_frames == []
 
@@ -208,7 +208,7 @@ def test_data_normalize_happy_path_single_frame():
     """Test data_normalize() happy path with single frame
     """
 
-    normalized_frames = data_fetch_decoder.data_normalize(
+    normalized_frames = fetch_import_telemetry.data_normalize(
         FixtureNormalizer(), SINGLE_FRAME)
 
     assert len(normalized_frames) == 1
@@ -224,7 +224,7 @@ def test_data_normalize_happy_path_multiple_frames():
     """Test data_normalize() happy path with multiple_frames
     """
 
-    normalized_frames = data_fetch_decoder.data_normalize(
+    normalized_frames = fetch_import_telemetry.data_normalize(
         FixtureNormalizer(), MULTIPLE_FRAMES)
 
     assert len(normalized_frames) == 3
@@ -241,7 +241,7 @@ def test_data_normalize_validator_happy_path():
     """Test data_normalize validator happy path
     """
 
-    normalized_frames = data_fetch_decoder.data_normalize(
+    normalized_frames = fetch_import_telemetry.data_normalize(
         FixtureNormalizerWithValidator(), SINGLE_AX25_FRAME)
 
     assert len(normalized_frames) == 1
@@ -251,7 +251,7 @@ def test_data_normalize_validator_happy_path_multiple_frames():
     """Test data_normalize validator happy path with multiple_frames
     """
 
-    normalized_frames = data_fetch_decoder.data_normalize(
+    normalized_frames = fetch_import_telemetry.data_normalize(
         FixtureNormalizerWithValidator(), MULTIPLE_AX25_FRAMES)
 
     assert len(normalized_frames) == 2
