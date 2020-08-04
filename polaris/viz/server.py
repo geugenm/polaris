@@ -8,6 +8,7 @@ import os
 import signal
 import socketserver
 import sys
+from shutil import copy
 
 import requests
 
@@ -38,10 +39,6 @@ def launch_webserver(json_data_file):
     target_directory, target_file = os.path.split(
         os.path.abspath(json_data_file))
     target_index = os.path.join(target_directory, "index.html")
-    target_assets = [(os.path.join(target_directory, "3d-force-graph.js"),
-                      "https://deepchaos.space/3d-force-graph.js"),
-                     (os.path.join(target_directory, "d3.v5.min.js"),
-                      "https://deepchaos.space/d3.v5.min.js")]
 
     # Write new index file to be served
     with open(target_index, "w") as target_fd:
@@ -60,17 +57,8 @@ def launch_webserver(json_data_file):
                 else:
                     target_fd.write(line)
 
-    # Writing a dummy icon file to avoid http 404 errors
-    with open(os.path.join(target_directory, "favicon.ico"), "w") as icon_fd:
-        icon_fd.write("A")
-
-    # Check if required JS libs are in target directory
-    for asset in target_assets:
-        if not os.path.isfile(asset[0]):
-            with open(asset[0], "w") as lib_fd:
-                LOGGER.info("Downloading dependency: %s", asset[0])
-                req = requests.get(asset[1])
-                lib_fd.write(req.text)
+    create_js(target_directory)
+    create_favicon(target_directory)
 
     # Setup web directory
     # pylint: disable=W0603
@@ -93,3 +81,35 @@ def launch_webserver(json_data_file):
 
         # Launch the server
         httpd.serve_forever()
+
+
+def create_favicon(target_directory):
+    """Create a favicon file
+
+    :param target_directory: directory to write favicon file
+    """
+    # Writing a dummy icon file to avoid http 404 errors
+    with open(os.path.join(target_directory, "favicon.ico"), "w") as icon_fd:
+        icon_fd.write("A")
+
+
+def create_js(target_directory):
+    """Create javascript files
+    """
+    target_assets = [(os.path.join(target_directory, "3d-force-graph.js"),
+                      "https://deepchaos.space/3d-force-graph.js"),
+                     (os.path.join(target_directory, "d3.v5.min.js"),
+                      "https://deepchaos.space/d3.v5.min.js")]
+    # Check if required JS libs are in target directory
+    for asset in target_assets:
+        if not os.path.isfile(asset[0]):
+            with open(asset[0], "w") as lib_fd:
+                LOGGER.info("Downloading dependency: %s", asset[0])
+                req = requests.get(asset[1])
+                lib_fd.write(req.text)
+
+    target_ui_js = os.path.join(target_directory, 'polaris.js')
+    source_ui_js = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                "polaris.js")
+    LOGGER.info("Copying UI JS file to %s", target_ui_js)
+    copy(source_ui_js, target_ui_js)
