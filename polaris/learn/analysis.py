@@ -6,6 +6,7 @@ from mlflow import set_experiment
 
 from polaris.data.graph import PolarisGraph
 from polaris.data.readers import read_polaris_data
+from polaris.dataset.metadata import PolarisMetadata
 from polaris.learn.feature.extraction import create_list_of_transformers, \
     extract_best_features
 from polaris.learn.predictor.cross_correlation import XCorr
@@ -62,7 +63,8 @@ def cross_correlate(input_file,
     if output_graph_file is None:
         output_graph_file = "/tmp/polaris_graph.json"
 
-    graph = PolarisGraph()
+    metadata = PolarisMetadata({"satellite_name": source})
+    graph = PolarisGraph(metadata=metadata)
     graph.from_heatmap(xcorr.importances_map, graph_link_threshold)
     with open(output_graph_file, 'w') as graph_file:
         graph_file.write(graph.to_json())
