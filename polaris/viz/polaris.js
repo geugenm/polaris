@@ -25,6 +25,8 @@ const color_scale = d3
 var color_step = 0;
 var Graph; // Will be filled in up ahead
 
+var Metadata; // Will be filled in up ahead
+
 // ---- Graph's routines ---- //
 
 // Converts node info to HTML for screen display
@@ -68,6 +70,12 @@ function jetpack_to(node) {
 
 // ---- Graph creation and customization ---- //
 
+// Metadata creation
+
+function createMetadata(metadata) {
+  return metadata;
+}
+
 // Data loading
 async function loadGraphData(jsonUrl) {
   return await fetch(jsonUrl)
@@ -80,6 +88,9 @@ async function loadGraphData(jsonUrl) {
         // links.  Return as-is.
         return data;
       } else if (data.hasOwnProperty("graph")) {
+	if (data.hasOwnProperty("metadata")) {
+	  Metadata = createMetadata(data.metadata);
+	}
         if (data.graph.data_format_version === 1) {
           // Version 1 of Polaris Graph format
           return data.graph;
