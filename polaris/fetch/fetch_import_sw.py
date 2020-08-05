@@ -1,6 +1,7 @@
 """
 Module for fetching and decoding space weather data
 """
+import datetime
 import importlib
 import logging
 
@@ -8,7 +9,7 @@ import pandas as pd
 from dateutil import parser
 from vinvelivaanilai.space_weather import sw_file_fetch
 # from vinvelivaanilai.orbit import tle_fetch, predict_orbit
-from vinvelivaanilai.storage import retrieve
+from vinvelivaanilai.storage import retrieve, store
 
 from polaris.fetch import fetch_import_telemetry
 
@@ -17,6 +18,12 @@ NORMALIZER_LIB = 'contrib.normalizers.'
 SUPPORTED_INDICES = ('DGD', 'DPD', 'DSD')
 
 LOGGER = logging.getLogger(__name__)
+
+
+class InfluxDBError(Exception):
+    """
+    Class to raise errors from InfluxDB
+    """
 
 
 def load_sw_normalizer(index):
@@ -66,7 +73,81 @@ def fetch_sw(start_date, end_date, cache_dir, indices=SUPPORTED_INDICES):
     return data
 
 
-def fetch_or_import_sw(start_date, end_date, cache_dir, **kwargs):
+def fetch_sw_from_influxdb(sat,
+                           local_start_date,
+                           local_end_date,
+                           indices=SUPPORTED_INDICES):
+    """
+    Fetch the space weather data from influxdb
+
+    :param sat: Name of satellite (Doubles as name of bucket)
+    :type sat: str
+    :param local_start_date: Start date of space weather data to fetch
+    :type local_start_date: datetime.datetime
+    :param local_end_date: End date of space weather data to fetch
+    :type local_end_date: datetime.datetime
+    :param indices: List of indices to fetch, doubles as measurement_name
+        defaults to SUPPORTED_INDICES
+    :type indices: list, optional
+    :return: Dictionary of dataframes containing indices fetched
+    :rtype: dict of pd.DataFrame
+    """
+    # Fetch data from influxdb
+    LOGGER.info("Fetching space weather data from influxdb")
+    data = {}
+    for index in indices:
+        try:
+            data[index] = retrieve.fetch_from_influxdb(
+                datetime.datetime(year=local_start_date.year,
+                                  month=local_start_date.month,
+                                  day=local_start_date.day),
+                datetime.datetime(year=local_end_date.year,
+                                  month=local_end_date.month,
+                                  day=local_end_date.day),
+                index,
+                sat,
+                rename_to="Date")
+
+            # There may be no data for that period
+            if data[index] is None:
+                LOGGER.info("No data found for %s in the given interval",
+                            index)
+                del data[index]
+
+        except Exception:
+            LOGGER.error(
+                "Fetching space weather data from influxdb failed. "
+                "Possible reasons are:\n"
+                "1. Indluxdb did not start properly\n"
+                "2. Incorrect credentials\n"
+                "3. There was no data for specified time range (Did you "
+                "run fetch for this time range before?)")
+            raise InfluxDBError
+    return data
+
+
+def store_sw(data, measurement_name, bucket_name):
+    """
+    Store space weather data in influxdb
+
+    :param data: Dataframe to store
+    :type data: pd.DataFrame
+    :param measurement_name: Name of the measurement to store under in idb
+    :type measurement_name: str
+    :param bucket_name: Name of the bucket to store under in idb
+    :type bucket_name: str
+    """
+    LOGGER.debug("Storing %s data in Influxdb", measurement_name)
+    try:
+        store.dump_to_influxdb(data, measurement_name, bucket_name)
+    except Exception:
+        LOGGER.error(
+            "Error storing data in influxdb. Are you sure the credentials"
+            " are correct?")
+        raise InfluxDBError
+
+
+def fetch_or_import_sw(start_date, end_date, cache_dir, sat, **kwargs):
     """
     Fetch/import space weather from vinvelivaanilai/txt/influxdb.
 
@@ -76,26 +157,49 @@ def fetch_or_import_sw(start_date, end_date, cache_dir, **kwargs):
     :type end_date: str
     :param cache_dir: Path to cache directory
     :type cache_dir: str
+    :param sat: Name of the satellite
+    :type sat: str
     :param **kwargs: See below. If kwargs are not passed, it will fetch from
         vinvelivaanilai
 
     :Keyword Arguments:
-       * indices (list) -- List of indices to fetch. Default SUPPORTED_INDICES
+        * store_in_influxdb (bool) -- True if influxdb is to be used. Default
+            False.
+        * fetch_from_influxdb (bool) -- True if data is fetched from influxdb.
+            Default False.
+        * indices (list) -- List of indices to fetch. Default SUPPORTED_INDICES
 
     :return: Dictionary with index as space_weather indices and values as
         corresponding pd.DataFrame
     :rtype: dict of pd.DataFrame
     """
     # Get all valid kwargs
+    store_in_influxdb = kwargs.pop("store_in_influxdb", False)
+    fetch_from_influxdb = kwargs.pop("fetch_from_influxdb", False)
     indices = kwargs.pop("indices", SUPPORTED_INDICES)
 
     # Get the times as datetime objects
     local_start_date = parser.parse(start_date)
     local_end_date = parser.parse(end_date)
+    if fetch_from_influxdb:
+        try:
+            data = fetch_sw_from_influxdb(sat, local_start_date,
+                                          local_end_date, indices)
+            return data
+        except InfluxDBError:
+            LOGGER.error(
+                "Error fetching from influxdb, fetching from vinvelivaanilai")
 
     # Download the data
     LOGGER.info("Fetching space weather data from vinvelivaanilai")
     data = fetch_sw(local_start_date, local_end_date, cache_dir, indices)
+    if store_in_influxdb:
+        try:
+            for index in data:
+                store_sw(data[index].copy(), index, sat)
+        except InfluxDBError:
+            LOGGER.error("Error storing data in influxdb!"
+                         " Proceeding WITHOUT storing data")
 
     return data
 
@@ -148,7 +252,7 @@ def dataframe_to_decoded(dataframe):
     return decoded_data
 
 
-def fetch_preprocessed_sw(start_date, end_date, cache_dir, time_list,
+def fetch_preprocessed_sw(start_date, end_date, cache_dir, time_list, sat,
                           **kwargs):
     """
     Fetch and preprocess space weather data
@@ -162,12 +266,16 @@ def fetch_preprocessed_sw(start_date, end_date, cache_dir, time_list,
     :param time_list: List of times for which nearest space weather needs to
         be fetched
     :type time_list: list
+    :param sat: Name of the satellite
+    :type sat: str
+
     :return: Dictionary with keys as the indices and values as the preprocessed
         frames of space_weather
     :rtype: dict
     """
     # Fetch the space_weather data
-    sw_data = fetch_or_import_sw(start_date, end_date, cache_dir, **kwargs)
+    sw_data = fetch_or_import_sw(start_date, end_date, cache_dir, sat,
+                                 **kwargs)
 
     # Get the nearest data
     nearest_sw_data = fetch_nearest_sw(sw_data, time_list)

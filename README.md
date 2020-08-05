@@ -70,7 +70,7 @@ Commands:
   learn     Analyze data
   viz       Displaying results
 
-# To fetch and decode data from the SatNOGS network, run:
+# To fetch and decode data from the SatNOGS network and space weather sources, run:
 $ (.venv) polaris fetch -s 2019-08-10 -e 2019-10-5 --cache_dir /tmp/LightSail_2 LightSail-2 /tmp/normalized_frames.json
 # Note: this may take some time.
 
@@ -115,6 +115,32 @@ The `polaris batch` command is controlled by a JSON configuration file; an examp
 ```bash
 $ (.venv) polaris batch --config_file polaris/common/polaris_config.json.EXAMPLE
 ```
+
+## InfluxDB
+
+With the addition of space weather recently, influxdb support has been added to Polaris. To create the required `docker-compose.yml` file and start and stop the docker container, run:
+
+```bash
+$ python
+>>> from vinvelivaanilai.storage import common
+
+# To create the path
+>>> common.create_docker_compose("/path/to/docker-compose.yml", "/path/to/storage")
+
+# To start influxdb
+>>> common.start_docker_compose("/path/to/docker-compose.yml")
+
+# To stop influxdb 
+>>> common.stop_docker_compose("/path/to/docker-compose.yml")
+```
+
+To store in and fetch from influxdb use the flags `--store_in_influxdb` and `--fetch_from_influxdb` respectively.
+
+```bash
+$ polaris fetch -s 2019-08-10 -e 2019-10-5 --cache_dir /tmp/LightSail_2 LightSail-2 /tmp/normalized_frames.json --store_in_influxdb
+$ polaris fetch -s 2019-08-10 -e 2019-10-5 --cache_dir /tmp/LightSail_2 LightSail-2 /tmp/normalized_frames.json --fetch_from_influxdb
+```
+
 
 ## MLflow
 
