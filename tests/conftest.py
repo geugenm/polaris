@@ -2,6 +2,7 @@
 Fixtures for pytest tests
 """
 
+import datetime
 import json
 
 import pandas as pd
@@ -377,3 +378,16 @@ def polaris_heatmap_fixture():
     fixture['expected_links'] = expected_links
 
     return fixture
+
+
+@pytest.fixture
+def time_list():
+    """Fixture for sample list of time
+    """
+    times = [
+        datetime.datetime(year=2019, month=10, day=13, hour=10, minute=17),
+        datetime.datetime(year=2019, month=10, day=24, hour=23),
+        datetime.datetime(year=2019, month=11, day=3, hour=5, minute=17),
+        datetime.datetime(year=2019, month=11, day=29, hour=1),
+    ]
+    return times

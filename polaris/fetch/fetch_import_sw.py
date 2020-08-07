@@ -55,6 +55,9 @@ def fetch_sw(start_date, end_date, cache_dir, indices=SUPPORTED_INDICES):
     """
     data = {}
     for index in indices:
+        if index not in SUPPORTED_INDICES:
+            raise ValueError("Index {} not supported yet!".format(index))
+
         temp_df = sw_file_fetch.fetch_indices(index, start_date, end_date,
                                               cache_dir)
         # To prevent problems for learn
