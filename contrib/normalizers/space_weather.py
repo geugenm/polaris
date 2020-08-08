@@ -84,7 +84,18 @@ class DSD(Normalizer):
     def __init__(self):
         super(DSD, self).__init__()
         self.normalizers = [
-            # Solar Flux Units conversion https://bit.ly/39D1lpY
+            # Solar Flux Units conversion
+            # https://www.researchgate.net/figure/Solar-radio-flux-in-Solar-Flux-Units-1-SFU-10-22-W-m-2-Hz-1-measured-in-Humain-on_fig5_318360593
+            # Stankov, Stanimir & Bergeot, Nicolas & Berghmans, David &
+            # Bolsée, David & Bruyninx, Carine & Chevalier, Jean-Marie &
+            # Clette, Frédéric & De Backer, Hugo & Keyser, Johan & D’Huys,
+            # Elke & Dominique, Marie & Lemaire, Joseph & Magdalenic, Jasmina
+            # & Marqué, Christophe & Pereira, Nuno & Pierrard, Viviane &
+            # Sapundjiev, Danislav & Seaton, D. & Stegen, Koen & West, Matthew.
+            # (2017). Multi-instrument observations of the solar eclipse on 20
+            # March 2015 and its effects on the ionosphere over Belgium and
+            # Europe. Journal of Space Weather and Space Climate.
+            # 7. A19. 10.1051/swsc/2017017.
             Field('Radio Flux', lambda x: x * 1e-22, 'W / (m^2 * Hz)',
                   'Radio Flux 10.7cm (2800 MHz)'),
             Field('SESC sunspot number', lambda x: x, None,
