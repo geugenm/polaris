@@ -96,7 +96,13 @@ async function createGraph(dataFile) {
     Graph = ForceGraph3D()(graph_elt)
       .graphData(data)
       .nodeLabel((node) => node.name + ":" + node.group)
-      .nodeColor((node) => node_base_color)
+      .nodeColor((node) =>
+        localStorage.getItem(node.name)
+          ? localStorage.getItem(node.name)
+          : node.color
+          ? node.color
+          : node_base_color
+      )
       .onNodeHover(
         (node) => (graph_elt.style.cursor = node ? "pointer" : null)
       )
@@ -158,8 +164,11 @@ function highlight_nodes(search_str, color, reset_color = false) {
     } else {
       if (reset_color) {
         node.color = color;
+      } else {
+        node.color = localStorage.getItem(node.name)
+          ? localStorage.getItem(node.name)
+          : node_base_color;
       }
-      // else don't change the value
     }
   }
   Graph.nodeColor((node) => (node.color ? node.color : node_base_color));
@@ -203,6 +212,19 @@ function searchInputCallback(evt) {
     evt.preventDefault();
   } // --- end of "Enter" event and derivatives
 }
+
+// save the colors to localStorage
+function save_color() {
+  const { nodes, links } = Graph.graphData();
+  for (node of nodes) {
+    if (node.color) {
+      localStorage.setItem(node.name, node.color);
+    }
+  }
+}
+
+// Autosave every few seconds
+var intervalID = window.setInterval(save_color, 5000);
 
 // search: Click event only to check status of datalist
 search_elt.addEventListener("click", function () {
