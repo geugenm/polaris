@@ -159,16 +159,14 @@ function find_node(search_str) {
 function highlight_nodes(search_str, color, reset_color = false) {
   const { nodes, links } = Graph.graphData();
   for (node of nodes) {
-    if (node.name.includes(search_str)) {
+    if (reset_color) {
+      node.color = color;
+    } else if (node.name.includes(search_str)) {
       node.color = color;
     } else {
-      if (reset_color) {
-        node.color = color;
-      } else {
-        node.color = localStorage.getItem(node.name)
-          ? localStorage.getItem(node.name)
-          : node_base_color;
-      }
+      node.color = localStorage.getItem(node.name)
+        ? localStorage.getItem(node.name)
+        : node_base_color;
     }
   }
   Graph.nodeColor((node) => (node.color ? node.color : node_base_color));
@@ -186,6 +184,7 @@ function searchInputCallback(evt) {
     if (evt.ctrlKey) {
       if (evt.shiftKey) {
         // highlight nothing and reset
+        hud_update("Resetting colors", "")
         highlight_nodes("", node_base_color, true);
       } else {
         // Control key is pressed: node highligting
