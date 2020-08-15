@@ -1,0 +1,185 @@
+"""
+Module for fetching and decoding space weather data
+"""
+import importlib
+import logging
+
+import pandas as pd
+from dateutil import parser
+from vinvelivaanilai.space_weather import sw_file_fetch
+# from vinvelivaanilai.orbit import tle_fetch, predict_orbit
+from vinvelivaanilai.storage import retrieve
+
+from polaris.fetch import fetch_import_telemetry
+
+NORMALIZER_LIB = 'contrib.normalizers.'
+
+SUPPORTED_INDICES = ('DGD', 'DPD', 'DSD')
+
+LOGGER = logging.getLogger(__name__)
+
+
+def load_sw_normalizer(index):
+    """
+    Load normalizer for space weather indices
+
+    :param index: Name of the index for which normalizer needs to be loaded
+    :type index: str
+    :return: Loaded normalizer
+    """
+    try:
+        LOGGER.info("Loading normalizer for index: %s", index)
+        loaded_normalizer = importlib.import_module(NORMALIZER_LIB +
+                                                    "space_weather")
+        normalizer = getattr(loaded_normalizer, index.upper())
+        return normalizer
+    except Exception as eee:
+        LOGGER.error("Normalizer loading: %s", eee)
+        raise eee
+
+
+def fetch_sw(start_date, end_date, cache_dir, indices=SUPPORTED_INDICES):
+    """
+    Fetch Space Weather indices using vinvelivaanilai.
+
+    :param start_date: Start date of space weather data to fetch
+    :type start_date: datetime.datetime
+    :param end_date: End date of space weather data to fetch
+    :type end_date: datetime.datetime
+    :param cache_dir: Cache directory where downloaded files are stored
+    :type cache_dir: str
+    :param indices: List of indices to fetch, defaults to SUPPORTED_INDICES
+    :type indices: list, optional
+    :return: Dictionary of dataframes containing indices fetched
+    :rtype: dict of pd.DataFrame
+    """
+    data = {}
+    for index in indices:
+        if index not in SUPPORTED_INDICES:
+            raise ValueError("Index {} not supported yet!".format(index))
+
+        temp_df = sw_file_fetch.fetch_indices(index, start_date, end_date,
+                                              cache_dir)
+        # To prevent problems for learn
+        data[index] = temp_df.fillna(-1)
+
+    return data
+
+
+def fetch_or_import_sw(start_date, end_date, cache_dir, **kwargs):
+    """
+    Fetch/import space weather from vinvelivaanilai/txt/influxdb.
+
+    :param start_date: Start date of data to fetch
+    :type start_date: str
+    :param end_date: End date of data to fetch
+    :type end_date: str
+    :param cache_dir: Path to cache directory
+    :type cache_dir: str
+    :param **kwargs: See below. If kwargs are not passed, it will fetch from
+        vinvelivaanilai
+
+    :Keyword Arguments:
+       * indices (list) -- List of indices to fetch. Default SUPPORTED_INDICES
+
+    :return: Dictionary with index as space_weather indices and values as
+        corresponding pd.DataFrame
+    :rtype: dict of pd.DataFrame
+    """
+    # Get all valid kwargs
+    indices = kwargs.pop("indices", SUPPORTED_INDICES)
+
+    # Get the times as datetime objects
+    local_start_date = parser.parse(start_date)
+    local_end_date = parser.parse(end_date)
+
+    # Download the data
+    LOGGER.info("Fetching space weather data from vinvelivaanilai")
+    data = fetch_sw(local_start_date, local_end_date, cache_dir, indices)
+
+    return data
+
+
+def fetch_nearest_sw(sw_data, time_list):
+    """
+    Find the rows of space weather data nearest to each entry in time_list
+
+    :param sw_data: Dictionary of dataframes with key as index
+    :type sw_data: dict
+    :param time_list: List of times for which we need the nearest data
+    :type time_list: list
+    :return: Dictionary of dataframes corresponding to each index after finding
+        rows nearest to times in time_list
+    :rtype: dict
+    """
+    LOGGER.info("Finding the nearest space weather data")
+    # Convert the list of times to pd.DatetimeIndex
+    time_df = pd.to_datetime(time_list, infer_datetime_format=True)
+    processed_data = {}
+    for index in sw_data:
+        # Fetch the nearest data for each index
+        processed_data[index] = retrieve.get_multiple_nearest_from_df(
+            time_df.astype(sw_data[index].index.dtype), sw_data[index])
+
+    return processed_data
+
+
+def dataframe_to_decoded(dataframe):
+    """
+    Convert pd.DataFrame to the decoded_frames format
+
+    :param dataframe: DataFrame to convert
+    :type dataframe: pd.DataFrame
+    :return: List of frames in decoded_frames format
+    :rtype: list
+    """
+    local_df = dataframe.copy().reset_index().T
+    data_dict = local_df.to_dict()
+
+    decoded_data = []
+    for value in data_dict.values():
+        decoded_data.append({
+            "time": value['Date'],
+            "fields": {
+                key: value[key]
+                for key in set(list(value.keys())) - set(['Date'])
+            }
+        })
+    return decoded_data
+
+
+def fetch_preprocessed_sw(start_date, end_date, cache_dir, time_list,
+                          **kwargs):
+    """
+    Fetch and preprocess space weather data
+
+    :param start_date: Start date of data to fetch
+    :type start_date: str
+    :param end_date: End date of data to fetch
+    :type end_date: str
+    :param cache_dir: Where temporary output data should go
+    :type cache_dir: str, os.path
+    :param time_list: List of times for which nearest space weather needs to
+        be fetched
+    :type time_list: list
+    :return: Dictionary with keys as the indices and values as the preprocessed
+        frames of space_weather
+    :rtype: dict
+    """
+    # Fetch the space_weather data
+    sw_data = fetch_or_import_sw(start_date, end_date, cache_dir, **kwargs)
+
+    # Get the nearest data
+    nearest_sw_data = fetch_nearest_sw(sw_data, time_list)
+
+    LOGGER.info(
+        "Converting space weather data to the normalized frames format")
+    # Preprocess it into the same format as normalized telemetry frames
+    preprocessed_sw_frames = {}
+    for index in nearest_sw_data:
+        decoded_sw_frame = dataframe_to_decoded(nearest_sw_data[index])
+        sw_normalizer = load_sw_normalizer(index)
+        preprocessed_sw_frames[index] = fetch_import_telemetry.data_normalize(
+            sw_normalizer(), decoded_sw_frame)
+
+    return preprocessed_sw_frames
