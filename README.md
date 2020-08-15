@@ -52,6 +52,13 @@ $ source .venv/bin/activate
 $ (.venv) pip install polaris-ml
 ```
 
+**Note:** If you run into problems installing Polaris via pip, [try
+using the new Pip resolver](https://pip.pypa.io/en/stable/news/#id18):
+
+```
+pip install polaris-ml --use-feature=2020-resolver
+```
+
 ## Running the code
 
 ```bash
@@ -70,7 +77,7 @@ Commands:
   learn     Analyze data
   viz       Displaying results
 
-# To fetch and decode data from the SatNOGS network, run:
+# To fetch and decode data from the SatNOGS network and space weather sources, run:
 $ (.venv) polaris fetch -s 2019-08-10 -e 2019-10-5 --cache_dir /tmp/LightSail_2 LightSail-2 /tmp/normalized_frames.json
 # Note: this may take some time.
 
@@ -116,6 +123,32 @@ The `polaris batch` command is controlled by a JSON configuration file; an examp
 $ (.venv) polaris batch --config_file polaris/common/polaris_config.json.EXAMPLE
 ```
 
+## InfluxDB
+
+With the addition of space weather recently, influxdb support has been added to Polaris. To create the required `docker-compose.yml` file and start and stop the docker container, run:
+
+```bash
+$ python
+>>> from vinvelivaanilai.storage import common
+
+# To create the path
+>>> common.create_docker_compose("/path/to/docker-compose.yml", "/path/to/storage")
+
+# To start influxdb
+>>> common.start_docker_compose("/path/to/docker-compose.yml")
+
+# To stop influxdb 
+>>> common.stop_docker_compose("/path/to/docker-compose.yml")
+```
+
+To store in and fetch from influxdb use the flags `--store_in_influxdb` and `--fetch_from_influxdb` respectively.
+
+```bash
+$ polaris fetch -s 2019-08-10 -e 2019-10-5 --cache_dir /tmp/LightSail_2 LightSail-2 /tmp/normalized_frames.json --store_in_influxdb
+$ polaris fetch -s 2019-08-10 -e 2019-10-5 --cache_dir /tmp/LightSail_2 LightSail-2 /tmp/normalized_frames.json --fetch_from_influxdb
+```
+
+
 ## MLflow
 
 Installing Polaris will install MLflow as a dependency. At this time Polaris is using MLflow during the cross check dependencies process, and the database is stored in the current working directory under the mlruns folder.
@@ -140,6 +173,13 @@ $ source .venv/bin/activate
 # Build and install the package in editable mode; any changes
 # to your code will be reflected when you run polaris.
 $ (.venv) pip install -e .
+```
+
+**Note:** If you run into problems installing Polaris via pip, [try
+using the new Pip resolver](https://pip.pypa.io/en/stable/news/#id18):
+
+```
+pip install -e . --use-feature=2020-resolver
 ```
 
 It is important to format the code before commiting, otherwise the

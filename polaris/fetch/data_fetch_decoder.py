@@ -194,7 +194,7 @@ def data_fetch_decode_normalize(sat, start_date, end_date, output_file,
 
     # Get preprocessed space weather
     preprocessed_sw = fetch_preprocessed_sw(start_date, end_date, cache_dir,
-                                            time_list, **kwargs)
+                                            time_list, sat, **kwargs)
 
     # Combine the preprocessed space weather and normalized telemetry
     combined_frames = combine_frames(normalized_telemetry, preprocessed_sw)

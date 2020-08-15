@@ -71,18 +71,28 @@ def cli():
               show_default=True,
               help='How to handle already-existing output file: ' +
               'merge with it, overwrite it, or exit with an error.')
+@click.option('--fetch_from_influxdb',
+              is_flag=True,
+              help='Fetch space weather data from influxdb')
+@click.option('--store_in_influxdb',
+              is_flag=True,
+              help='Store data in influxdb')
 # pylint: disable-msg=too-many-arguments
 def cli_fetch(sat, start_date, end_date, output_file, cache_dir, import_file,
-              existing_output_file_strategy):
+              existing_output_file_strategy, store_in_influxdb,
+              fetch_from_influxdb):
     """ Obtain telemetry data
 
     Retrieve and decode the telemetry corresponding to
     SAT (satellite name or NORAD ID) and stores in
     OUTPUT_FILE (path to the output folder)
     """
-    data_fetch_decode_normalize(sat, start_date, end_date, output_file,
-                                cache_dir, import_file,
-                                existing_output_file_strategy)
+    data_fetch_decode_normalize(
+        sat, start_date, end_date, output_file, cache_dir, import_file,
+        existing_output_file_strategy, **{
+            "store_in_influxdb": store_in_influxdb,
+            "fetch_from_influxdb": fetch_from_influxdb,
+        })
 
 
 @click.command('learn', short_help='Analyze data')
