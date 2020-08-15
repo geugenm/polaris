@@ -52,6 +52,13 @@ $ source .venv/bin/activate
 $ (.venv) pip install polaris-ml
 ```
 
+**Note:** If you run into problems installing Polaris via pip, [try
+using the new Pip resolver](https://pip.pypa.io/en/stable/news/#id18):
+
+```
+pip install polaris-ml --use-feature=2020-resolver
+```
+
 ## Running the code
 
 ```bash
@@ -166,6 +173,13 @@ $ source .venv/bin/activate
 # Build and install the package in editable mode; any changes
 # to your code will be reflected when you run polaris.
 $ (.venv) pip install -e .
+```
+
+**Note:** If you run into problems installing Polaris via pip, [try
+using the new Pip resolver](https://pip.pypa.io/en/stable/news/#id18):
+
+```
+pip install -e . --use-feature=2020-resolver
 ```
 
 It is important to format the code before commiting, otherwise the
