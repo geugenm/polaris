@@ -25,6 +25,8 @@ const color_scale = d3
 var color_step = 0;
 var Graph; // Will be filled in up ahead
 
+var Metadata; // Will be filled in up ahead
+
 // ---- Graph's routines ---- //
 
 // Converts node info to HTML for screen display
@@ -39,10 +41,14 @@ function node_to_html(node) {
 
 // This function updates the HUD in a custom way
 function hud_update(action, node) {
-  let action_header = "<tiny>" + action + "</tiny>";
+  let metadata_header = "<b>" + formatMetadata(Metadata) + "</b>";
+  let action_header = "";
+  if (action) {
+    action_header = "<tiny>" + action + "</tiny>";
+  }
   let br = "<br/>";
   let info = node_to_html(node);
-  hud_elt.innerHTML = action_header + br + info + br;
+  hud_elt.innerHTML = metadata_header + br + action_header + br + info + br;
 }
 
 // A zoom and fly to node function
@@ -68,6 +74,16 @@ function jetpack_to(node) {
 
 // ---- Graph creation and customization ---- //
 
+// Metadata creation
+
+function createMetadata(metadata) {
+  return metadata;
+}
+
+function formatMetadata() {
+  return Metadata.satellite_name;
+}
+
 // Data loading
 async function loadGraphData(jsonUrl) {
   return await fetch(jsonUrl)
@@ -80,6 +96,12 @@ async function loadGraphData(jsonUrl) {
         // links.  Return as-is.
         return data;
       } else if (data.hasOwnProperty("graph")) {
+	if (data.hasOwnProperty("metadata")) {
+	  Metadata = createMetadata(data.metadata);
+	  // Give empty strings as arguments so that we don't have
+	  // "undefined" in HUD when first called
+	  hud_update("", "");
+	}
         if (data.graph.data_format_version === 1) {
           // Version 1 of Polaris Graph format
           return data.graph;
