@@ -24,6 +24,12 @@
     "normalizer": "Bisonsat"
   },
   {
+    "norad_id": "99837",
+    "name": "BOBCAT-1",
+    "decoder": "bobcat1",
+    "normalizer": "Bobcat1"
+  },
+  {
     "norad_id": "40014",
     "name": "BUGSAT-1",
     "decoder": "Bugsat1",
@@ -120,6 +126,12 @@
     "normalizer": "Fox"
   },
   {
+    "norad_id": "40379",
+    "name": "GRIFEX",
+    "decoder": "mxl",
+    "normalizer": "Grifex"
+  },
+  {
     "norad_id": "43468",
     "name": "IRAZU",
     "decoder": "Irazu",
@@ -214,5 +226,11 @@
     "name": "UWE-4",
     "decoder": "Uwe4",
     "normalizer": "Uwe4"
+  },
+  {
+    "norad_id": "45598",
+    "name": "Quetzal-1",
+    "decoder": "quetzal1",
+    "normalizer": "Quetzal1"
   }
 ]
