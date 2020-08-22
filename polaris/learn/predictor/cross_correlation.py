@@ -18,6 +18,8 @@ from sklearn.model_selection import GridSearchCV, KFold, train_test_split
 # eXtreme Gradient Boost algorithm
 from xgboost import XGBRegressor
 
+from polaris.feature.filter import preprocess_data
+
 LOGGER = logging.getLogger(__name__)
 warnings.simplefilter(action='ignore', category=FutureWarning)
 # Remove this line when feature engineering is in place
@@ -94,9 +96,14 @@ class XCorr(BaseEstimator, TransformerMixin):
         self.reset_importance_map(X.columns)
 
         manager = enlighten.get_manager()
+        # Preprocess the data
+        LOGGER.info("Preprocessing Data. Removing unnecessary columns")
+        X = preprocess_data(X)
+
         pbar = manager.counter(total=X.shape[1],
                                desc="Columns",
                                unit="columns")
+
         with start_run(run_name='cross_correlate'):
             self.mlf_logging()
             for column in X.columns:
@@ -150,11 +157,17 @@ class XCorr(BaseEstimator, TransformerMixin):
         # Make predictions
         target_series_predict = regr_m.predict(df_in_test)
 
-        rmse = np.sqrt(mean_squared_error(target_test, target_series_predict))
-
-        log_metric(target_series.name, rmse)
-        LOGGER.info('Making predictions for : %s', target_series.name)
-        LOGGER.info('Root Mean Square Error : %s', str(rmse))
+        try:
+            rmse = np.sqrt(
+                mean_squared_error(target_test, target_series_predict))
+            log_metric(target_series.name, rmse)
+            LOGGER.info('Making predictions for : %s', target_series.name)
+            LOGGER.info('Root Mean Square Error : %s', str(rmse))
+        except Exception:  # pylint: disable-msg=broad-except
+            # Because of large (close to infinite values) or nans
+            LOGGER.error('Cannot find RMS Error for %s', target_series.name)
+            LOGGER.debug('Expected %s, Predicted %s', str(target_test),
+                         str(target_series_predict))
 
         # indices = np.argsort(regr_m.feature_importances_)[::-1]
         # After the model is trained
