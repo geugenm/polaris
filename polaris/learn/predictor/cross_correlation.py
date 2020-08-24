@@ -5,6 +5,7 @@ Cross Correlation module
 import logging
 import warnings
 
+import enlighten
 import GPUtil
 import numpy as np
 import pandas as pd
@@ -92,6 +93,10 @@ class XCorr(BaseEstimator, TransformerMixin):
 
         self.reset_importance_map(X.columns)
 
+        manager = enlighten.get_manager()
+        pbar = manager.counter(total=X.shape[1],
+                               desc="Columns",
+                               unit="columns")
         with start_run(run_name='cross_correlate'):
             self.mlf_logging()
             for column in X.columns:
@@ -117,6 +122,7 @@ class XCorr(BaseEstimator, TransformerMixin):
                         }
                     else:
                         raise err
+                pbar.update()
 
     def transform(self):
         """ Unused method in this predictor """
