@@ -108,8 +108,15 @@ def create_js(target_directory):
                 req = requests.get(asset[1])
                 lib_fd.write(req.text)
 
-    target_ui_js = os.path.join(target_directory, 'polaris.js')
-    source_ui_js = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                "polaris.js")
-    LOGGER.info("Copying UI JS file to %s", target_ui_js)
-    copy(source_ui_js, target_ui_js)
+    local_files_dir = os.path.dirname(os.path.abspath(__file__))
+
+    local_assets = [  # source, destination
+        (os.path.join(local_files_dir, 'polaris.js'),
+         os.path.join(target_directory, 'polaris.js')),
+        (os.path.join(local_files_dir, 'style_sheet.css'),
+         os.path.join(target_directory, 'style_sheet.css')),
+    ]
+
+    for asset in local_assets:
+        LOGGER.info("Copying dependency to: %s", asset[1])
+        copy(asset[0], asset[1])
