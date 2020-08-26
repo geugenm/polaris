@@ -244,6 +244,14 @@ function save_color() {
   }
 }
 
+function set_size() {
+  var size = {
+    width: window.innerWidth || document.body.clientWidth,
+    height: window.innerHeight || document.body.clientHeight,
+  };
+  Graph.width(size["width"]).height(size["height"]);
+}
+
 // Autosave every few seconds
 var intervalID = window.setInterval(save_color, 5000);
 
