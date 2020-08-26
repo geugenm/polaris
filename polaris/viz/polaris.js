@@ -19,9 +19,9 @@ const polaris_color_set = [
   "#ffffff",
 ];
 const color_scale = d3
-      .scaleOrdinal()
-      .domain([1, polaris_color_set.length])
-      .range(polaris_color_set);
+  .scaleOrdinal()
+  .domain([1, polaris_color_set.length])
+  .range(polaris_color_set);
 var color_step = 0;
 var Graph; // Will be filled in up ahead
 
@@ -32,9 +32,7 @@ var Metadata; // Will be filled in up ahead
 // Converts node info to HTML for screen display
 function node_to_html(node) {
   if (node && typeof node == "object" && node.hasOwnProperty("id"))
-    return (
-      "id: " + node.id + ", name: <b>" + node.name + "</b>/" + node.group
-    );
+    return "id: " + node.id + ", name: <b>" + node.name + "</b>/" + node.group;
   // If "node" is already just a string
   return node;
 }
@@ -96,12 +94,12 @@ async function loadGraphData(jsonUrl) {
         // links.  Return as-is.
         return data;
       } else if (data.hasOwnProperty("graph")) {
-	if (data.hasOwnProperty("metadata")) {
-	  Metadata = createMetadata(data.metadata);
-	  // Give empty strings as arguments so that we don't have
-	  // "undefined" in HUD when first called
-	  hud_update("", "");
-	}
+        if (data.hasOwnProperty("metadata")) {
+          Metadata = createMetadata(data.metadata);
+          // Give empty strings as arguments so that we don't have
+          // "undefined" in HUD when first called
+          hud_update("", "");
+        }
         if (data.graph.data_format_version === 1) {
           // Version 1 of Polaris Graph format
           return data.graph;
@@ -125,20 +123,18 @@ async function createGraph(dataFile) {
           ? node.color
           : node_base_color
       )
-      .onNodeHover(
-        (node) => (graph_elt.style.cursor = node ? "pointer" : null)
-      )
+      .onNodeHover((node) => (graph_elt.style.cursor = node ? "pointer" : null))
       .onNodeClick((node) => {
         hud_update("clicked", node);
         jetpack_to(node);
       })
       .linkOpacity(0.4)
       .linkWidth(1)
-    // visible traveling particule(s) per link
+      // visible traveling particule(s) per link
       .linkDirectionalParticles(2)
-    // Speed as a ratio of link length per frame
-    // and d.value is included in [0;1]
-    // as per input definition: feature importance.
+      // Speed as a ratio of link length per frame
+      // and d.value is included in [0;1]
+      // as per input definition: feature importance.
       .linkDirectionalParticleSpeed((d) => d.value * 0.01);
   });
 }
@@ -152,13 +148,7 @@ function fill_nodeslist() {
   const { nodes, links } = Graph.graphData();
   for (node of nodes) {
     nodeslist_elt.innerHTML +=
-      '<option value="' +
-      node.id +
-      ":" +
-      node.name +
-      "/" +
-      node.group +
-      '"/>';
+      '<option value="' + node.id + ":" + node.name + "/" + node.group + '"/>';
   }
 }
 
@@ -206,7 +196,7 @@ function searchInputCallback(evt) {
     if (evt.ctrlKey) {
       if (evt.shiftKey) {
         // highlight nothing and reset
-        hud_update("Resetting colors", "")
+        hud_update("Resetting colors", "");
         highlight_nodes("", node_base_color, true);
       } else {
         // Control key is pressed: node highligting
