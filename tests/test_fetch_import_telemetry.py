@@ -2,12 +2,17 @@
 pytest testing framework for fetch_import_telemetry
 """
 import datetime
+import os
 
 import pandas as pd
 import pytest
 
 from contrib.normalizers.common import Field, Normalizer
 from polaris.fetch import fetch_import_telemetry
+from polaris.fetch.data_fetch_decoder import _SATELLITES, find_satellite
+
+FIXTURE_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                           "test_data")
 
 SINGLE_FRAME = [
     {
@@ -198,6 +203,19 @@ def test_data_normalize_validator_happy_path():
         FixtureNormalizerWithValidator(), SINGLE_AX25_FRAME)
 
     assert len(normalized_frames) == 1
+
+
+@pytest.mark.datafiles(os.path.join(FIXTURE_DIR, "merged_frames.csv"))
+def test_data_normalize_skip_normalizer(datafiles):
+    """Test data_normalize while skipping the normalizer
+    """
+    sat = "LightSail-2"
+    satellite = find_satellite(sat, _SATELLITES)
+    import_file = str(datafiles / "merged_frames.csv")
+    normalized_frames = fetch_import_telemetry.fetch_normalized_telemetry(
+        satellite, None, None, datafiles, import_file, True)
+
+    assert len(normalized_frames) != 0
 
 
 def test_data_normalize_validator_happy_path_multiple_frames():
