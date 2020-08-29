@@ -99,7 +99,11 @@ def create_js(target_directory):
     target_assets = [(os.path.join(target_directory, "3d-force-graph.js"),
                       "https://deepchaos.space/3d-force-graph.js"),
                      (os.path.join(target_directory, "d3.v5.min.js"),
-                      "https://deepchaos.space/d3.v5.min.js")]
+                      "https://deepchaos.space/d3.v5.min.js"),
+                     (os.path.join(target_directory,
+                                   "three"), "https://unpkg.com/three"),
+                     (os.path.join(target_directory, "three-spritetext"),
+                      "https://unpkg.com/three-spritetext")]
     # Check if required JS libs are in target directory
     for asset in target_assets:
         if not os.path.isfile(asset[0]):
