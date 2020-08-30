@@ -128,6 +128,18 @@ async function createGraph(dataFile) {
         hud_update("clicked", node);
         jetpack_to(node);
       })
+      .nodeThreeObjectExtend(true)
+      .nodeThreeObject((node) => {
+        // add text sprite as child
+        const sprite = new SpriteText(node.name);
+        sprite.color = localStorage.getItem(node.name)
+          ? localStorage.getItem(node.name)
+          : node.color
+          ? node.color
+          : node_base_color;
+        sprite.textHeight = 5;
+        return sprite;
+      })
       .linkOpacity(0.4)
       .linkWidth(1)
       // visible traveling particule(s) per link
