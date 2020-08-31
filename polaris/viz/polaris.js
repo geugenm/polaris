@@ -194,6 +194,7 @@ function highlight_nodes(search_str, color, reset_color = false) {
     }
   }
   Graph.nodeColor((node) => (node.color ? node.color : node_base_color));
+  save_color();
 }
 
 // Catching keypress events and launching actions
