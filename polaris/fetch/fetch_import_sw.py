@@ -218,7 +218,8 @@ def fetch_nearest_sw(sw_data, time_list):
     """
     LOGGER.info("Finding the nearest space weather data")
     # Convert the list of times to pd.DatetimeIndex
-    time_df = pd.to_datetime(time_list, infer_datetime_format=True)
+    time_df = pd.to_datetime(time_list,
+                             infer_datetime_format=True).sort_values()
     processed_data = {}
     for index in sw_data:
         # Fetch the nearest data for each index
@@ -273,6 +274,12 @@ def fetch_preprocessed_sw(start_date, end_date, cache_dir, time_list, sat,
         frames of space_weather
     :rtype: dict
     """
+    if start_date is None:
+        start_date = min(time_list)
+
+    if end_date is None:
+        end_date = max(time_list)
+
     # Fetch the space_weather data
     sw_data = fetch_or_import_sw(start_date, end_date, cache_dir, sat,
                                  **kwargs)
