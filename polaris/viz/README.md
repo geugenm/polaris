@@ -27,4 +27,4 @@ Execute `polaris viz` and open the indicated host and port, generally this would
 
  - **CTRL+RETURN**: every node with the entered pattern will be colored. It can be repeated and colors will rotate.
  - **CTRL+SHIFT+RETURN**: reset node color highlighting completely if the search field is empty, or with one color to highlight only the current pattern.
-
+ - **CTRL+/**: toggle visibility of unlinked nodes.
