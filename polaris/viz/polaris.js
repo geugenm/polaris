@@ -27,6 +27,9 @@ var Graph; // Will be filled in up ahead
 
 var Metadata; // Will be filled in up ahead
 
+var linklist = null; // Filled up ahead. Contains list of nodes in links
+var hide_nodes = false; // Whether or not nodes are hidden currently
+
 // ---- Graph's routines ---- //
 
 // Converts node info to HTML for screen display
@@ -197,12 +200,46 @@ function highlight_nodes(search_str, color, reset_color = false) {
   save_color();
 }
 
+function toggle_unlinked_node_visibility() {
+  // Since we are toggling, if previously hidden, make visible
+  // (true => false => true)
+  hide_nodes = !hide_nodes;
+
+  const { nodes, links } = Graph.graphData();
+
+  // Find the list of nodes present in the link.
+  // To reduce computation, do this only once
+  if (linklist == null) {
+    linklist = [];
+    for (link of links) {
+      linklist.push(link.source.id);
+      linklist.push(link.target.id);
+    }
+    // Get only unique values
+    linklist = [...new Set(linklist)];
+  }
+
+  // Find nodes present in linklist. The ones not present have visibility off
+  for (node of nodes) {
+    if (linklist.includes(node.id)) {
+      node.nodeVisibility = true;
+    } else {
+      // If we have to "hide_nodes", the nodeVisibility needs to be set false
+      // hide_nodes = true  => nodeVisibility = false
+      // hide_nodes = false => nodeVisibility = true
+      node.nodeVisibility = !hide_nodes;
+    }
+  }
+  Graph.nodeVisibility((node) => node.nodeVisibility);
+}
+
 // Catching keypress events and launching actions
 function searchInputCallback(evt) {
   // evt.key is the named key so here we're looking for "Enter"
   // NB: evt.which is deprecated so using only keyCode here.
   // NB: evt.code should be what evt.keyCode is according to W3C standards.
   //     Watch that for eventual future changes.
+  var event_occurred = false;
   if (evt.keyCode === 13 || evt.key == "Enter") {
     // ASCII for Enter (Return Carriage) is 13 (Firefox)
     // For line feed this is 10 (chrome) in UIs generally ctrl+Enter is a linefeed.
@@ -211,6 +248,7 @@ function searchInputCallback(evt) {
         // highlight nothing and reset
         hud_update("Resetting colors", "");
         highlight_nodes("", node_base_color, true);
+        event_occurred = true;
       } else {
         // Control key is pressed: node highligting
         hud_update("highlighting search pattern", search_elt.value);
@@ -218,6 +256,7 @@ function searchInputCallback(evt) {
         // if (color_step > polaris_color_set.length) prompt for user input
         // to give a new color or do nothing: colors will rotate then.
         highlight_nodes(search_elt.value, color_scale(color_step));
+        event_occurred = true;
       }
     } else {
       // Control key is NOT pressed: jetpacking
@@ -230,11 +269,37 @@ function searchInputCallback(evt) {
       } else {
         hud_update("search stopped", node);
       }
+      event_occurred = true;
     }
+  } // --- end of "Enter" event and derivatives
+
+  if (event_occurred) {
     // Stop processing of the event here.
     evt.stopPropagation();
     evt.preventDefault();
-  } // --- end of "Enter" event and derivatives
+  } // Otherwise, default browser behavior should continue
+}
+
+// Callback for any event happening throughout the document
+function documentCallback(evt) {
+  var event_occurred = false;
+
+  // Detect toggle node shortcut key (Ctrl + /)
+  if (evt.ctrlKey && evt.keyCode == 191) {
+    // Toggle visibility of unlinked nodes
+    toggle_unlinked_node_visibility();
+    event_occurred = true;
+
+    // Update heads up display
+    var update = hide_nodes ? "Hiding nodes" : "Showing hidden nodes";
+    hud_update(update, "");
+  }
+
+  if (event_occurred) {
+    // Stop processing of the event here.
+    evt.stopPropagation();
+    evt.preventDefault();
+  } // Otherwise, default browser behavior should continue
 }
 
 // save the colors to localStorage
@@ -267,3 +332,6 @@ search_elt.addEventListener("click", function () {
 
 // search: Keyboard events
 search_elt.addEventListener("keydown", searchInputCallback);
+
+// Detect keydown events in the document space (for eg toggle hidden nodes)
+document.addEventListener("keydown", documentCallback);
