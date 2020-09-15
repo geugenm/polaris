@@ -81,6 +81,15 @@ Commands:
 $ (.venv) polaris fetch -s 2019-08-10 -e 2019-10-5 --cache_dir /tmp/LightSail_2 LightSail-2 /tmp/normalized_frames.json
 # Note: this may take some time.
 
+# If the normalizer for your satellite does not exist, you can run polaris fetch
+# with the --skip_normalizer flag. The result with and without the normalizer
+# (without/with --skip-normalizer) are bound to be slightly different.
+# The normalizer is mainly present to give you, the satellite operator, an
+# intuitive (SI) value for fields (instead of arbitrarily scaled/shifted
+# values). It is easy to create and you can get started with the process using
+# the snippet at https://gitlab.com/librespacefoundation/polaris/polaris/-/snippets/2006696
+$ (.venv) polaris fetch -s 2019-08-10 -e 2019-10-5 --cache_dir /tmp/LightSail_2 --skip_normalizer LightSail-2 /tmp/normalized_frames.json
+
 # Data will be saved at /tmp/normalized_frames.json
 $ (.venv) head /tmp/normalized_frames.json
 [
