@@ -66,15 +66,21 @@ def load_normalizer(sat):
 
     :returns: the loaded normalizer.
     """
-    if sat.normalizer is None:
+    if sat == "Dummy":
+        normalizer_name = sat
+    elif sat.normalizer is None:
         raise NoNormalizerForSatellite
+    else:
+        normalizer_name = sat.normalizer
+
     try:
+        LOGGER.debug("Normalizer chosen: %s", normalizer_name)
         loaded_normalizer = importlib.import_module(NORMALIZER_LIB +
-                                                    sat.normalizer.lower())
-        normalizer = getattr(loaded_normalizer, sat.normalizer)
+                                                    normalizer_name.lower())
+        normalizer = getattr(loaded_normalizer, normalizer_name)
         return normalizer
     except Exception as eee:
-        LOGGER.error("Normalizer loading: %s", eee)
+        LOGGER.error("Error loading normalizer: %s", normalizer_name)
         raise eee
 
 
@@ -320,8 +326,13 @@ def load_frames_from_json_file(file):
     return decoded_frame_list
 
 
-def fetch_normalized_telemetry(satellite, start_date, end_date, cache_dir,
-                               import_file):
+# pylint: disable-msg=too-many-arguments
+def fetch_normalized_telemetry(satellite,
+                               start_date,
+                               end_date,
+                               cache_dir,
+                               import_file,
+                               skip_normalizer=False):
     """
     Fetch, decode and normalize the telemetry
 
@@ -356,14 +367,28 @@ def fetch_normalized_telemetry(satellite, start_date, end_date, cache_dir,
                                                 new_frames_file)
     decoded_frame_list = load_frames_from_json_file(decoded_frames_file)
 
-    # Normalize the frames to SI units
     try:
-        normalizer = load_normalizer(satellite)
+        if skip_normalizer:
+            # skip the normalization to SI units
+            LOGGER.info("Skip normalizer passed")
+            normalizer = load_normalizer("Dummy")()
+
+            # Find the list of all fields in telemetry
+            list_of_keys = set().union(*(frame["fields"].keys()
+                                         for frame in decoded_frame_list))
+
+            # Create the dummy normalizer
+            normalizer.create_dummy_normalizer(list_of_keys)
+            LOGGER.info('Loaded dummy normalizer')
+        else:
+            # Normalize the frames to SI units
+            # Creating a normalizer object here
+            normalizer = load_normalizer(satellite)()
+            LOGGER.info('Loaded normalizer=%s', satellite.normalizer)
     except Exception as exception:
         LOGGER.error("Can't load satellite normalizer: %s", exception)
         raise exception
 
-    LOGGER.info('Loaded normalizer=%s', satellite.normalizer)
-    normalized_frames = data_normalize(normalizer(), decoded_frame_list)
+    normalized_frames = data_normalize(normalizer, decoded_frame_list)
 
     return normalized_frames

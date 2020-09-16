@@ -153,9 +153,15 @@ def find_satellite(sat, sat_list):
 
 # pylint: disable-msg=too-many-arguments
 # pylint: disable-msg=too-many-locals
-def data_fetch_decode_normalize(sat, start_date, end_date, output_file,
-                                cache_dir, import_file,
-                                existing_output_file_strategy, **kwargs):
+def data_fetch_decode_normalize(sat,
+                                start_date,
+                                end_date,
+                                output_file,
+                                cache_dir,
+                                import_file,
+                                existing_output_file_strategy,
+                                skip_normalizer=False,
+                                **kwargs):
     """
     Main function to download and decode satellite telemetry.
 
@@ -187,7 +193,8 @@ def data_fetch_decode_normalize(sat, start_date, end_date, output_file,
     # Fetch normalized telemetry
     normalized_telemetry = fetch_normalized_telemetry(satellite, start_date,
                                                       end_date, cache_dir,
-                                                      import_file)
+                                                      import_file,
+                                                      skip_normalizer)
 
     # Get timestamps for which space weather needs to be extracted
     time_list = get_times_from_frames_list(normalized_telemetry)

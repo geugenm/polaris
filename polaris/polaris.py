@@ -77,10 +77,13 @@ def cli():
 @click.option('--store_in_influxdb',
               is_flag=True,
               help='Store data in influxdb')
+@click.option('--skip_normalizer',
+              is_flag=True,
+              help='Skip normalizing. Returns data as decoded')
 # pylint: disable-msg=too-many-arguments
 def cli_fetch(sat, start_date, end_date, output_file, cache_dir, import_file,
               existing_output_file_strategy, store_in_influxdb,
-              fetch_from_influxdb):
+              fetch_from_influxdb, skip_normalizer):
     """ Obtain telemetry data
 
     Retrieve and decode the telemetry corresponding to
@@ -89,7 +92,7 @@ def cli_fetch(sat, start_date, end_date, output_file, cache_dir, import_file,
     """
     data_fetch_decode_normalize(
         sat, start_date, end_date, output_file, cache_dir, import_file,
-        existing_output_file_strategy, **{
+        existing_output_file_strategy, skip_normalizer, **{
             "store_in_influxdb": store_in_influxdb,
             "fetch_from_influxdb": fetch_from_influxdb,
         })
