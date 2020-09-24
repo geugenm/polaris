@@ -10,9 +10,10 @@ LOGGER = logging.getLogger(__name__)
 class Cleaner:
     """Class for cleaning features.
     """
-    def __init__(self):
+    def __init__(self, metadata):
         self._col_threshold = 30  # in percent, maximum na rows in a column
         self._row_threshold = 60  # in percent, maximum na columns in a row
+        self._metadata = metadata
 
     def handle_missing_values(self, dataframe):
         """Preprocess data to remove unnecessary rows and columns (filled with
@@ -50,3 +51,37 @@ class Cleaner:
                      final_shape)
 
         return dataframe
+
+    def drop_constant_values(self, dataframe):
+        """Preprocess data to remove columns with
+        constant values
+
+        :param dataframe: Dataframe that needs to be preprocessed
+        :type dataframe: pd.DataFrame
+        :return: Preprocessed Dataframe
+        :rtype: pd.DataFrame
+        """
+        if 'analysis' in self._metadata:
+            constants = [
+                column for column, tag in self._metadata['analysis']
+                ['column_tags'].items() if tag == "constant"
+            ]
+
+            LOGGER.info('Dropping constant column(s) : %s',
+                        ','.join(constants))
+
+            return dataframe.drop(constants, axis=1)
+
+        return dataframe
+
+    @staticmethod
+    def drop_non_numeric_values(dataframe):
+        """Preprocess data to remove non numeric columns
+
+        :param dataframe: Dataframe that needs to be preprocessed
+        :type dataframe: pd.DataFrame
+        :return: Preprocessed Dataframe
+        :rtype: pd.DataFrame
+        """
+
+        return dataframe.select_dtypes(include=['number', 'datetime'])
