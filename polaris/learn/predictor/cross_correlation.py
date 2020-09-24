@@ -18,7 +18,7 @@ from sklearn.model_selection import GridSearchCV, KFold, train_test_split
 # eXtreme Gradient Boost algorithm
 from xgboost import XGBRegressor
 
-from polaris.feature.filter import preprocess_data
+from polaris.feature.cleaner import Cleaner
 
 LOGGER = logging.getLogger(__name__)
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -42,6 +42,7 @@ class XCorr(BaseEstimator, TransformerMixin):
         """
         self.models = None
         self._importances_map = None
+        self._feature_cleaner = Cleaner()
         self.xcorr_params = {
             "random_state": 42,
             "test_size": 0.2,
@@ -98,7 +99,7 @@ class XCorr(BaseEstimator, TransformerMixin):
         manager = enlighten.get_manager()
         # Preprocess the data
         LOGGER.info("Preprocessing Data. Removing unnecessary columns")
-        X = preprocess_data(X)
+        X = self._feature_cleaner.handle_missing_values(X)
 
         pbar = manager.counter(total=X.shape[1],
                                desc="Columns",
