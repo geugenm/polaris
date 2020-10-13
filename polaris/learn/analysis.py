@@ -1,6 +1,8 @@
 """
 Module to launch different data analysis.
 """
+import logging
+
 from fets.math import TSIntegrale
 from mlflow import set_experiment
 
@@ -10,6 +12,12 @@ from polaris.dataset.metadata import PolarisMetadata
 from polaris.learn.feature.extraction import create_list_of_transformers, \
     extract_best_features
 from polaris.learn.predictor.cross_correlation import XCorr
+
+LOGGER = logging.getLogger(__name__)
+
+
+class NoFramesInInputFile(Exception):
+    """Raised when frames dataframe is empty"""
 
 
 def feature_extraction(input_file, param_col):
@@ -51,6 +59,10 @@ def cross_correlate(input_file,
     """
     # Reading input file - index is considered on first column
     source, dataframe = read_polaris_data(input_file, csv_sep)
+
+    if dataframe.empty:
+        LOGGER.error("Empty list of frames -- nothing to learn from!")
+        raise NoFramesInInputFile
 
     input_data = normalize_dataframe(dataframe)
 
