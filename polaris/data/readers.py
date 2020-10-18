@@ -12,6 +12,7 @@ import os
 import pandas as pd
 
 from polaris.dataset.dataset import PolarisDataset
+from polaris.dataset.metadata import PolarisMetadata
 
 LOGGER = logging.getLogger(__name__)
 
@@ -29,20 +30,20 @@ def read_polaris_data(path, csv_sep=','):
     :return: Pandas dataframe with all frames fields values and
     the data source name.
     """
-    source = None
+    metadata = None
     dataframe = None
 
     if path.lower().endswith('.csv'):
-        source, dataframe = read_polaris_data_from_csv(path, csv_sep)
+        metadata, dataframe = read_polaris_data_from_csv(path, csv_sep)
 
     elif path.lower().endswith('.json'):
-        source, dataframe = read_polaris_data_from_json(path)
+        metadata, dataframe = read_polaris_data_from_json(path)
 
     else:
         LOGGER.critical("Don't know how to load from file %s ", path)
         raise PolarisUnknownFileFormatError
 
-    return source, dataframe
+    return metadata, dataframe
 
 
 def read_polaris_data_from_csv(path, csv_sep=','):
@@ -56,7 +57,8 @@ def read_polaris_data_from_csv(path, csv_sep=','):
     try:
         dataframe = pd.read_csv(path, sep=csv_sep)
         source = os.path.splitext(path)[0]
-        return source, dataframe
+        metadata = PolarisMetadata({'satellite_name': source})
+        return metadata, dataframe
 
     except FileNotFoundError as exception_error:
         LOGGER.critical(exception_error)
@@ -79,6 +81,5 @@ def read_polaris_data_from_json(path):
 
     dataset = PolarisDataset(metadata=json_data['metadata'],
                              frames=json_data['frames'])
-    source = dataset.metadata['satellite_name']
     dataframe = dataset.to_pandas_dataframe()
-    return source, dataframe
+    return dataset.metadata, dataframe

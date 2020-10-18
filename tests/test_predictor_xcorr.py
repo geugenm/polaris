@@ -9,6 +9,8 @@ import pytest
 from sklearn.pipeline import Pipeline
 
 from polaris.learn.predictor.cross_correlation import XCorr, set_model_params
+from polaris.learn.predictor.cross_correlation_parameters import \
+    CrossCorrelationParameters
 
 
 def test_xcorr():
@@ -20,7 +22,10 @@ def test_xcorr():
         "A": [4, 123, 24.2, 3.14, 1.41],
         "B": [7, 0, 24.2, 3.14, 8.2]
     })
-    correlator = XCorr()
+
+    metadata = {"analysis": {"column_tags": {}}}
+    parameters = CrossCorrelationParameters(dataset_metadata=metadata)
+    correlator = XCorr(parameters)
     assert correlator.importances_map is None
 
     correlator.fit(test_df)
@@ -35,8 +40,10 @@ def test_xcorr_pipeline():
     """
     `pytest` entry point
     """
+    metadata = {"analysis": {"column_tags": {}}}
 
-    pipeline = Pipeline([("deps", XCorr())])
+    parameters = CrossCorrelationParameters(dataset_metadata=metadata)
+    pipeline = Pipeline([("deps", XCorr(parameters))])
 
     assert pipeline is not None
 
@@ -60,7 +67,13 @@ def test_gridsearch_happy():
         "gridsearch_n_splits": 2
     }
 
-    correlator = XCorr(use_gridsearch=True, xcorr_params=xcorr_params)
+    metadata = {"analysis": {"column_tags": {}}}
+
+    parameters = CrossCorrelationParameters(dataset_metadata=metadata,
+                                            use_gridsearch=True,
+                                            xcorr_params=xcorr_params)
+
+    correlator = XCorr(parameters)
     correlator.fit(test_df)
     assert correlator.importances_map is not None
     assert isinstance(correlator.importances_map, pd.DataFrame)
@@ -75,7 +88,12 @@ def test_gridsearch_incompatible_input():
     """
     test_df = [1, 2, 3, 4]
 
-    correlator = XCorr(use_gridsearch=True)
+    metadata = {"analysis": {"column_tags": {}}}
+
+    parameters = CrossCorrelationParameters(dataset_metadata=metadata,
+                                            use_gridsearch=True)
+
+    correlator = XCorr(parameters)
     with pytest.raises(TypeError):
         correlator.fit(test_df)
 

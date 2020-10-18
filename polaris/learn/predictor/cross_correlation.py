@@ -29,20 +29,16 @@ np.seterr(divide='ignore', invalid='ignore')
 class XCorr(BaseEstimator, TransformerMixin):
     """ Cross Correlation predictor class
     """
-    def __init__(self,
-                 model_params=None,
-                 use_gridsearch=False,
-                 xcorr_params=None,
-                 force_cpu=False):
+    def __init__(self, cross_correlation_params):
         """
-            :param importances_map: dataframe representing the heatmap of corrs
             :param model_params: parameters for each model
             :param use_gridsearch: specify if gridsearch will be used during
             predictions
         """
         self.models = None
         self._importances_map = None
-        self._feature_cleaner = Cleaner()
+        self._feature_cleaner = Cleaner(
+            cross_correlation_params.dataset_metadata)
         self.xcorr_params = {
             "random_state": 42,
             "test_size": 0.2,
@@ -53,19 +49,20 @@ class XCorr(BaseEstimator, TransformerMixin):
             "gridsearch_n_splits": 18
         }
 
-        if use_gridsearch:
+        if cross_correlation_params.use_gridsearch:
             self.method = self.gridsearch
             self.mlf_logging = self.gridsearch_mlf_logging
         else:
             self.method = self.regression
             self.mlf_logging = self.regression_mlf_logging
 
-        self.model_params = set_model_params(model_params=model_params,
-                                             force_cpu=force_cpu,
-                                             use_gridsearch=use_gridsearch)
+        self.model_params = set_model_params(
+            model_params=cross_correlation_params.model_params,
+            force_cpu=cross_correlation_params.force_cpu,
+            use_gridsearch=cross_correlation_params.use_gridsearch)
 
-        if xcorr_params is not None:
-            self.xcorr_params = xcorr_params
+        if cross_correlation_params.xcorr_params is not None:
+            self.xcorr_params = cross_correlation_params.xcorr_params
 
     @property
     def importances_map(self):
@@ -94,12 +91,14 @@ class XCorr(BaseEstimator, TransformerMixin):
         if self.models is None:
             self.models = []
 
-        self.reset_importance_map(X.columns)
-
         manager = enlighten.get_manager()
-        # Preprocess the data
-        LOGGER.info("Preprocessing Data. Removing unnecessary columns")
+
+        LOGGER.info("Clearing Data. Removing unnecessary columns")
+        X = self._feature_cleaner.drop_constant_values(X)
+        X = self._feature_cleaner.drop_non_numeric_values(X)
         X = self._feature_cleaner.handle_missing_values(X)
+
+        self.reset_importance_map(X.columns)
 
         pbar = manager.counter(total=X.shape[1],
                                desc="Columns",

@@ -12,6 +12,8 @@ from polaris.dataset.metadata import PolarisMetadata
 from polaris.learn.feature.extraction import create_list_of_transformers, \
     extract_best_features
 from polaris.learn.predictor.cross_correlation import XCorr
+from polaris.learn.predictor.cross_correlation_parameters import \
+    CrossCorrelationParameters
 
 LOGGER = logging.getLogger(__name__)
 
@@ -58,18 +60,25 @@ def cross_correlate(input_file,
         :param model_params: XGBoost parameters dictionary
     """
     # Reading input file - index is considered on first column
-    source, dataframe = read_polaris_data(input_file, csv_sep)
+    metadata, dataframe = read_polaris_data(input_file, csv_sep)
 
     if dataframe.empty:
         LOGGER.error("Empty list of frames -- nothing to learn from!")
         raise NoFramesInInputFile
 
     input_data = normalize_dataframe(dataframe)
+    source = metadata['satellite_name']
 
     set_experiment(experiment_name=source)
 
+    cross_correlation_params = CrossCorrelationParameters(
+        dataset_metadata=metadata,
+        model_params=model_params,
+        use_gridsearch=use_gridsearch,
+        force_cpu=force_cpu)
+
     # Creating and fitting cross-correlator
-    xcorr = XCorr(model_params, use_gridsearch, force_cpu=force_cpu)
+    xcorr = XCorr(cross_correlation_params)
     xcorr.fit(input_data)
 
     if output_graph_file is None:
@@ -92,8 +101,5 @@ def normalize_dataframe(dataframe):
     """
     dataframe.index = dataframe.time
     dataframe.drop(['time'], axis=1, inplace=True)
-
-    # Keep numeric values only
-    dataframe = dataframe.select_dtypes(include=['number', 'datetime'])
 
     return dataframe

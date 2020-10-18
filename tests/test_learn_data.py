@@ -32,8 +32,8 @@ def test_read_polaris_data_from_json_happy_path(polaris_dataset_json,
     fullpath = tmp_path / "dataset.json"
     with open(fullpath, 'w') as f_handle:
         f_handle.write(polaris_dataset_json)
-    source, input_data = pldr.read_polaris_data_from_json(fullpath)
-    assert source == "LightSail-2"
+    metadata, input_data = pldr.read_polaris_data_from_json(fullpath)
+    assert metadata['satellite_name'] == "LightSail-2"
 
     dist_dataset = json.loads(polaris_dataset_json)
 
