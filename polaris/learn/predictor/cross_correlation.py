@@ -6,7 +6,6 @@ import logging
 import warnings
 
 import enlighten
-import GPUtil
 import numpy as np
 import pandas as pd
 # Used for tracking ML process results
@@ -29,7 +28,7 @@ np.seterr(divide='ignore', invalid='ignore')
 class XCorr(BaseEstimator, TransformerMixin):
     """ Cross Correlation predictor class
     """
-    def __init__(self, cross_correlation_params):
+    def __init__(self, dataset_metadata, cross_correlation_params):
         """
             :param model_params: parameters for each model
             :param use_gridsearch: specify if gridsearch will be used during
@@ -37,16 +36,12 @@ class XCorr(BaseEstimator, TransformerMixin):
         """
         self.models = None
         self._importances_map = None
-        self._feature_cleaner = Cleaner(
-            cross_correlation_params.dataset_metadata)
+        self._feature_cleaner = Cleaner(dataset_metadata)
         self.xcorr_params = {
-            "random_state": 42,
-            "test_size": 0.2,
-            "gridsearch_scoring": "neg_mean_squared_error",
-            # The split number was obtained through trial-and-error,
-            # it shoud be reviewed in the future to adapt to
-            # the targeted satellite.
-            "gridsearch_n_splits": 18
+            "random_state": cross_correlation_params.random_state,
+            "test_size": cross_correlation_params.test_size,
+            "gridsearch_scoring": cross_correlation_params.gridsearch_scoring,
+            "gridsearch_n_splits": cross_correlation_params.gridsearch_n_splits
         }
 
         if cross_correlation_params.use_gridsearch:
@@ -56,13 +51,10 @@ class XCorr(BaseEstimator, TransformerMixin):
             self.method = self.regression
             self.mlf_logging = self.regression_mlf_logging
 
-        self.model_params = set_model_params(
-            model_params=cross_correlation_params.model_params,
-            force_cpu=cross_correlation_params.force_cpu,
-            use_gridsearch=cross_correlation_params.use_gridsearch)
-
-        if cross_correlation_params.xcorr_params is not None:
-            self.xcorr_params = cross_correlation_params.xcorr_params
+        self.model_params = {
+            "current": cross_correlation_params.model_params,
+            "cpu": cross_correlation_params.model_cpu_params
+        }
 
     @property
     def importances_map(self):
@@ -111,22 +103,15 @@ class XCorr(BaseEstimator, TransformerMixin):
                 try:
                     self.models.append(
                         self.method(X.drop([column], axis=1), X[column],
-                                    self.model_params))
+                                    self.model_params['current']))
                 except Exception as err:  # pylint: disable-msg=broad-except
-                    if self.model_params.get("predictor") == "gpu_predictor":
+                    if self.model_params['current'].get(
+                            "predictor") == "gpu_predictor":
                         LOGGER.info(" ".join([
                             "Encountered error using GPU.",
                             "Trying with CPU parameters now!"
                         ]))
-                        self.model_params = {
-                            "objective": "reg:squarederror",
-                            "n_estimators": 80,
-                            "learning_rate": 0.1,
-                            "n_jobs": -1,
-                            "predictor": "cpu_predictor",
-                            "tree_method": "auto",
-                            "max_depth": 8
-                        }
+                        self.model_params['current'] = self.model_params['cpu']
                     else:
                         raise err
                 pbar.update()
@@ -255,87 +240,3 @@ class XCorr(BaseEstimator, TransformerMixin):
         """
         self.common_mlf_logging()
         log_params(self.model_params)
-
-
-# pylint: disable-msg=too-many-branches
-def set_model_params(model_params=None, force_cpu=False, use_gridsearch=False):
-    """Sets model params
-
-    :param model_params: Custom parameters (user specified)
-    :param force_cpu: If True, doesn't check GPU availability
-    :param use_gridsearch: If models are for gridsearch
-    """
-    if model_params is not None:
-        LOGGER.info(" ".join(["Using custom model parameters!"]))
-        if not isinstance(model_params, dict):
-            raise TypeError("Expected {} got {}".format(
-                dict, type(model_params)))
-
-        if use_gridsearch:
-            for param in model_params.keys():
-                if not isinstance(model_params[param], list):
-                    raise TypeError("Expected {} got {} for key {}".format(
-                        list, type(model_params[param]), param))
-
-        return model_params
-
-    if use_gridsearch:
-        LOGGER.info(" ".join(["Using gridsearch parameters!"]))
-        model_params = {
-            "objective": ["reg:squarederror"],
-            "n_estimators": [50, 100, 300],
-            "learning_rate": [0.005, 0.05, 0.1, 0.2],
-            "max_depth": [3, 5, 8, 15],
-        }
-
-    else:
-        LOGGER.info(" ".join(["Plain old gridsearch parameters!"]))
-        model_params = {
-            "objective": "reg:squarederror",
-            "n_estimators": 80,
-            "learning_rate": 0.1,
-            "n_jobs": -1,
-            "max_depth": 8
-        }
-
-    if not force_cpu:
-        try:
-            gpu_ids = GPUtil.getAvailable()
-        except ValueError:
-            # As reported at
-            # https://github.com/anderskm/gputil/issues/26, GPUtil
-            # will throw ValueError if NVidia hardware is detected,
-            # but the driver is not loaded.  This is not terribly
-            # helpful.  As a workaround, we'll set the list of gpus to
-            # [].
-            LOGGER.warning("".join([
-                "GPU requested but not detected.",
-                "Are you sure you have the proper drivers installed?"
-            ]))
-            gpu_ids = []
-
-        if gpu_ids != []:
-            LOGGER.info(" ".join(["GPU detected! Adding GPU parameters :)"]))
-
-            # For the params chosen, refer:
-            # https://xgboost.readthedocs.io/en/latest/gpu/
-            if use_gridsearch:
-                model_params['tree_method'] = ['gpu_hist']
-                model_params['predictor'] = ['gpu_predictor']
-                model_params['gpu_id'] = [gpu_ids[0]]
-            else:
-                model_params['tree_method'] = 'gpu_hist'
-                model_params['predictor'] = 'gpu_predictor'
-                model_params['gpu_id'] = gpu_ids[0]
-            return model_params
-
-    LOGGER.info(" ".join(["No GPU detected! Adding CPU parameters :)"]))
-    if use_gridsearch:
-        model_params['tree_method'] = ['approx']
-        model_params['predictor'] = ['cpu_predictor']
-        model_params['n_jobs'] = [-1]
-    else:
-        model_params['tree_method'] = 'approx'
-        model_params['predictor'] = 'cpu_predictor'
-        model_params['n_jobs'] = -1
-    return model_params

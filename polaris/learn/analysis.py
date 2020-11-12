@@ -12,8 +12,8 @@ from polaris.dataset.metadata import PolarisMetadata
 from polaris.learn.feature.extraction import create_list_of_transformers, \
     extract_best_features
 from polaris.learn.predictor.cross_correlation import XCorr
-from polaris.learn.predictor.cross_correlation_parameters import \
-    CrossCorrelationParameters
+from polaris.learn.predictor.cross_correlation_configurator import \
+    CrossCorrelationConfigurator
 
 LOGGER = logging.getLogger(__name__)
 
@@ -48,8 +48,8 @@ def feature_extraction(input_file, param_col):
 # pylint: disable-msg=too-many-arguments
 def cross_correlate(input_file,
                     output_graph_file=None,
+                    xcorr_configuration_file=None,
                     graph_link_threshold=0.1,
-                    model_params=None,
                     use_gridsearch=False,
                     csv_sep=',',
                     force_cpu=False):
@@ -71,14 +71,13 @@ def cross_correlate(input_file,
 
     set_experiment(experiment_name=source)
 
-    cross_correlation_params = CrossCorrelationParameters(
-        dataset_metadata=metadata,
-        model_params=model_params,
+    xcorr_configurator = CrossCorrelationConfigurator(
+        xcorr_configuration_file=xcorr_configuration_file,
         use_gridsearch=use_gridsearch,
         force_cpu=force_cpu)
 
     # Creating and fitting cross-correlator
-    xcorr = XCorr(cross_correlation_params)
+    xcorr = XCorr(metadata, xcorr_configurator.get_configuration())
     xcorr.fit(input_data)
 
     if output_graph_file is None:

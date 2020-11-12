@@ -2,15 +2,13 @@
 `pytest` testing framework file for xcorr predictor
 """
 
-import itertools
-
 import pandas as pd
 import pytest
 from sklearn.pipeline import Pipeline
 
-from polaris.learn.predictor.cross_correlation import XCorr, set_model_params
-from polaris.learn.predictor.cross_correlation_parameters import \
-    CrossCorrelationParameters
+from polaris.learn.predictor.cross_correlation import XCorr
+from polaris.learn.predictor.cross_correlation_configurator import \
+    CrossCorrelationConfigurator
 
 
 def test_xcorr():
@@ -23,9 +21,10 @@ def test_xcorr():
         "B": [7, 0, 24.2, 3.14, 8.2]
     })
 
+    configurator = CrossCorrelationConfigurator()
+    parameters = configurator.get_configuration()
     metadata = {"analysis": {"column_tags": {}}}
-    parameters = CrossCorrelationParameters(dataset_metadata=metadata)
-    correlator = XCorr(parameters)
+    correlator = XCorr(metadata, parameters)
     assert correlator.importances_map is None
 
     correlator.fit(test_df)
@@ -40,10 +39,10 @@ def test_xcorr_pipeline():
     """
     `pytest` entry point
     """
+    configurator = CrossCorrelationConfigurator()
+    parameters = configurator.get_configuration()
     metadata = {"analysis": {"column_tags": {}}}
-
-    parameters = CrossCorrelationParameters(dataset_metadata=metadata)
-    pipeline = Pipeline([("deps", XCorr(parameters))])
+    pipeline = Pipeline([("deps", XCorr(metadata, parameters))])
 
     assert pipeline is not None
 
@@ -57,23 +56,14 @@ def test_gridsearch_happy():
         "B": [7, 0, 24.2, 3.14, 8.2]
     })
 
-    xcorr_params = {
-        "random_state": 42,
-        "test_size": 0.1,
-        "gridsearch_scoring": "neg_mean_squared_error",
-        # The split number was obtained through trial-and-error,
-        # it shoud be reviewed in the future to adapt to
-        # the targeted satellite.
-        "gridsearch_n_splits": 2
-    }
-
+    configurator = CrossCorrelationConfigurator(use_gridsearch=True)
+    parameters = configurator.get_configuration()
     metadata = {"analysis": {"column_tags": {}}}
 
-    parameters = CrossCorrelationParameters(dataset_metadata=metadata,
-                                            use_gridsearch=True,
-                                            xcorr_params=xcorr_params)
+    parameters.test_size = 0.1
+    parameters.gridsearch_n_splits = 2
 
-    correlator = XCorr(parameters)
+    correlator = XCorr(metadata, parameters)
     correlator.fit(test_df)
     assert correlator.importances_map is not None
     assert isinstance(correlator.importances_map, pd.DataFrame)
@@ -88,63 +78,10 @@ def test_gridsearch_incompatible_input():
     """
     test_df = [1, 2, 3, 4]
 
+    configurator = CrossCorrelationConfigurator(use_gridsearch=True)
+    parameters = configurator.get_configuration()
     metadata = {"analysis": {"column_tags": {}}}
 
-    parameters = CrossCorrelationParameters(dataset_metadata=metadata,
-                                            use_gridsearch=True)
-
-    correlator = XCorr(parameters)
+    correlator = XCorr(metadata, parameters)
     with pytest.raises(TypeError):
         correlator.fit(test_df)
-
-
-@pytest.mark.parametrize("use_gridsearch, force_cpu, use_sample_model_params",
-                         list(itertools.product((True, False), repeat=3)))
-def test_set_model_params_no_exception(use_gridsearch, force_cpu,
-                                       use_sample_model_params):
-    """
-    Test for set_model_params when no exception occurs
-    """
-    if use_sample_model_params:
-        if not use_gridsearch:
-            model_params_good = {
-                "objective": "reg:squarederror",
-                "n_estimators": 80,
-            }
-
-        else:
-            model_params_good = {
-                "objective": ["reg:squarederror"],
-                "n_estimators": [80],
-            }
-
-        _ = set_model_params(model_params=model_params_good,
-                             force_cpu=force_cpu,
-                             use_gridsearch=use_gridsearch)
-
-    else:
-        _ = set_model_params(force_cpu=force_cpu,
-                             use_gridsearch=use_gridsearch)
-
-
-@pytest.mark.parametrize("use_gridsearch, force_cpu, use_sample_model_params",
-                         list(itertools.product((True, False), repeat=3)))
-def test_set_model_params_exception(use_gridsearch, force_cpu,
-                                    use_sample_model_params):
-    """
-    Test for set_model_params when exception occurs
-    """
-    if use_sample_model_params:
-        model_params_bad = [[1, 2, 'this is bad']]
-
-        if use_gridsearch:
-            model_params_bad.append({
-                "objective": "reg:squarederror",
-                "n_estimators": 80,
-            })
-
-        for model_params in model_params_bad:
-            with pytest.raises(TypeError):
-                _ = set_model_params(model_params=model_params,
-                                     force_cpu=force_cpu,
-                                     use_gridsearch=use_gridsearch)
