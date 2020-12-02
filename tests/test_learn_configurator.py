@@ -16,7 +16,6 @@ def test_get_default_configuration():
     configurator = CrossCorrelationConfigurator()
     parameters = configurator.get_configuration()
 
-    assert not parameters.force_cpu
     assert not parameters.use_gridsearch
     assert parameters.random_state == 42
     assert parameters.test_size == 0.2
@@ -37,7 +36,6 @@ def test_get_default_configuration_using_gridsearch():
     configurator = CrossCorrelationConfigurator(use_gridsearch=True)
     parameters = configurator.get_configuration()
 
-    assert not parameters.force_cpu
     assert parameters.use_gridsearch
     assert parameters.random_state == 42
     assert parameters.test_size == 0.2
@@ -55,7 +53,6 @@ def test_custom_configuration():
     Test for getting custom configuration
     """
     custom_config = {
-        "force_cpu": True,
         "use_gridsearch": False,
         "random_state": 43,
         "test_size": 0.6,
@@ -84,7 +81,6 @@ def test_custom_configuration():
             xcorr_configuration_file="/dev/null")
         parameters = configurator.get_configuration()
 
-        assert parameters.force_cpu
         assert not parameters.use_gridsearch
         assert parameters.random_state == 43
         assert parameters.test_size == 0.6

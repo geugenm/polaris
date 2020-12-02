@@ -12,19 +12,6 @@ class CrossCorrelationParameters():
         pass
 
     @property
-    def force_cpu(self):
-        """
-        Return the force_cpu value as Boolean.
-
-        """
-
-        return self._force_cpu
-
-    @force_cpu.setter
-    def force_cpu(self, force_cpu):
-        self._force_cpu = force_cpu
-
-    @property
     def use_gridsearch(self):
         """
         Return the use_gridsearch value as Boolean.

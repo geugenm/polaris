@@ -47,7 +47,6 @@ class CrossCorrelationConfigurator():
 
             return self._cross_correlation_parameters
 
-        self._cross_correlation_parameters.force_cpu = self._force_cpu
         self._cross_correlation_parameters.use_gridsearch = \
             self._use_gridsearch
         self._set_default_xcorr_parameters()
@@ -154,15 +153,14 @@ class CrossCorrelationConfigurator():
             raise exception_error
 
     # pylint: disable=too-many-arguments
-    def _set_custom_configuration(self, force_cpu, use_gridsearch,
-                                  random_state, test_size, gridsearch_scoring,
+    def _set_custom_configuration(self, use_gridsearch, random_state,
+                                  test_size, gridsearch_scoring,
                                   gridsearch_n_splits, model_params,
                                   model_cpu_params):
         """
         Set all the cross_correlation_parameters properties.
 
         """
-        self._cross_correlation_parameters.force_cpu = force_cpu
         self._cross_correlation_parameters.use_gridsearch = use_gridsearch
         self._cross_correlation_parameters.random_state = random_state
         self._cross_correlation_parameters.test_size = test_size
