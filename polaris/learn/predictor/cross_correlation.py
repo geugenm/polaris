@@ -203,6 +203,7 @@ class XCorr(BaseEstimator, TransformerMixin):
                                param_grid=params,
                                cv=kfolds,
                                scoring=self.xcorr_params['gridsearch_scoring'],
+                               n_jobs=-1,
                                verbose=1)
         gs_regr.fit(df_in, target_series)
 

@@ -172,7 +172,7 @@ class CrossCorrelationConfigurator():
             raise TypeError("Expected {} got {}".format(
                 dict, type(model_params)))
 
-        if self._use_gridsearch:
+        if use_gridsearch:
             for param in model_params.keys():
                 if not isinstance(model_params[param], list):
                     raise TypeError("Expected {} got {} for key {}".format(

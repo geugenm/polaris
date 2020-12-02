@@ -4,6 +4,7 @@
 import json
 
 from polaris.common.config import PolarisConfig
+from polaris.common.learn_parameters import LearnParameters
 
 
 def test_polaris_config_override_defaults(polaris_config_defaults, tmp_path):
@@ -18,6 +19,9 @@ def test_polaris_config_override_defaults(polaris_config_defaults, tmp_path):
             'batch': {
                 'learn': False,
                 'viz': True
+            },
+            'learn': {
+                'configuration_file': '/dev/null'
             }
         }
     }
@@ -34,6 +38,8 @@ def test_polaris_config_override_defaults(polaris_config_defaults, tmp_path):
     assert config_from_file.batch_settings['learn'] is False
     assert config_from_file.batch_settings['viz'] is True
     assert config_from_file.root_dir == '/override'
+    assert isinstance(config_from_file.learn_settings, LearnParameters)
+    assert config_from_file.learn_settings.configuration_file == '/dev/null'
 
 
 def test_polaris_configuration_name(polaris_config, tmp_path):
