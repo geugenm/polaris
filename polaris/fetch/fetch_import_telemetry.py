@@ -320,7 +320,7 @@ def load_frames_from_json_file(file):
             # pylint: disable=W0108
             decoded_frame_list = json.load(f_handle)
         except json.JSONDecodeError:
-            LOGGER.error("Cannot load % - is it a valid JSON document?", file)
+            LOGGER.error("Cannot load %s - is it a valid JSON document?", file)
             raise json.JSONDecodeError
 
     return decoded_frame_list
