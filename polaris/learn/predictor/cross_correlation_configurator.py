@@ -7,6 +7,7 @@ import warnings
 
 import GPUtil
 
+from polaris.feature.cleaner_configurator import CleanerConfigurator
 from polaris.learn.predictor.cross_correlation_parameters import \
     CrossCorrelationParameters
 
@@ -53,6 +54,9 @@ class CrossCorrelationConfigurator():
         self._set_default_xcorr_model_cpu_parameters()
         self._cross_correlation_parameters.model_params = \
             self._default_xcorr_model_parameters()
+        feature_cleaner_configurator = CleanerConfigurator()
+        self._cross_correlation_parameters.dataset_cleaning_params = \
+            feature_cleaner_configurator.get_configuration()
 
         return self._cross_correlation_parameters
 
@@ -156,7 +160,7 @@ class CrossCorrelationConfigurator():
     def _set_custom_configuration(self, use_gridsearch, random_state,
                                   test_size, gridsearch_scoring,
                                   gridsearch_n_splits, model_params,
-                                  model_cpu_params):
+                                  model_cpu_params, dataset_cleaning_params):
         """
         Set all the cross_correlation_parameters properties.
 
@@ -179,3 +183,7 @@ class CrossCorrelationConfigurator():
                         list, type(model_params[param]), param))
         self._cross_correlation_parameters.model_params = model_params
         self._cross_correlation_parameters.model_cpu_params = model_cpu_params
+        feature_cleaner_configurator = CleanerConfigurator(
+            dataset_cleaning_params)
+        self._cross_correlation_parameters.dataset_cleaning_params = \
+            feature_cleaner_configurator.get_configuration()

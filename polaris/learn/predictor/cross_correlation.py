@@ -36,7 +36,8 @@ class XCorr(BaseEstimator, TransformerMixin):
         """
         self.models = None
         self._importances_map = None
-        self._feature_cleaner = Cleaner(dataset_metadata)
+        self._feature_cleaner = Cleaner(
+            dataset_metadata, cross_correlation_params.dataset_cleaning_params)
         self.xcorr_params = {
             "random_state": cross_correlation_params.random_state,
             "test_size": cross_correlation_params.test_size,

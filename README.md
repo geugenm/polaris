@@ -131,6 +131,10 @@ It is possible to override the default parameters used in the ai processes of Po
   "test_size": 0.2,
   "gridsearch_scoring": "neg_mean_squared_error",
   "gridsearch_n_splits": 6,
+  "dataset_cleaning_params": {
+    "col_max_na_percentage": 100,
+    "row_max_na_percentage": 100
+	},
   "model_cpu_params": {
     "objective": "reg:squarederror",
     "n_estimators": 81,

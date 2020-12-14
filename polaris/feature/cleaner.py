@@ -10,9 +10,11 @@ LOGGER = logging.getLogger(__name__)
 class Cleaner:
     """Class for cleaning features.
     """
-    def __init__(self, metadata):
-        self._col_threshold = 30  # in percent, maximum na rows in a column
-        self._row_threshold = 60  # in percent, maximum na columns in a row
+    def __init__(self, metadata, cleaning_params):
+        # in percent, maximum na rows in a column
+        self._col_threshold = cleaning_params.col_max_na_percentage
+        # in percent, maximum na columns in a row
+        self._row_threshold = cleaning_params.row_max_na_percentage
         self._metadata = metadata
 
     def handle_missing_values(self, dataframe):

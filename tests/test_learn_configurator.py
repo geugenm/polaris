@@ -58,6 +58,10 @@ def test_custom_configuration():
         "test_size": 0.6,
         "gridsearch_scoring": "mean_squared_error",
         "gridsearch_n_splits": 6,
+        "dataset_cleaning_params": {
+            "col_max_na_percentage": 100,
+            "row_max_na_percentage": 100
+        },
         "model_cpu_params": {
             "objective": "reg:squarederror",
             "n_estimators": 81,
@@ -81,24 +85,12 @@ def test_custom_configuration():
             xcorr_configuration_file="/dev/null")
         parameters = configurator.get_configuration()
 
-        assert not parameters.use_gridsearch
-        assert parameters.random_state == 43
-        assert parameters.test_size == 0.6
-        assert parameters.gridsearch_scoring == "mean_squared_error"
-        assert parameters.gridsearch_n_splits == 6
-        assert parameters.model_cpu_params == {
-            "objective": "reg:squarederror",
-            "n_estimators": 81,
-            "learning_rate": 0.9,
-            "n_jobs": 1,
-            "predictor": "cpu_predictor",
-            "tree_method": "auto",
-            "max_depth": 10
-        }
-        assert parameters.model_params == {
-            "objective": "reg:squarederror",
-            "n_estimators": 81,
-            "learning_rate": 0.3,
-            "n_jobs": 1,
-            "max_depth": 9
-        }
+        assert parameters.use_gridsearch == custom_config['use_gridsearch']
+        assert parameters.random_state == custom_config['random_state']
+        assert parameters.test_size == custom_config['test_size']
+        assert parameters.gridsearch_scoring == custom_config[
+            'gridsearch_scoring']
+        assert parameters.gridsearch_n_splits == custom_config[
+            'gridsearch_n_splits']
+        assert parameters.model_cpu_params == custom_config['model_cpu_params']
+        assert parameters.model_params == custom_config['model_params']

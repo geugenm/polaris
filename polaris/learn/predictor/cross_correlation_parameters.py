@@ -101,3 +101,16 @@ class CrossCorrelationParameters():
     @model_cpu_params.setter
     def model_cpu_params(self, model_cpu_params):
         self._model_cpu_params = model_cpu_params
+
+    @property
+    def dataset_cleaning_params(self):
+        """
+        Return the dataset_cleaning_params value as CleanerParameters.
+
+        """
+
+        return self._dataset_cleaning_params
+
+    @dataset_cleaning_params.setter
+    def dataset_cleaning_params(self, dataset_cleaning_params):
+        self._dataset_cleaning_params = dataset_cleaning_params

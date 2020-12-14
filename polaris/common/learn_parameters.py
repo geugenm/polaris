@@ -29,7 +29,7 @@ class LearnParameters():
     @property
     def input_file(self):
         """
-        Return the input_file value as Boolean.
+        Return the input_file value as String.
 
         """
 
