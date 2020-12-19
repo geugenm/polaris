@@ -24,7 +24,7 @@
     "normalizer": "Bisonsat"
   },
   {
-    "norad_id": "99837",
+    "norad_id": "46922",
     "name": "BOBCAT-1",
     "decoder": "bobcat1",
     "normalizer": "Bobcat1"
