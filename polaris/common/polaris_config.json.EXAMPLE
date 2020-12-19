@@ -9,6 +9,12 @@
       "fetch": true,
       "learn": true,
       "viz": false
+    },
+    "learn": {
+      "configuration_file": "/tmp/learn_cfg.json",
+      "input_file": "/tmp/normalized_frames.json",
+      "output_graph_file": "/tmp/graph.json",
+      "graph_link_threshold": 0.2
     }
   }
 }

@@ -5,6 +5,8 @@ import json
 
 from mergedeep import merge
 
+from polaris.common.learn_parameters import LearnParameters
+
 
 class InvalidConfigurationFile(Exception):
     """Raised when the config file is invalid
@@ -120,9 +122,26 @@ class PolarisConfig():
     def batch_settings(self, new_settings):
         """Update batch settings
 
-        @param new_settings: dictionary of all fetch settings
+        @param new_settings: dictionary of all batch settings
         """
         self._data['satellite']['batch'] = new_settings
+
+    @property
+    def learn_settings(self):
+        """Learn settings
+        """
+        if 'learn' in self._data['satellite']:
+            return LearnParameters(**self._data['satellite']['learn'])
+
+        return LearnParameters()
+
+    @learn_settings.setter
+    def learn_settings(self, new_settings):
+        """Update learn settings
+
+        @param new_settings: dictionary of all learn settings
+        """
+        self._data['satellite']['learn'] = new_settings
 
     def should_batch_run(self, cmd):
         """Return True if the configuration for batch says we should run this

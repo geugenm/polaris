@@ -118,6 +118,46 @@ $ (.venv) polaris viz /tmp/new_graph.json
 # Then visit http://localhost:8080 in your browser
 ```
 
+## Configuring Polaris
+
+It is possible to override the default parameters used in the ai processes of Polaris by your own using configuration files.
+
+- Learn cross correlation process (generating graph) :
+
+```
+{
+  "use_gridsearch": false,
+  "random_state": 43,
+  "test_size": 0.2,
+  "gridsearch_scoring": "neg_mean_squared_error",
+  "gridsearch_n_splits": 6,
+  "dataset_cleaning_params": {
+    "col_max_na_percentage": 100,
+    "row_max_na_percentage": 100
+	},
+  "model_cpu_params": {
+    "objective": "reg:squarederror",
+    "n_estimators": 81,
+    "learning_rate": 0.1,
+    "n_jobs": 1,
+    "predictor": "cpu_predictor",
+    "tree_method": "auto",
+    "max_depth": 8
+  },
+  "model_params": {
+    "objective": "reg:squarederror",
+    "n_estimators": 80,
+    "learning_rate": 0.1,
+    "n_jobs": 1,
+    "max_depth": 8
+	}
+}
+```
+
+To use it, add the `-l` or `learn_config_file` command line parameter when calling learn :
+```bash
+$ polaris learn -g /tmp/graph.json /tmp/normalized_frames -l ../xcorr_cfg.json
+
 ## Batch operations
 
 Batch operations allow automation of repeated steps.  For example:

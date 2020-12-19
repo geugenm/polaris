@@ -102,9 +102,37 @@ def build_learn_args(config):
 
     :param config: polaris configuration for satellite
     """
-    norm_file = config.normalized_file_path
-    output_graph_file = config.output_graph_file
-    return '--output_graph_file {} {}'.format(output_graph_file, norm_file)
+    args = config.normalized_file_path
+
+    if config.learn_settings.input_file:
+        args = config.learn_settings.input_file
+
+    if config.learn_settings.configuration_file:
+        args = "{} -l {}".format(args,
+                                 config.learn_settings.configuration_file)
+
+    if config.learn_settings.output_graph_file:
+        args = "{} -g {}".format(args, config.learn_settings.output_graph_file)
+    elif config.learn_settings.target_column is None:
+        args = "{} -g {}".format(args, config.output_graph_file)
+
+    if config.learn_settings.graph_link_threshold:
+        args = "{} -t {}".format(args,
+                                 config.learn_settings.graph_link_threshold)
+
+    if config.learn_settings.target_column:
+        args = "{} -c {}".format(args, config.learn_settings.target_column)
+
+    if config.learn_settings.use_gridsearch:
+        args = "{} -d".format(args)
+
+    if config.learn_settings.force_cpu:
+        args = "{} --force_cpu".format(args)
+
+    if config.learn_settings.csv_sep:
+        args = "{} -s {}".format(args, config.learn_settings.csv_sep)
+
+    return args
 
 
 def build_viz_args(config):
