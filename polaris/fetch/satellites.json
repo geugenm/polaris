@@ -12,6 +12,12 @@
     "normalizer": "Acrux1"
   },
   {
+    "norad_id": "46287",
+    "name": "AmicalSat",
+    "decoder": "amicalsat",
+    "normalizer": "AmicalSat"
+  },
+  {
     "norad_id": "44352",
     "name": "ARMADILLO",
     "decoder": "Armadillo",
