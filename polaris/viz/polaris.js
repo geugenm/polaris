@@ -184,11 +184,12 @@ function find_node(search_str) {
 
 // Highlight nodes based on the nodes names
 function highlight_nodes(search_str, color, reset_color = false) {
+  var regex_search = new RegExp(search_str, 'i');
   const { nodes, links } = Graph.graphData();
   for (node of nodes) {
     if (reset_color) {
       node.color = color;
-    } else if (node.name.includes(search_str)) {
+    } else if (node.name.match(regex_search)) {
       node.color = color;
     } else {
       node.color = localStorage.getItem(node.name)
