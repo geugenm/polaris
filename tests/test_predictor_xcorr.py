@@ -23,7 +23,7 @@ def test_xcorr():
 
     configurator = CrossCorrelationConfigurator()
     parameters = configurator.get_configuration()
-    metadata = {"analysis": {"column_tags": {}}}
+    metadata = {"analysis": {"column_tags": {}, "feature_columns": None}}
     correlator = XCorr(metadata, parameters)
     assert correlator.importances_map is None
 
@@ -41,7 +41,7 @@ def test_xcorr_pipeline():
     """
     configurator = CrossCorrelationConfigurator()
     parameters = configurator.get_configuration()
-    metadata = {"analysis": {"column_tags": {}}}
+    metadata = {"analysis": {"column_tags": {}, "feature_columns": None}}
     pipeline = Pipeline([("deps", XCorr(metadata, parameters))])
 
     assert pipeline is not None
@@ -58,7 +58,7 @@ def test_gridsearch_happy():
 
     configurator = CrossCorrelationConfigurator(use_gridsearch=True)
     parameters = configurator.get_configuration()
-    metadata = {"analysis": {"column_tags": {}}}
+    metadata = {"analysis": {"column_tags": {}, "feature_columns": None}}
 
     parameters.test_size = 0.1
     parameters.gridsearch_n_splits = 2
@@ -80,7 +80,7 @@ def test_gridsearch_incompatible_input():
 
     configurator = CrossCorrelationConfigurator(use_gridsearch=True)
     parameters = configurator.get_configuration()
-    metadata = {"analysis": {"column_tags": {}}}
+    metadata = {"analysis": {"column_tags": {}, "feature_columns": None}}
 
     correlator = XCorr(metadata, parameters)
     with pytest.raises(TypeError):

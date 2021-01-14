@@ -9,7 +9,8 @@ def test_column_tagging_tag_columns(polaris_m_frames_dataset_obj):
     """
     dataset = polaris_m_frames_dataset_obj
     tagger = FetchedDataPreProcessor()
-    analyze = tagger.tag_columns(dataset)
+    tagger.tag_columns(dataset)
+    analyze = tagger.analysis
     assert analyze is not None
     assert analyze == {
         'column_tags': {
@@ -25,5 +26,6 @@ def test_column_tagging_tag_columns(polaris_m_frames_dataset_obj):
             'bat1_flags': 'variable',
             'bat1_ctlflags': 'constant',
             'time': 'variable'
-        }
+        },
+        'feature_columns': None
     }

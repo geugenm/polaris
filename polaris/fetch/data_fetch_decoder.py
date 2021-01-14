@@ -45,7 +45,6 @@ def get_times_from_frames_list(list_of_frames, key='time'):
     :return: List of timestamps taken from list_of_frames
     :rtype: list
     """
-    # print(list_of_frames)
     return [frame[key] for frame in list_of_frames]
 
 
@@ -200,8 +199,8 @@ def data_fetch_decode_normalize(sat,
     time_list = get_times_from_frames_list(normalized_telemetry)
 
     # Get preprocessed space weather
-    preprocessed_sw = fetch_preprocessed_sw(start_date, end_date, cache_dir,
-                                            time_list, sat, **kwargs)
+    sw_columns_names, preprocessed_sw = fetch_preprocessed_sw(
+        start_date, end_date, cache_dir, time_list, sat, **kwargs)
 
     # Combine the preprocessed space weather and normalized telemetry
     combined_frames = combine_frames(normalized_telemetry, preprocessed_sw)
@@ -217,8 +216,9 @@ def data_fetch_decode_normalize(sat,
     # Tag columns as variable, status and constant
     LOGGER.info('Tagging columns')
     tagger = FetchedDataPreProcessor()
-    tags = tagger.tag_columns(polaris_dataset)
-    polaris_dataset.metadata["analysis"] = tags
+    tagger.tag_columns(polaris_dataset)
+    tagger.add_columns_in_feature_list(sw_columns_names)
+    polaris_dataset.metadata["analysis"] = tagger.analysis
     LOGGER.info('Tagging Completed')
 
     # Write all the data
