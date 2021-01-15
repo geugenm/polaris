@@ -58,6 +58,13 @@ class Normalizer:
         # pylint: disable=no-self-use
         return frame is not None
 
+    def get_fields_name(self):
+        """ Return the names of the fields
+
+            :return: The list of the field names
+        """
+        return [field.key for field in self.normalizers]
+
 
 def int2ddn(val):
     """

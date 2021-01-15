@@ -30,19 +30,26 @@ class XCorr(BaseEstimator, TransformerMixin):
     """
     def __init__(self, dataset_metadata, cross_correlation_params):
         """
-            :param model_params: parameters for each model
-            :param use_gridsearch: specify if gridsearch will be used during
-            predictions
+            :param dataset_metadata: The metadata of the dataset.
+            :param cross_correlation_params: A object that contains
+            all the parameters needed in XCorr.
         """
         self.models = None
         self._importances_map = None
         self._feature_cleaner = Cleaner(
             dataset_metadata, cross_correlation_params.dataset_cleaning_params)
         self.xcorr_params = {
-            "random_state": cross_correlation_params.random_state,
-            "test_size": cross_correlation_params.test_size,
-            "gridsearch_scoring": cross_correlation_params.gridsearch_scoring,
-            "gridsearch_n_splits": cross_correlation_params.gridsearch_n_splits
+            "random_state":
+            cross_correlation_params.random_state,
+            "test_size":
+            cross_correlation_params.test_size,
+            "gridsearch_scoring":
+            cross_correlation_params.gridsearch_scoring,
+            "gridsearch_n_splits":
+            cross_correlation_params.gridsearch_n_splits,
+            "feature_columns":
+            dataset_metadata['analysis']['feature_columns']
+            if 'feature_columns' in dataset_metadata['analysis'] else []
         }
 
         if cross_correlation_params.use_gridsearch:
@@ -93,13 +100,15 @@ class XCorr(BaseEstimator, TransformerMixin):
 
         self.reset_importance_map(X.columns)
 
-        pbar = manager.counter(total=X.shape[1],
+        parameters = self.__build_parameters(X)
+
+        pbar = manager.counter(total=len(parameters),
                                desc="Columns",
                                unit="columns")
 
         with start_run(run_name='cross_correlate'):
             self.mlf_logging()
-            for column in X.columns:
+            for column in parameters:
                 LOGGER.info(column)
                 try:
                     self.models.append(
@@ -128,6 +137,7 @@ class XCorr(BaseEstimator, TransformerMixin):
             :param df_in: input dataframe representing the context, predictors.
             :param target_series: pandas series of the target variable. Share
             the same indexes as the df_in dataframe.
+            :param model_params: Parameters for the XGB model.
         """
         # Split df_in and target to train and test dataset
         df_in_train, df_in_test, target_train, target_test = train_test_split(
@@ -242,3 +252,19 @@ class XCorr(BaseEstimator, TransformerMixin):
         """
         self.common_mlf_logging()
         log_params(self.model_params)
+
+    def __build_parameters(self, X):
+        """ Remove features only from
+            being predicted.
+
+            :param X: The dataset.
+            :param params: The list of parameters.
+        """
+        if self.xcorr_params['feature_columns'] is None:
+            return list(X.columns)
+
+        LOGGER.info('Removing features from the parameters : %s',
+                    self.xcorr_params['feature_columns'])
+        feature_to_remove = set(self.xcorr_params['feature_columns'])
+
+        return [x for x in list(X.columns) if x not in feature_to_remove]

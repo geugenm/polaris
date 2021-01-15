@@ -270,9 +270,9 @@ def fetch_preprocessed_sw(start_date, end_date, cache_dir, time_list, sat,
     :param sat: Name of the satellite
     :type sat: str
 
-    :return: Dictionary with keys as the indices and values as the preprocessed
-        frames of space_weather
-    :rtype: dict
+    :return: Columns names and dictionary with keys as the indices and values
+        as the preprocessed frames of space_weather
+    :rtype: (list, dict)
     """
     if start_date is None:
         start_date = min(time_list)
@@ -291,10 +291,12 @@ def fetch_preprocessed_sw(start_date, end_date, cache_dir, time_list, sat,
         "Converting space weather data to the normalized frames format")
     # Preprocess it into the same format as normalized telemetry frames
     preprocessed_sw_frames = {}
+    columns_names = []
     for index in nearest_sw_data:
         decoded_sw_frame = dataframe_to_decoded(nearest_sw_data[index])
-        sw_normalizer = load_sw_normalizer(index)
+        sw_normalizer = load_sw_normalizer(index)()
+        columns_names.extend(sw_normalizer.get_fields_name())
         preprocessed_sw_frames[index] = fetch_import_telemetry.data_normalize(
-            sw_normalizer(), decoded_sw_frame)
+            sw_normalizer, decoded_sw_frame)
 
-    return preprocessed_sw_frames
+    return columns_names, preprocessed_sw_frames
