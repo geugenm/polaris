@@ -36,6 +36,8 @@ playground/            - Exploratory tests
 
 ## Installation
 
+**NOTE: Until https://gitlab.com/librespacefoundation/polaris/polaris/-/issues/124 is resolved, Polaris will not work with Python 3.9.** Python 3.8 is known to work, and earlier versions of Python 3.x may work as well. Check your operating system for details, but usually you can run (or install) the correct version by invoking `python3.8` instead of just `python3` or `python`.
+
 ```bash
 $ pip3 install polaris-ml
 ```
