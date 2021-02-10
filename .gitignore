@@ -21,4 +21,4 @@ polaris_ml.egg-info/
 /mlruns/
 .coverage
 .coverage.*
-docs/build
+/docs/_build/
