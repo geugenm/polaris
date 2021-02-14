@@ -282,3 +282,23 @@ ______________________ summary______________________
 
 ```
 You can learn more about tox [here](https://tox.readthedocs.io/en/latest/).
+
+### Working on documentation
+
+Documentation is hosted on readthedocs.io.  We use the [Myst parser](https://myst-parser.readthedocs.io/en/latest/), and write documentation in Markdown.
+
+To work on documentation, install the docs dependencies like so:
+
+```
+# Yes, with the square brackets:
+pip install -e .[docs]
+```
+
+Documentation files are in the `docs/` directory.  To build the HTML files, run:
+
+```
+cd docs/
+make html
+```
+
+Generated files will be in the `docs/_build` directory, and can be viewed with your favourite browser.
