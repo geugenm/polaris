@@ -50,8 +50,8 @@ We'll start by downloading a week's worth of data from [SatNOGS](https://satnogs
 
 ```
 polaris fetch \
-    --start_date 2019-07-21 \
-    --end_date 2019-07-28 \
+    --start_date 2020-01-21 \
+    --end_date 2020-01-28 \
     --cache_dir /tmp/LightSail-2 \
     LightSail-2 \
     /tmp/LightSail2-normalized_frames.json
@@ -59,7 +59,7 @@ polaris fetch \
 
 Some background:
 
-- The `--start-date` and `--end-date` arguments have been picked to favour a shorter download time, at the expense of having a decent amount of data.  You can experiment with different dates. (Note: if you create an account at db.satnogs.org, you can see [what telemetry they have available](https://db.satnogs.org/satellite/44420), and request data for download -- we'll show you how to import that later on.)
+- The `--start_date` and `--end_date` arguments have been picked to favour a shorter download time, at the expense of having a decent amount of data.  You can experiment with different dates. (Note: if you create an account at db.satnogs.org, you can see [what telemetry they have available](https://db.satnogs.org/satellite/44420), and request data for download -- we'll show you how to import that later on.)
 
 - The `--cache_dir` argument specifies where to cache downloaded data.
 
@@ -98,8 +98,8 @@ Next, we run `polaris learn` to analyze the data.  This will use the [XGBoost li
 
 ```
 polaris learn \
-    --forcecpu \
-    --output_graph_file /tmp/Lightsail2-graph.json \
+    --force_cpu \
+    --output_graph_file /tmp/LightSail2-graph.json \
     /tmp/LightSail2-normalized_frames.json
 ```
 
