@@ -80,10 +80,15 @@ def cli():
 @click.option('--skip_normalizer',
               is_flag=True,
               help='Skip normalizing. Returns data as decoded')
+@click.option('--ignore_errors',
+              is_flag=True,
+              default=False,
+              help=' '.join(
+                  ['Ignore errors when decoding frames (Default: False)']))
 # pylint: disable-msg=too-many-arguments
 def cli_fetch(sat, start_date, end_date, output_file, cache_dir, import_file,
               existing_output_file_strategy, store_in_influxdb,
-              fetch_from_influxdb, skip_normalizer):
+              fetch_from_influxdb, skip_normalizer, ignore_errors):
     """ Obtain telemetry data
 
     Retrieve and decode the telemetry corresponding to
@@ -92,7 +97,7 @@ def cli_fetch(sat, start_date, end_date, output_file, cache_dir, import_file,
     """
     data_fetch_decode_normalize(
         sat, start_date, end_date, output_file, cache_dir, import_file,
-        existing_output_file_strategy, skip_normalizer, **{
+        existing_output_file_strategy, skip_normalizer, ignore_errors, **{
             "store_in_influxdb": store_in_influxdb,
             "fetch_from_influxdb": fetch_from_influxdb,
         })

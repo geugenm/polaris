@@ -160,6 +160,7 @@ def data_fetch_decode_normalize(sat,
                                 import_file,
                                 existing_output_file_strategy,
                                 skip_normalizer=False,
+                                ignore_errors=False,
                                 **kwargs):
     """
     Main function to download and decode satellite telemetry.
@@ -172,6 +173,8 @@ def data_fetch_decode_normalize(sat,
     :param import_file: file containing data frames to import
     :param existing_output_file_strategy: what to do with existing
            output files: merge, overwrite or error.
+    :param skip_normalizer: skip normalizing of data
+    :param ignore_errors: ignore errors when decoding frames
     """
     if not os.path.exists(cache_dir):
         os.makedirs(cache_dir)
@@ -193,7 +196,8 @@ def data_fetch_decode_normalize(sat,
     normalized_telemetry = fetch_normalized_telemetry(satellite, start_date,
                                                       end_date, cache_dir,
                                                       import_file,
-                                                      skip_normalizer)
+                                                      skip_normalizer,
+                                                      ignore_errors)
 
     # Get timestamps for which space weather needs to be extracted
     time_list = get_times_from_frames_list(normalized_telemetry)

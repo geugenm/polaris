@@ -53,6 +53,10 @@ class NoDecodedFramesFile(Exception):
     """
 
 
+class DecodeMultipleFailed(Exception):
+    """Raised when decode_multiple command fails"""
+
+
 class SpecifiedImportFileDoesNotExist(Exception):
     """Raised when a specified file to be imported does not exist.
     """
@@ -203,10 +207,18 @@ def build_decoded_file_path(directory):
     return os.path.join(directory, 'decoded_frames.json')
 
 
-def data_merge_and_decode(decoder, output_directory, new_frames_file=""):
+def data_merge_and_decode(decoder,
+                          output_directory,
+                          new_frames_file="",
+                          ignore_errors=False):
     """
     Decode the data found in frames_file using the given decoder. Put it in
     output_directory.
+
+    :param decoder: decoder to use
+    :param output_directory: where to put output
+    :param new_frames_file: file to put new frames in
+    :param ignore_errors: ignore errors when decoding frames
 
     :returns: path of the file that contains the decoded data.
     """
@@ -226,6 +238,13 @@ def data_merge_and_decode(decoder, output_directory, new_frames_file=""):
                                      shell=True,
                                      cwd=output_directory)
             proc3.wait()
+            if proc3.returncode != 0 and ignore_errors is False:
+                LOGGER.error(' '.join([
+                    'decode_multiple cmd error.',
+                    'You can choose to ignore it by passing',
+                    '--ignore_errors flag in cmd',
+                ]))
+                raise DecodeMultipleFailed
             LOGGER.info('Decoding of data finished.')
         except subprocess.CalledProcessError as err:
             LOGGER.error('Error running %s: %s', decode_cmd, err)
@@ -332,7 +351,8 @@ def fetch_normalized_telemetry(satellite,
                                end_date,
                                cache_dir,
                                import_file,
-                               skip_normalizer=False):
+                               skip_normalizer=False,
+                               ignore_errors=False):
     """
     Fetch, decode and normalize the telemetry
 
@@ -364,7 +384,7 @@ def fetch_normalized_telemetry(satellite,
 
     # decode the frames fetched from glouton
     decoded_frames_file = data_merge_and_decode(satellite.decoder, cache_dir,
-                                                new_frames_file)
+                                                new_frames_file, ignore_errors)
     decoded_frame_list = load_frames_from_json_file(decoded_frames_file)
 
     try:
