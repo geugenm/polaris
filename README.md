@@ -2,8 +2,8 @@
 
 ![Polaris logo](img/polaris_logo_small.png "Polaris")
 
-[![pipeline status](https://gitlab.com/crespum/polaris/badges/master/pipeline.svg)](https://gitlab.com/crespum/polaris/commits/master)
-[![coverage report](https://gitlab.com/crespum/polaris/badges/master/coverage.svg)](https://gitlab.com/crespum/polaris/commits/master)
+[![pipeline status](https://gitlab.com/librespacefoundation/polaris/polaris/badges/master/pipeline.svg)](https://gitlab.com/librespacefoundation/polaris/polaris/commits/master)
+[![coverage report](https://gitlab.com/librespacefoundation/polaris/polaris/badges/master/coverage.svg)](https://gitlab.com/librespacefoundation/polaris/polaris/commits/master)
 
 Python3 tool to analyze a satellite set of telemetry to understand links/dependencies among different subsystems. The telemetry is currently retrieved from the [SatNOGS Network](https://network.satnogs.org/).
 
@@ -11,7 +11,7 @@ If you want to **know more**:
 
 - join our [Matrix room](https://riot.im/app/#/room/#polaris:matrix.org)
 
-- read the [project wiki](https://gitlab.com/crespum/polaris/wikis/Home)
+- read the [project wiki](https://gitlab.com/librespacefoundation/polaris/polaris/wikis/Home)
 
 - read the blog post [Analyzing Lightsail-2 Telemetry with Polaris](https://blog.crespum.eu/analyzing-lightsail-2-telemetry-with-polaris/)
 
@@ -216,7 +216,7 @@ This command will start the tracking ui server at http://localhost:5000.
 Building the package from the sources:
 ```bash
 # Clone the repo
-$ git clone https://gitlab.com/crespum/polaris.git
+$ git clone https://gitlab.com/librespacefoundation/polaris/polaris.git
 
 # Activate the virtual environment:
 $ source .venv/bin/activate
