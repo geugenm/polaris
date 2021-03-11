@@ -151,27 +151,25 @@ def find_satellite(sat, sat_list):
 
 
 def validate_encoder_on_merge(file, sat_name):
-    """Check that fetch encoder matches the encoder in the output file
+    """Check that fetch encoder matches the encoder in the output file.
+    Otherwise exit with an error.
 
     :param file: the output_file specified
     :param sat_name: Name of satellite to check
-
-    :return: the output_file and the strategy
-    :rtype: tuple
     """
+
+    if not os.path.exists(file):
+        return
+
     existing_dataset = load_frames_from_json_file(file)
     if sat_name == existing_dataset["metadata"]["satellite_name"]:
-        return (file, 'merge')
+        return
 
-    LOGGER.info(' '.join([
+    LOGGER.critical(' '.join([
         'The satellite name you entered does not match',
         'the satellite name in your existing output file.'
     ]))
-    if input('Would you like to overwrite the existing file? (y/n): ').lower(
-    ).strip()[:1] == "y":
-        return (file, 'overwrite')
-    file += '.1'
-    return (file, 'merge')
+    sys.exit(1)
 
 
 # pylint: disable-msg=too-many-arguments
@@ -216,10 +214,8 @@ def data_fetch_decode_normalize(sat,
             LOGGER.info("Did you mean: %s?", alt_sat)
         raise exception
 
-    if os.path.exists(
-            output_file) and existing_output_file_strategy == 'merge':
-        output_file, existing_output_file_strategy = validate_encoder_on_merge(
-            output_file, satellite.name)
+    if existing_output_file_strategy == 'merge':
+        validate_encoder_on_merge(output_file, satellite.name)
 
     # Fetch normalized telemetry
     normalized_telemetry = fetch_normalized_telemetry(satellite, start_date,
