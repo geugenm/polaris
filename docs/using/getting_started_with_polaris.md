@@ -29,6 +29,11 @@ $ pip install polaris-ml --use-feature=2020-resolver
 * `/home/jdoe/My Development Stuff/polaris/.venv`
 * `/mnt/C/Jane Doe/dev/polaris/.venv`
 
+Instead, use paths without spaces in them:
+
+* `/home/jdoe/my_development_stuff/polaris/.venv`
+* `/mnt/c/dev/polaris/.venv`
+
 ## Advanced: Installing the latest version of Polaris
 
 We push new releases to PyPi as appropriate, but work is continuing on Polaris all the time.  If you want to try out the very latest features (and help us with bug reports :grinning:), you can do that like so:
