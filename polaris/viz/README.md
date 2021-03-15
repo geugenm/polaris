@@ -3,7 +3,7 @@
 ## Required HTML5 library
 
 The data visualization of Polaris is based on a single HTML5 file ([`dynamic\_network\_analysis\_3d-ui.html`](dynamic_network_analysis_3d-ui.html)) which uses the [3D Force Graph library version 1.52.0](https://vasturiano.github.io/3d-force-graph/). The library is not included in the the repo, but there are different ways to get it:
- - `wget https://deepchaos.space/3d-force-graph.js` (version 1.52)
+ - `wget https://polarisml.space/3d-force-graph.js` (version 1.52)
  - `wget https://unpkg.com/3d-force-graph -O 3d-force-graph.js` (latest version)
  - Download the file from [github/vasturiano/3d-force-graph releases](https://github.com/vasturiano/3d-force-graph/releases)
  - Replace the corresponding script html tag by `<script src="//unpkg.com/3d-force-graph"></script>` (in `dynamic\_network\_analysis\_3d-ui.html`, this option won't work if you locally open the html file with your browser)
