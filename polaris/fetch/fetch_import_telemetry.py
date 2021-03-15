@@ -254,12 +254,12 @@ def data_merge_and_decode(decoder,
         return decoded_file
 
     LOGGER.error(' '.join([
-        'There is no file of decoded frames at ' + decoded_file,
-        'This can happen if the time range specified had no frames'
-        'to download, and you have not imported frames already.'
-        'You may want to specify a different time range'
-        'with the --start_date and --end_date options, or import'
-        'frames downloaded directly from SatNOGS.  This',
+        'There is no file of decoded frames at ' + decoded_file + '.',
+        'This can happen if the time range specified had no frames',
+        'to download, and you have not imported frames already.',
+        'You may want to specify a different time range',
+        'with the --start_date and --end_date options, or import',
+        'frames downloaded directly from SatNOGS. This',
         'can also arise if the downloaded files have been',
         'deleted or modified during execution.'
     ]))
