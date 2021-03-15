@@ -15,7 +15,7 @@ If you want to **know more**:
 
 - read the blog post [Analyzing Lightsail-2 Telemetry with Polaris](https://blog.crespum.eu/analyzing-lightsail-2-telemetry-with-polaris/)
 
-- look at the [demo site](https://deepchaos.space)
+- look at the [demo site](https://polarisml.space/demo)
 
 ## Project structure
 
