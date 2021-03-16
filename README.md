@@ -19,7 +19,7 @@ If you want to **know more**:
 
 ## Project structure
 
-```
+``` BASH
 contrib/               - code that is not directly dependent on Polaris, but is used in the project
 docs/                  - Some documentation on the project (though more is in the wiki)
 polaris/               - Project source code
@@ -36,13 +36,14 @@ playground/            - Exploratory tests
 
 ## Installation
 
-**NOTE: Until https://gitlab.com/librespacefoundation/polaris/polaris/-/issues/124 is resolved, Polaris will not work with Python 3.9.** Python 3.8 is known to work, and earlier versions of Python 3.x may work as well. Check your operating system for details, but usually you can run (or install) the correct version by invoking `python3.8` instead of just `python3` or `python`.
+**NOTE: Until <https://gitlab.com/librespacefoundation/polaris/polaris/-/issues/124> is resolved, Polaris will not work with Python 3.9.** Python 3.8 is known to work, and earlier versions of Python 3.x may work as well. Check your operating system for details, but usually you can run (or install) the correct version by invoking `python3.8` instead of just `python3` or `python`.
 
 ```bash
-$ pip3 install polaris-ml
+pip3 install polaris-ml
 ```
 
 We recommend to install it inside a Python virtual environment:
+
 ```bash
 # Create the virtual env
 $ python3 -m venv .venv
@@ -57,7 +58,7 @@ $ (.venv) pip install polaris-ml
 **Note:** If you run into problems installing Polaris via pip, [try
 using the new Pip resolver](https://pip.pypa.io/en/stable/news/#id18):
 
-```
+``` BASH
 pip install polaris-ml --use-feature=2020-resolver
 ```
 
@@ -126,7 +127,7 @@ It is possible to override the default parameters used in the ai processes of Po
 
 - Learn cross correlation process (generating graph) :
 
-```
+``` JSON
 {
   "use_gridsearch": false,
   "random_state": 43,
@@ -136,7 +137,7 @@ It is possible to override the default parameters used in the ai processes of Po
   "dataset_cleaning_params": {
     "col_max_na_percentage": 100,
     "row_max_na_percentage": 100
-	},
+    },
   "model_cpu_params": {
     "objective": "reg:squarederror",
     "n_estimators": 81,
@@ -145,18 +146,19 @@ It is possible to override the default parameters used in the ai processes of Po
     "predictor": "cpu_predictor",
     "tree_method": "auto",
     "max_depth": 8
-  },
+    },
   "model_params": {
     "objective": "reg:squarederror",
     "n_estimators": 80,
     "learning_rate": 0.1,
     "n_jobs": 1,
     "max_depth": 8
-	}
+    }
 }
 ```
 
-To use it, add the `-l` or `learn_config_file` command line parameter when calling learn :
+To use it, add the `-l` or `learn_config_file` command line parameter when calling learn:
+
 ```bash
 $ polaris learn -g /tmp/graph.json /tmp/normalized_frames -l ../xcorr_cfg.json
 
@@ -195,10 +197,9 @@ $ python
 To store in and fetch from influxdb use the flags `--store_in_influxdb` and `--fetch_from_influxdb` respectively.
 
 ```bash
-$ polaris fetch -s 2019-08-10 -e 2019-10-5 --cache_dir /tmp/LightSail_2 LightSail-2 /tmp/normalized_frames.json --store_in_influxdb
+polaris fetch -s 2019-08-10 -e 2019-10-5 --cache_dir /tmp/LightSail_2 LightSail-2 /tmp/normalized_frames.json --store_in_influxdb
 $ polaris fetch -s 2019-08-10 -e 2019-10-5 --cache_dir /tmp/LightSail_2 LightSail-2 /tmp/normalized_frames.json --fetch_from_influxdb
 ```
-
 
 ## MLflow
 
@@ -207,13 +208,15 @@ Installing Polaris will install MLflow as a dependency. At this time Polaris is 
 To view the logs in MLflow, run this command in the directory that holds the `mlruns` folder (by default, this is the project root directory):
 
 ```bash
-$ mlflow ui
+mlflow ui
 ```
-This command will start the tracking ui server at http://localhost:5000.
+
+This command will start the tracking ui server at <http://localhost:5000>.
 
 ## More info for developers
 
 Building the package from the sources:
+
 ```bash
 # Clone the repo
 $ git clone https://gitlab.com/librespacefoundation/polaris/polaris.git
@@ -229,7 +232,7 @@ $ (.venv) pip install -e .
 **Note:** If you run into problems installing Polaris via pip, [try
 using the new Pip resolver](https://pip.pypa.io/en/stable/news/#id18):
 
-```
+``` BASH
 pip install -e . --use-feature=2020-resolver
 ```
 
@@ -240,6 +243,7 @@ linting is also done to ensure the code does not have any errors
 before committing.
 
 First you will have to install Prettier. Be sure to have a node version equal or greater than version 10.13.0. In case you don't have a good node version here is how to install/update it:
+
 ```bash
 $ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 
@@ -247,12 +251,14 @@ $ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bas
 $ nvm install v13.8.0
 $ nvm use v13.8.0
 ```
+
 After the installation of node, you have to restart your terminal.
 Then, to install Prettier:
 
 ```bash
-$ npm install -g prettier
+npm install -g prettier
 ```
+
 You can learn more about npm [here](https://www.npmjs.com/).
 
 ```bash
@@ -281,6 +287,7 @@ ______________________ summary______________________
   congratulations :)
 
 ```
+
 You can learn more about tox [here](https://tox.readthedocs.io/en/latest/).
 
 ### Working on documentation
@@ -289,14 +296,14 @@ Documentation is hosted on readthedocs.io.  We use the [Myst parser](https://mys
 
 To work on documentation, install the docs dependencies like so:
 
-```
+``` BASH
 # Yes, with the square brackets:
 pip install -e .[docs]
 ```
 
 Documentation files are in the `docs/` directory.  To build the HTML files, run:
 
-```
+``` BASH
 cd docs/
 make html
 ```
