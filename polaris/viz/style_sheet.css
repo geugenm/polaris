@@ -54,3 +54,14 @@ body {
   position: absolute;
   font-family: sans-serif;
 }
+
+#toggle_label_visibility{
+  z-index: 100;
+  opacity: 0.7;
+  font-size: 16px;
+  font-family: Sans-serif;
+  position: absolute;
+  top: 40px;
+  left: 10px;
+  text-align: left;
+}

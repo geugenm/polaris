@@ -3,6 +3,10 @@ const graph_elt = document.getElementById("3d-graph");
 const hud_elt = document.getElementById("graph-hud");
 const nodeslist_elt = document.getElementById("nodeslist");
 const search_elt = document.getElementById("graph-search-input");
+const toggle_visibility_elt = document.getElementById(
+  "toggle_label_visibility"
+);
+
 const node_base_color = "#BBF";
 // unused collection of nicely separated colors
 const polaris_color_set = [
@@ -29,6 +33,7 @@ var Metadata; // Will be filled in up ahead
 
 var linklist = null; // Filled up ahead. Contains list of nodes in links
 var hide_nodes = false; // Whether or not nodes are hidden currently
+var hide_node_labels = false; // Whether or not node labels are hidden
 
 // ---- Graph's routines ---- //
 
@@ -184,7 +189,7 @@ function find_node(search_str) {
 
 // Highlight nodes based on the nodes names
 function highlight_nodes(search_str, color, reset_color = false) {
-  var regex_search = new RegExp(search_str, 'i');
+  var regex_search = new RegExp(search_str, "i");
   const { nodes, links } = Graph.graphData();
   for (node of nodes) {
     if (reset_color) {
@@ -282,6 +287,7 @@ function searchInputCallback(evt) {
 }
 
 // Callback for any event happening throughout the document
+// TODO: we would like to switch to a shortcut combination for this at a later time.
 function documentCallback(evt) {
   var event_occurred = false;
 
@@ -301,6 +307,35 @@ function documentCallback(evt) {
     evt.stopPropagation();
     evt.preventDefault();
   } // Otherwise, default browser behavior should continue
+}
+
+// Callback for toggling visibility for label in case of excessive crowding
+function toggle_label_visibility(evt) {
+  const { nodes, links } = Graph.graphData();
+  if (!hide_node_labels) {
+    Graph.nodeThreeObject((node) => {
+      const sprite = new SpriteText(node.name);
+      sprite.color = "transparent";
+      sprite.textHeight = 5;
+      return sprite;
+    });
+    toggle_visibility_elt.innerHTML = "Show labels";
+  } else {
+    Graph.nodeThreeObject((node) => {
+      const sprite = new SpriteText(node.name);
+      sprite.color = localStorage.getItem(node.name)
+        ? localStorage.getItem(node.name)
+        : node.color
+        ? node.color
+        : node_base_color;
+      sprite.textHeight = 5;
+      return sprite;
+    });
+    toggle_visibility_elt.innerHTML = "Hide labels";
+  }
+  for (const node of nodes) {
+  }
+  hide_node_labels = !hide_node_labels;
 }
 
 // save the colors to localStorage
@@ -336,3 +371,5 @@ search_elt.addEventListener("keydown", searchInputCallback);
 
 // Detect keydown events in the document space (for eg toggle hidden nodes)
 document.addEventListener("keydown", documentCallback);
+
+toggle_visibility_elt.addEventListener("click", toggle_label_visibility);
