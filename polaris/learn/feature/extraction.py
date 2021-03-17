@@ -86,7 +86,7 @@ def extract_best_features(data_file,
     if data_features is None:
         data_features = data
     else:
-        data = pd.concat([data, data_features], axis=1)
+        data_features = pd.concat([data, data_features], axis=1)
 
     # Preparing pipeline for extractiong of best features
     selector = FeatureImportanceOptimization(transformers)
