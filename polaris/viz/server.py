@@ -56,7 +56,6 @@ def launch_webserver(json_data_file):
                     target_fd.write(line)
 
     create_static_files(target_directory)
-    create_favicon(target_directory)
 
     # Setup web directory
     # pylint: disable=W0603
@@ -81,16 +80,6 @@ def launch_webserver(json_data_file):
         httpd.serve_forever()
 
 
-def create_favicon(target_directory):
-    """Create a favicon file
-
-    :param target_directory: directory to write favicon file
-    """
-    # Writing a dummy icon file to avoid http 404 errors
-    with open(os.path.join(target_directory, "favicon.ico"), "w") as icon_fd:
-        icon_fd.write("A")
-
-
 def create_static_files(target_directory):
     """Create the needed static files
 
@@ -103,6 +92,8 @@ def create_static_files(target_directory):
          os.path.join(target_directory, 'polaris.js')),
         (os.path.join(local_files_dir, 'style_sheet.css'),
          os.path.join(target_directory, 'style_sheet.css')),
+        (os.path.join(local_files_dir, 'favicon.ico'),
+         os.path.join(target_directory, 'favicon.ico'))
     ]
 
     for asset in local_assets:

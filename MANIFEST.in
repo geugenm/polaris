@@ -3,3 +3,4 @@ include polaris/_version.py
 include polaris/fetch/satellites.json
 include polaris/viz/dynamic_network_analysis_3d-ui.html
 include polaris/viz/polaris.js
+include polaris/viz/favicon.ico
