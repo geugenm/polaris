@@ -93,7 +93,13 @@ def create_static_files(target_directory):
         (os.path.join(local_files_dir, 'style_sheet.css'),
          os.path.join(target_directory, 'style_sheet.css')),
         (os.path.join(local_files_dir, 'favicon.ico'),
-         os.path.join(target_directory, 'favicon.ico'))
+         os.path.join(target_directory, 'favicon.ico')),
+        (os.path.join(local_files_dir,
+                      'toast.css'), os.path.join(target_directory,
+                                                 'toast.css')),
+        (os.path.join(local_files_dir,
+                      'modal.css'), os.path.join(target_directory,
+                                                 'modal.css'))
     ]
 
     for asset in local_assets:

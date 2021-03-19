@@ -3,10 +3,11 @@ const graph_elt = document.getElementById("3d-graph");
 const hud_elt = document.getElementById("graph-hud");
 const nodeslist_elt = document.getElementById("nodeslist");
 const search_elt = document.getElementById("graph-search-input");
-const toggle_visibility_elt = document.getElementById(
-  "toggle_label_visibility"
-);
+const toast_elt = document.getElementById("toast");
+const modal_elt = document.getElementById("modal-help");
 
+let isModalVisible = false;
+const isModalVisibleClass = "is-visible";
 const node_base_color = "#BBF";
 // unused collection of nicely separated colors
 const polaris_color_set = [
@@ -302,6 +303,36 @@ function documentCallback(evt) {
     hud_update(update, "");
   }
 
+  // if we press ctrl+i
+  if (evt.keyCode === 73 || evt.key == "i") {
+    if (evt.ctrlKey) {
+      if (isModalVisible) {
+        modal_elt.classList.remove(isModalVisibleClass);
+      } else {
+        modal_elt.classList.add(isModalVisibleClass);
+      }
+      isModalVisible = !isModalVisible;
+      event_occurred = true;
+    }
+  }
+
+  // if we press the ESC
+  if (evt.key == "Escape" && document.querySelector(".modal.is-visible")) {
+    document
+      .querySelector(".modal.is-visible")
+      .classList.remove(isModalVisibleClass);
+    isModalVisible = false;
+    event_occurred = true;
+  }
+
+  // if ctrl+l is pressed
+  if (evt.key == "l" || evt.keyCode == 76) {
+    if (evt.ctrlKey) {
+      toggle_label_visibility();
+      event_occurred = true;
+    }
+  }
+
   if (event_occurred) {
     // Stop processing of the event here.
     evt.stopPropagation();
@@ -311,7 +342,6 @@ function documentCallback(evt) {
 
 // Callback for toggling visibility for label in case of excessive crowding
 function toggle_label_visibility(evt) {
-  const { nodes, links } = Graph.graphData();
   if (!hide_node_labels) {
     Graph.nodeThreeObject((node) => {
       const sprite = new SpriteText(node.name);
@@ -319,7 +349,6 @@ function toggle_label_visibility(evt) {
       sprite.textHeight = 5;
       return sprite;
     });
-    toggle_visibility_elt.innerHTML = "Show labels";
   } else {
     Graph.nodeThreeObject((node) => {
       const sprite = new SpriteText(node.name);
@@ -331,9 +360,6 @@ function toggle_label_visibility(evt) {
       sprite.textHeight = 5;
       return sprite;
     });
-    toggle_visibility_elt.innerHTML = "Hide labels";
-  }
-  for (const node of nodes) {
   }
   hide_node_labels = !hide_node_labels;
 }
@@ -356,6 +382,16 @@ function set_size() {
   Graph.width(size["width"]).height(size["height"]);
 }
 
+function showToast(message) {
+  // Add the "show" class to DIV
+  toast_elt.innerHTML = message;
+  toast_elt.className = "show";
+  // After 5 seconds, remove the show class from DIV
+  setTimeout(function () {
+    toast_elt.className = toast_elt.className.replace("show", "");
+  }, 5000);
+}
+
 // Autosave every few seconds
 var intervalID = window.setInterval(save_color, 5000);
 
@@ -366,10 +402,32 @@ search_elt.addEventListener("click", function () {
   }
 });
 
+// Close the modal if any button with data-close paramater is clicked
+const closeEls = document.querySelectorAll("[data-close]");
+for (const el of closeEls) {
+  el.addEventListener("click", function () {
+    const modalId = this.dataset.close;
+    document.getElementById(modalId).classList.remove(isModalVisibleClass);
+    isModalVisible = false;
+  });
+}
+
 // search: Keyboard events
 search_elt.addEventListener("keydown", searchInputCallback);
 
 // Detect keydown events in the document space (for eg toggle hidden nodes)
 document.addEventListener("keydown", documentCallback);
 
-toggle_visibility_elt.addEventListener("click", toggle_label_visibility);
+setTimeout(function () {
+  showToast("press ctrl+i to see all shortcuts");
+}, 1000);
+
+// Close the modal if clicked outside of it
+document.addEventListener("click", (e) => {
+  if (e.target == document.querySelector(".modal.is-visible")) {
+    document
+      .querySelector(".modal.is-visible")
+      .classList.remove(isModalVisibleClass);
+    isModalVisible = false;
+  }
+});
