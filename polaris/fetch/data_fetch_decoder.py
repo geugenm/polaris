@@ -35,6 +35,12 @@ class NoDecoderForSatellite(Exception):
     """Raised when we have no decoder """
 
 
+class SatelliteNamesNotMatching(Exception):
+    """Raised when satellite name of fetched telemetry database
+    does not match the existing satellite name in the output file
+    """
+
+
 def get_times_from_frames_list(list_of_frames, key='time'):
     """Gets the time list from decoded_frames list
 
@@ -76,6 +82,14 @@ def write_or_merge(dataset, file, strategy):
             try:
                 LOGGER.debug('Trying to load dataset from %s', file)
                 existing_dataset = load_frames_from_json_file(file)
+                # Verify that fetch encoder matches
+                # existing encoder in the output file.
+                if (existing_dataset['metadata']['satellite_name'] !=
+                        dataset.metadata['satellite_name']):
+                    raise SatelliteNamesNotMatching(' '.join([
+                        'Satellite name used does not match satellite_name',
+                        'in the existing output file, refusing to merge'
+                    ]))
                 dataset_for_writing.frames = existing_dataset[
                     'frames'] + dataset.frames
             except json.JSONDecodeError:
@@ -150,28 +164,6 @@ def find_satellite(sat, sat_list):
     raise NoSuchSatellite
 
 
-def validate_encoder_on_merge(file, sat_name):
-    """Check that fetch encoder matches the encoder in the output file.
-    Otherwise exit with an error.
-
-    :param file: the output_file specified
-    :param sat_name: Name of satellite to check
-    """
-
-    if not os.path.exists(file):
-        return
-
-    existing_dataset = load_frames_from_json_file(file)
-    if sat_name == existing_dataset["metadata"]["satellite_name"]:
-        return
-
-    LOGGER.critical(' '.join([
-        'The satellite name you entered does not match',
-        'the satellite name in your existing output file.'
-    ]))
-    sys.exit(1)
-
-
 # pylint: disable-msg=too-many-arguments
 # pylint: disable-msg=too-many-locals
 def data_fetch_decode_normalize(sat,
@@ -213,9 +205,6 @@ def data_fetch_decode_normalize(sat,
         if alt_sat is not None:
             LOGGER.info("Did you mean: %s?", alt_sat)
         raise exception
-
-    if existing_output_file_strategy == 'merge':
-        validate_encoder_on_merge(output_file, satellite.name)
 
     # Fetch normalized telemetry
     normalized_telemetry = fetch_normalized_telemetry(satellite, start_date,
@@ -260,5 +249,11 @@ def data_fetch_decode_normalize(sat,
             'Output file exists and told not to overwrite it.',
             'Remove it, or try a different argument',
             'for --existing-output-file-strategy.'
+        ]))
+        sys.exit(1)
+    except SatelliteNamesNotMatching:
+        LOGGER.critical(' '.join([
+            'The satellite name you entered does not match',
+            'the satellite name in your existing output file.'
         ]))
         sys.exit(1)
