@@ -303,17 +303,15 @@ function documentCallback(evt) {
     hud_update(update, "");
   }
 
-  // if we press ctrl+i
-  if (evt.keyCode === 73 || evt.key == "i") {
-    if (evt.ctrlKey) {
-      if (isModalVisible) {
-        modal_elt.classList.remove(isModalVisibleClass);
-      } else {
-        modal_elt.classList.add(isModalVisibleClass);
-      }
-      isModalVisible = !isModalVisible;
-      event_occurred = true;
+  // if we press h
+  if (evt.keyCode === 72 || evt.key == "h") {
+    if (isModalVisible) {
+      modal_elt.classList.remove(isModalVisibleClass);
+    } else {
+      modal_elt.classList.add(isModalVisibleClass);
     }
+    isModalVisible = !isModalVisible;
+    event_occurred = true;
   }
 
   // if we press the ESC
@@ -325,12 +323,10 @@ function documentCallback(evt) {
     event_occurred = true;
   }
 
-  // if ctrl+l is pressed
-  if (evt.key == "l" || evt.keyCode == 76) {
-    if (evt.ctrlKey) {
-      toggle_label_visibility();
-      event_occurred = true;
-    }
+  // if l is pressed
+  if (evt.keyCode == 76 || evt.key == "l") {
+    toggle_label_visibility();
+    event_occurred = true;
   }
 
   if (event_occurred) {
@@ -419,7 +415,7 @@ search_elt.addEventListener("keydown", searchInputCallback);
 document.addEventListener("keydown", documentCallback);
 
 setTimeout(function () {
-  showToast("press ctrl+i to see all shortcuts");
+  showToast("press h to see all shortcuts");
 }, 1000);
 
 // Close the modal if clicked outside of it
