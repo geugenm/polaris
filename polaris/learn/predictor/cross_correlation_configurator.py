@@ -33,7 +33,18 @@ class CrossCorrelationConfigurator():
                  xcorr_configuration_file=None,
                  use_gridsearch=False,
                  force_cpu=False):
-        """Initialize model configuration
+        """ Initialize model configuration
+
+            :param xcorr_configuration_file: XCorr configuration file path,
+                defaults to None
+            :type xcorr_configuration_file: str, optional
+            :param use_gridsearch: Use grid search for the cross correlation.
+                If this is set to False, then it will just use regression.
+                Defaults to False
+            :type use_gridsearch: bool, optional
+            :param force_cpu: Force CPU for cross correlation, defaults
+                to False
+            :type force_cpu: bool, optional
         """
         self._xcorr_configuration_file = xcorr_configuration_file
         self._use_gridsearch = use_gridsearch
@@ -41,7 +52,12 @@ class CrossCorrelationConfigurator():
         self._cross_correlation_parameters = CrossCorrelationParameters()
 
     def get_configuration(self):
-        """Build the configuration
+        """ Turn XCorr configuration file to XCorr parameters
+
+            :return: If there is an XCorr configuration file, the parameters
+                for the XCorr configuration are returned. Otherwise, the
+                default XCorr parameters are returned
+            :rtype: CrossCorrelationParameters
         """
         if self._xcorr_configuration_file is not None:
             self._get_configuration_from_file(self._xcorr_configuration_file)
@@ -61,6 +77,9 @@ class CrossCorrelationConfigurator():
         return self._cross_correlation_parameters
 
     def _set_default_xcorr_parameters(self):
+        """ Set default XCorr parameters if no XCorr configuration
+            file path is given
+        """
         self._cross_correlation_parameters.random_state = 42
         self._cross_correlation_parameters.test_size = 0.2
         self._cross_correlation_parameters.gridsearch_scoring = \
@@ -71,12 +90,21 @@ class CrossCorrelationConfigurator():
         self._cross_correlation_parameters.gridsearch_n_splits = 18
 
     def _set_default_xcorr_model_cpu_parameters(self):
+        """ Set default XCorr parameters (for CPU) if no XCorr
+            configuration file path is given
+        """
         self._cross_correlation_parameters.model_cpu_params = \
             self.MODEL_CPU_PARAMS
 
     # pylint: disable-msg=too-many-branches
     def _default_xcorr_model_parameters(self):
-        """Sets model params
+        """ Set default XCorr model params if no XCorr
+            configuration file path is given. The default initial
+            model parameters will adjust based on whether
+            use_gridsearch is True or False
+
+            :return: XCorr model parameters
+            :rtype: dict
         """
         if self._use_gridsearch:
             LOGGER.info(" ".join(["Using gridsearch parameters!"]))
@@ -142,9 +170,10 @@ class CrossCorrelationConfigurator():
         return model_params
 
     def _get_configuration_from_file(self, path):
-        """
-        Read custom config from file.
+        """ Read custom config from file.
 
+            :raises Exception: If the custom configuration file
+                failed to load
         """
         LOGGER.info(" ".join(["Using custom configuration!"]))
         try:
@@ -161,9 +190,31 @@ class CrossCorrelationConfigurator():
                                   test_size, gridsearch_scoring,
                                   gridsearch_n_splits, model_params,
                                   model_cpu_params, dataset_cleaning_params):
-        """
-        Set all the cross_correlation_parameters properties.
+        """ Set all the cross_correlation_parameters properties.
 
+            :param use_gridsearch: Use grid search for the cross correlation
+            :type use_gridsearch: bool
+            :param random_state: Random number seed
+            :type random_state: int
+            :param test_size: How much test size split as a floating point
+                number between 0.0 and 1.0
+            :type test_size: float
+            :param gridsearch_scoring: Scoring function for grid search.
+                See scikit-learn.org/stable/modules/model_evaluation.html
+                for predefined values
+            :type gridsearch_scoring: str
+            :param gridsearch_n_splits: Number of folds for the K-Folds
+                cross-validator
+            :type gridsearch_n_splits: int
+            :param model_params: XCorr model parameters
+            :type model_params: dict
+            :param model_cpu_params: XCorr model parameters (for CPU)
+            :type model_cpu_params: dict
+            :param dataset_cleaning_params: Dataset feature cleaning parameters
+            :type dataset_cleaning_params: CleanerParameters
+            :raises TypeError: If model_params is not a Python dictionary
+                or if there is one value in model_params that is not a
+                Python list
         """
         self._cross_correlation_parameters.use_gridsearch = use_gridsearch
         self._cross_correlation_parameters.random_state = random_state

@@ -29,10 +29,12 @@ class XCorr(BaseEstimator, TransformerMixin):
     """ Cross Correlation predictor class
     """
     def __init__(self, dataset_metadata, cross_correlation_params):
-        """
-            :param dataset_metadata: The metadata of the dataset.
-            :param cross_correlation_params: A object that contains
-            all the parameters needed in XCorr.
+        """ Initialize an XCorr object
+
+            :param dataset_metadata: The metadata of the dataset
+            :type dataset_metadata: PolarisMetadata
+            :param cross_correlation_params: XCorr parameters
+            :type cross_correlation_params: CrossCorrelationParameters
         """
         self.models = None
         self._importances_map = None
@@ -80,10 +82,13 @@ class XCorr(BaseEstimator, TransformerMixin):
     def fit(self, X):
         """ Train on a dataframe
 
-            The input dataframe will be split column by column considering each
-            one as a prediction target.
+            The input dataframe will be split column by column
+            considering each one as a prediction target.
 
-            :param X: input dataframe
+            :param X: Input dataframe
+            :type X: pd.DataFrame
+            :raises Exception: If encountered any unhandled error
+                during model fitting
         """
         if not isinstance(X, pd.DataFrame):
             raise TypeError("Input data should be a DataFrame")
@@ -134,10 +139,15 @@ class XCorr(BaseEstimator, TransformerMixin):
         """ Fit a model to predict target_series with df_in features/columns
             and retain the features importances in the dependency matrix.
 
-            :param df_in: input dataframe representing the context, predictors.
+            :param df_in: Input dataframe representing the context, predictors
+            :type df_in: pd.DataFrame
             :param target_series: pandas series of the target variable. Share
-            the same indexes as the df_in dataframe.
-            :param model_params: Parameters for the XGB model.
+                the same indexes as the df_in dataframe
+            :type target_series: pd.Series
+            :param model_params: Parameters for the XGB model
+            :type model_params: dict
+            :return: A fitted XGBRegressor
+            :rtype: XGBRegressor
         """
         # Split df_in and target to train and test dataset
         df_in_train, df_in_test, target_train, target_test = train_test_split(
@@ -187,14 +197,21 @@ class XCorr(BaseEstimator, TransformerMixin):
         return regr_m
 
     def gridsearch(self, df_in, target_series, params):
-        """ Apply gridchear to fine-tune XGBoost hyperparameters
-            and then call the regression method based on the results.
+        """ Apply grid search to fine-tune XGBoost hyperparameters
+            and then call the regression method with the best grid
+            search parameters.
 
-            :param df_in: input dataframe representing the context, predictors.
-            :param target_series: pandas series of the target variable. Share
-            the same indexes as the df_in dataframe.
-            :param params: the hyperparameters to use on the gridsearch
-            method.
+            :param df_in: Input dataframe representing the context, predictors
+            :type df_in: pd.DataFrame
+            :param target_series: Pandas series of the target variable. Share
+                the same indexes as the df_in dataframe
+            :type target_series: pd.Series
+            :param params: The hyperparameters to use on the gridsearch
+                method
+            :type params: dict
+            :raises TypeError: If df_in is not Pandas DataFrame
+            :return: A fitted XGBRegressor
+            :rtype: XGBRegressor
         """
         if not isinstance(df_in, pd.DataFrame):
             LOGGER.error("Expected %s got %s for df_in in gridsearch",
@@ -226,6 +243,9 @@ class XCorr(BaseEstimator, TransformerMixin):
     def reset_importance_map(self, columns):
         """
         Creating an empty importance map
+
+        :param columns: List of column names for the importance map
+        :rtype columns: pd.Index or array-like
         """
         if self._importances_map is None:
             self._importances_map = pd.DataFrame(data={}, columns=columns)
@@ -257,8 +277,10 @@ class XCorr(BaseEstimator, TransformerMixin):
         """ Remove features only from
             being predicted.
 
-            :param X: The dataset.
-            :param params: The list of parameters.
+            :param X: The dataset
+            :type X: pd.DataFrame
+            :return: List of remaining features that are not removed
+            :rtype: list
         """
         if self.xcorr_params['feature_columns'] is None:
             return list(X.columns)

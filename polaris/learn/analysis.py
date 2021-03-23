@@ -26,8 +26,11 @@ def feature_extraction(input_file, param_col):
     """
     Start feature extraction using the given settings.
 
-        :param input_file: File path to input data (dataframe csv)
-        :param param_col: Target column
+        :param input_file: Path of a CSV file that will be
+            converted to a dataframe
+        :type input_file: str
+        :param param_col: Target column name
+        :type param_col: str
     """
     # Create a small list of two transformers which will generate two
     # different pipelines
@@ -57,7 +60,31 @@ def cross_correlate(input_file,
     Catch linear and non-linear correlations between all columns of the
     input data.
 
-        :param model_params: XGBoost parameters dictionary
+        :param input_file: CSV or JSON file path that will be
+            converted to a dataframe
+        :type input_file: str
+        :param output_graph_file: Output file path for the generated graph.
+            It will overwrite if the file already exists. Defaults to None,
+            which is'/tmp/polaris_graph.json'
+        :type output_graph_file: str, optional
+        :param xcorr_configuration_file: XCorr configuration file path,
+            defaults to None. Refer to CrossCorrelationConfigurator for
+            the default parameters
+        :type xcorr_configuration_file: str, optional
+        :param graph_link_threshold: Minimum link value to be considered
+            as a link between two nodes
+        :type graph_link_threshold: float, optional
+        :param use_gridsearch: Use grid search for the cross correlation.
+            If this is set to False, then it will just use regression.
+            Defaults to False
+        :type use_gridsearch: bool, optional
+        :param csv_sep: The character that separates the columns inside of
+            the CSV file, defaults to ','
+        :type csv_sep: str, optional
+        :param force_cpu: Force CPU for cross corelation, defaults to False
+        :type force_cpu: bool, optional
+        :raises NoFramesInInputFile: If there are no frames in the converted
+            dataframe
     """
     # Reading input file - index is considered on first column
     metadata, dataframe = read_polaris_data(input_file, csv_sep)
@@ -92,11 +119,15 @@ def cross_correlate(input_file,
 
 def normalize_dataframe(dataframe):
     """
-        Apply dataframe modification for being used
-        by the learn module.
+        Apply dataframe modification so it's compatible
+        with the learn module. The time column is first
+        set as the index of the dataframe. Then, we drop
+        the time column.
 
-        :param dataframe: the pandas dataframe to normalize
+        :param dataframe: The pandas dataframe to normalize
+        :type dataframe: pd.DataFrame
         :return: Pandas dataframe normalized
+        :rtype: pd.DataFrame
     """
     dataframe.index = dataframe.time
     dataframe.drop(['time'], axis=1, inplace=True)
