@@ -21,7 +21,8 @@ $ mkdir polaris
 $ cd polaris
 $ python -m venv .venv
 $ source .venv/bin/activate
-$ pip install polaris-ml --use-feature=2020-resolver
+$ pip install --upgrade pip
+$ pip install polaris-ml
 ```
 
 **Note:** Various things will break if there is any whitespace in the full path to your virtualenv.  Here are some example of paths that will not work:
@@ -33,6 +34,8 @@ Instead, use paths without spaces in them:
 
 * `/home/jdoe/my_development_stuff/polaris/.venv`
 * `/mnt/c/dev/polaris/.venv`
+
+Also, be sure to upgrade `pip` itself as we've shown above -- otherwise, you may run into problems installing dependencies.
 
 ## Advanced: Installing the latest version of Polaris
 
