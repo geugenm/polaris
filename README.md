@@ -51,16 +51,16 @@ $ python3 -m venv .venv
 # Activate it
 $ source .venv/bin/activate
 
+# Upgrade Pip before installing Polaris
+$ (.venv) pip install --upgrade pip
+
 # Install Polaris from Pypi
 $ (.venv) pip install polaris-ml
 ```
 
-**Note:** If you run into problems installing Polaris via pip, [try
-using the new Pip resolver](https://pip.pypa.io/en/stable/news/#id18):
-
-``` BASH
-pip install polaris-ml --use-feature=2020-resolver
-```
+**Note:** If you run into problems installing Polaris via pip, **make
+sure you've upgraded pip itself** and are using a clean, new, separate
+virtual environment -- this solves most problems.
 
 ## Running the code
 
@@ -190,7 +190,7 @@ $ python
 # To start influxdb
 >>> common.start_docker_compose("/path/to/docker-compose.yml")
 
-# To stop influxdb 
+# To stop influxdb
 >>> common.stop_docker_compose("/path/to/docker-compose.yml")
 ```
 
@@ -224,17 +224,17 @@ $ git clone https://gitlab.com/librespacefoundation/polaris/polaris.git
 # Activate the virtual environment:
 $ source .venv/bin/activate
 
+# Upgrade Pip before installing Polaris
+$ (.venv) pip install --upgrade pip
+
 # Build and install the package in editable mode; any changes
 # to your code will be reflected when you run polaris.
 $ (.venv) pip install -e .
 ```
 
-**Note:** If you run into problems installing Polaris via pip, [try
-using the new Pip resolver](https://pip.pypa.io/en/stable/news/#id18):
-
-``` BASH
-pip install -e . --use-feature=2020-resolver
-```
+**Note:** If you run into problems installing Polaris via pip, **make
+sure you've upgraded pip itself** and are using a clean, new, separate
+virtual environment -- this solves most problems.
 
 It is important to format the code before commiting, otherwise the
 CI engine will fail. We have a tox command setup to run tests before
