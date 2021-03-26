@@ -17,6 +17,8 @@ If you want to **know more**:
 
 - look at the [demo site](https://polarisml.space/demo)
 
+If you are a developer, and want to contribute to Polaris check out [CONTRIBUTE.md](CONTRIBUTE.md).
+
 ## Project structure
 
 ``` BASH
@@ -212,83 +214,6 @@ mlflow ui
 ```
 
 This command will start the tracking ui server at <http://localhost:5000>.
-
-## More info for developers
-
-Building the package from the sources:
-
-```bash
-# Clone the repo
-$ git clone https://gitlab.com/librespacefoundation/polaris/polaris.git
-
-# Activate the virtual environment:
-$ source .venv/bin/activate
-
-# Upgrade Pip before installing Polaris
-$ (.venv) pip install --upgrade pip
-
-# Build and install the package in editable mode; any changes
-# to your code will be reflected when you run polaris.
-$ (.venv) pip install -e .
-```
-
-**Note:** If you run into problems installing Polaris via pip, **make
-sure you've upgraded pip itself** and are using a clean, new, separate
-virtual environment -- this solves most problems.
-
-It is important to format the code before commiting, otherwise the
-CI engine will fail. We have a tox command setup to run tests before
-committing so you will never have to push failing pipelines. Code
-linting is also done to ensure the code does not have any errors
-before committing.
-
-First you will have to install Prettier. Be sure to have a node version equal or greater than version 10.13.0. In case you don't have a good node version here is how to install/update it:
-
-```bash
-$ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
-
-# Feel free to install any version you like, but >= 10.13.0
-$ nvm install v13.8.0
-$ nvm use v13.8.0
-```
-
-After the installation of node, you have to restart your terminal.
-Then, to install Prettier:
-
-```bash
-npm install -g prettier
-```
-
-You can learn more about npm [here](https://www.npmjs.com/).
-
-```bash
-# Install tox to execute CI tasks
-$ (.venv) pip install tox
-
-# Auto-format the code
-$ (.venv) tox -e yapf-apply -e isort-apply -e prettier-apply
-______________________ summary______________________
-  yapf-apply: commands succeeded
-  isort: commands succeeded
-  prettier-apply: commands succeeded
-  congratulations :)
-
-# Verify CI test passes
-$ (.venv) tox
-# If all goes well, you will get something like this:
-______________________ summary______________________
-  flake8: commands succeeded
-  isort: commands succeeded
-  yapf: commands succeeded
-  pylint: commands succeeded
-  build: commands succeeded
-  pytest: commands succeeded
-  prettier: commands succeeded
-  congratulations :)
-
-```
-
-You can learn more about tox [here](https://tox.readthedocs.io/en/latest/).
 
 ### Working on documentation
 
