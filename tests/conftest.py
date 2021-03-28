@@ -4,10 +4,12 @@ Fixtures for pytest tests
 
 import datetime
 import json
+import os
 
 import pandas as pd
 import pytest
 
+from polaris.convert.gexf import GEXFConverter
 from polaris.dataset.dataset import PolarisDataset
 from polaris.dataset.frame import PolarisFrame
 from polaris.dataset.metadata import PolarisMetadata
@@ -391,3 +393,13 @@ def time_list():
         datetime.datetime(year=2019, month=11, day=29, hour=1),
     ]
     return times
+
+
+@pytest.fixture
+def gexf_converter_min(tmp_path):
+    """ GEXF converter with valid processed small graph input file
+    """
+    return GEXFConverter(
+        os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                     'test_convert', 'graph_ok_min.json'),
+        tmp_path / "test_save_min.gexf")
