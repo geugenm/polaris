@@ -1,12 +1,20 @@
 """Module to detect anomalies using an autoencoder
 """
+import json
 import logging
+import os
 
+import joblib
 import pandas as pd
 from betsi.models import custom_autoencoder
+from betsi.predictors import distance_measure, get_events
 from betsi.preprocessors import convert_from_column, convert_to_column, \
     normalize_all_data
 from sklearn.model_selection import train_test_split
+
+from polaris.data import readers
+from polaris.feature.cleaner import Cleaner
+from polaris.feature.cleaner_configurator import CleanerConfigurator
 
 LOGGER = logging.getLogger(__name__)
 
@@ -95,7 +103,8 @@ def create_compile_model(layer_dims, activations=None):
 
     try:
         # Try creating the model using betsi
-        ae_model, en_model, de_model = create_models(layer_dims, activations)
+        autoencoder_model, encoder_model, decoder_model = create_models(
+            layer_dims, activations)
     except ValueError as err:
         # Error might occur if the activations are malformed or the layer
         # sizes are incorrect
@@ -107,11 +116,11 @@ def create_compile_model(layer_dims, activations=None):
         raise ValueError from err
 
     # Compiling the autoencoder model
-    ae_model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
-    en_model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
-    de_model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
+    autoencoder_model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
+    encoder_model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
+    decoder_model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
 
-    return (ae_model, en_model, de_model)
+    return (autoencoder_model, encoder_model, decoder_model)
 
 
 def train_test_model(preprocessed_data, models):
@@ -129,7 +138,7 @@ def train_test_model(preprocessed_data, models):
     batch_size = 128
     epochs = 20
 
-    (ae_model, en_model, de_model) = models
+    (autoencoder_model, encoder_model, decoder_model) = models
 
     # Split it into train and test data, set shuffle to false as order matters
     # since it is time series data
@@ -142,10 +151,10 @@ def train_test_model(preprocessed_data, models):
     LOGGER.info("Training on %i rows of data, with batch size %i and epoch %i",
                 train_data.shape[0], batch_size, epochs)
     try:
-        history = ae_model.fit(train_data,
-                               train_data,
-                               batch_size=batch_size,
-                               epochs=epochs)
+        history = autoencoder_model.fit(train_data,
+                                        train_data,
+                                        batch_size=batch_size,
+                                        epochs=epochs)
     except Exception as err:
         # Exception if data not formatted properly, gradients vanishing
         # or some model errors
@@ -153,13 +162,13 @@ def train_test_model(preprocessed_data, models):
         raise err
 
     # Get the results on test data to verify model has not overfit
-    test_results = ae_model.evaluate(test_data,
-                                     test_data,
-                                     batch_size=batch_size)
+    test_results = autoencoder_model.evaluate(test_data,
+                                              test_data,
+                                              batch_size=batch_size)
     LOGGER.info("Test loss: %s, Test MSE: %s", str(test_results[0]),
                 str(test_results[1]))
 
-    models = (ae_model, en_model, de_model)
+    models = (autoencoder_model, encoder_model, decoder_model)
     data = (train_data, test_data)
 
     return models, history, data
@@ -194,3 +203,106 @@ def preprocess_train_model(data, layer_dims, activations=None):
 
     # Returning the test and train data as it is required for predictions
     return normalizer, models, history, tt_data
+
+
+def save_all(cache_dir, models, tt_data, normalizer, anomaly_metrics):
+    """Save all important variables in files
+
+    :param cache_dir: Path to cache directory
+    :param models: tuple with autoencoder_model, encoder_model, decoder_model
+    :param tt_data: train and test dataframes (list)
+    :param normalizer: Normalizer used while creating the data
+    :param anomaly_metrics: Dictionary containing other metrics
+    """
+    if not os.path.isdir(cache_dir):
+        try:
+            os.makedirs(cache_dir)
+        except Exception as err:
+            LOGGER.error(
+                "Error creating the path %s."
+                "Do you have the correct permissions?", str(cache_dir))
+            raise err
+
+    autoencoder_model, encoder_model, decoder_model = models
+
+    # Save models to respective files
+    autoencoder_model.save(
+        os.path.join(cache_dir, "autoencoder_model.tf_model"))
+    encoder_model.save(os.path.join(cache_dir, "encoder_model.tf_model"))
+    decoder_model.save(os.path.join(cache_dir, "decoder_model.tf_model"))
+
+    # Save test and train data for future use (while visualizing)
+    tt_data[0].to_pickle(os.path.join(cache_dir, "train_data.pkl"))
+    tt_data[1].to_pickle(os.path.join(cache_dir, "test_data.pkl"))
+
+    # Save the normalizer to preprocess data next time
+    joblib.dump(normalizer, os.path.join(cache_dir, "normalizer.pkl"))
+
+    # Save all the anomaly metrics (training history, events)
+    with open(os.path.join(cache_dir, "anomaly_metrics.json"),
+              "w") as json_file:
+        json.dump(anomaly_metrics, json_file)
+
+
+def detect_events(df_pred_bn, noise_margin_per):
+    """Function to detect anomalies/events
+
+    :param df_pred_bn: bottleneck layer prediction
+    :param noise_margin_per: percentage above average distance_sum the value
+        needs to be for detection as peak
+    :return: list of event indices
+    :rtype: list
+    """
+    # Get distances
+    distance_list = []
+    for row_no in range(df_pred_bn.shape[0] - 1):
+        distance_list.append(
+            distance_measure(df_pred_bn[row_no], df_pred_bn[row_no + 1]))
+
+    events = get_events(distance_list, threshold=noise_margin_per)
+
+    return events
+
+
+# Disabling because there are 16 instead of 15 vars. Once we switch to
+# configurator, remove this
+# pylint: disable=too-many-locals
+def train_predict_store(import_file, cache_dir, layer_dims):
+    """Train, predict and store models
+
+    :param import_file: Valid file generated by polaris.fetch
+    :type import_file: os.path/os.path
+    :param cache_dir: Directory where cached data are store
+    :type cache_dir: os.path/str
+    :param layer_dims: List of layer dimensions
+    :type layer_dims: list
+    """
+    # For config file
+    noise_margin_per = 150
+    clean_params = CleanerConfigurator()
+
+    # Read data from import file
+    metadata, data = readers.read_polaris_data(import_file)
+    feature_cleaner = Cleaner(metadata, clean_params.get_configuration())
+    data = feature_cleaner.drop_constant_values(data)
+    data = feature_cleaner.drop_non_numeric_values(data)
+    data = feature_cleaner.handle_missing_values(data)
+    data = data.select_dtypes("number")
+
+    # Complete training
+    normalizer, models, history, tt_data = preprocess_train_model(
+        data, layer_dims)
+
+    encoder_model = models[1]
+
+    # Get the bottleneck prediction
+    df_pred_bn = encoder_model.predict(tt_data[1])
+
+    events = detect_events(df_pred_bn, noise_margin_per)
+
+    anomaly_metrics = {
+        "history": history.history,
+        "events": events,
+    }
+
+    save_all(cache_dir, models, tt_data, normalizer, anomaly_metrics)
