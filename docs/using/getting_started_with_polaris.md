@@ -1,31 +1,73 @@
+---
+html_meta:
+  "description lang=en": "All you need to know to install Polaris and get started with deep learning for spacecraft telemetry and anomaly analysis"
+  "keywords": "Polaris, getting started, how-to, guide, installation, spacecraft, operations, telemetry, anomaly, data, machine learning, deep learning, graph, analysis"
+  "property=og:locale": "en_US"
+  "property=og:title": "Polaris, machine learning for spacecraft operations"
+---
+
 Want to get started with Polaris?  Great!  This page will help you do just that.
+
+# Quick install
+
+If you know what you're doing and have a python environment ready (Python version <= 3.8, latest version of `pip`), then you can run this to install the latest polaris release:
+
+```
+pip install polaris-ml
+```
+
+For users who want to run the last features from our master branch please use:
+```
+pip install git+https://gitlab.com/librespacefoundation/polaris/polaris
+```
 
 # Prerequisites
 
-You'll need to have a few things before we can start:
+- (mandatory) A Python 3.x environment
+    - Polaris is known to work with python 3.7 and 3.8
+    - Polaris does not support python 3.9 yet, [we're almost there](https://gitlab.com/librespacefoundation/polaris/polaris/-/issues/124).
+    - Python 2 is [not supported](https://www.python.org/doc/sunset-python-2/).
 
-- You need Linux or Unix-like environment with Python 3.  (Python 2 is [not supported](https://www.python.org/doc/sunset-python-2/).)  OS X should work, although we haven't tried it.  (Wondering about Windows?  So are we -- give it a try and [let us know how it works](https://app.element.io/#/room/#polaris:matrix.org).)
+- A Linux or Unix-like operating environment
+    - The core team is mainly working on Linux, we're open to whatever you work on.
+    - A few contributors use OS X and it should work just fine.
+    - Many have tried on Windows and ended up using emulators or virtual machines, give it a try and [let us know how it works for you](https://app.element.io/#/room/#polaris:matrix.org).
 
-- You'll need to be comfortable installing Python packages -- we strongly recommend using virtualenv to create a separate environment for Polaris.  If you haven't done this before, [this guide should help you out](https://docs.python-guide.org/dev/virtualenvs/).
+- We strongly recommend using a python virtual environment that does not impact your system python environment (by using virtualenv or conda)
+    - In next section, we remind shortly how to create your own python virtual environment.
+    - [This guide should help you out with virtualenv](https://docs.python-guide.org/dev/virtualenvs/).
+    - [This guide should help you out with conda, if you use Anaconda already](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html)
 
-- You'll need to be comfortable with the CLI.
+- You'll need to be comfortable with the command line interface.
 
 - You'll need a good network connection, so you can download telemetry quickly.
 
-# Setting up Polaris
+# Installing Polaris
 
-Install Polaris in a virtual environment using `pip`:
+(how-to-virtual-environment)=
+## Creating a python virtual environment
 
+Create and activate a virtual environment using `virtualenv`:
+```{code-block} bash
+$ python -m venv .polarisenv
+$ source .polarisenv/bin/activate
+(.polarisenv) $ pip install --upgrade pip
 ```
-$ mkdir polaris
-$ cd polaris
-$ python -m venv .venv
-$ source .venv/bin/activate
-$ pip install --upgrade pip
-$ pip install polaris-ml
+Create and activate a virtual environment using `conda`:
+```{code-block} bash
+$ conda create -n polarisenv python=3.8
+$ source activate polarisenv
+(polarisenv) $ pip install --upgrade pip
 ```
 
-**Note:** Various things will break if there is any whitespace in the full path to your virtualenv.  Here are some example of paths that will not work:
+```{admonition} Good to know
+:class: info
+You will need either virtualenv (system install or pip install virtualenv) or conda (via Anaconda or [Miniconda](https://docs.conda.io/en/latest/miniconda.html)) to be installed. With conda, you can create a python environment from any python version, without the need to pre-install that version.
+```
+
+```{admonition} Whitespaces in a virtual environment's path
+:class: warning
+Various things will break if there is any whitespace in the full path to your virtualenv.  Here are some example of paths that will not work:
 
 * `/home/jdoe/My Development Stuff/polaris/.venv`
 * `/mnt/C/Jane Doe/dev/polaris/.venv`
@@ -35,18 +77,31 @@ Instead, use paths without spaces in them:
 * `/home/jdoe/my_development_stuff/polaris/.venv`
 * `/mnt/c/dev/polaris/.venv`
 
-Also, be sure to upgrade `pip` itself as we've shown above -- otherwise, you may run into problems installing dependencies.
-
-## Advanced: Installing the latest version of Polaris
-
-We push new releases to PyPi as appropriate, but work is continuing on Polaris all the time.  If you want to try out the very latest features (and help us with bug reports :grinning:), you can do that like so:
-
 ```
-$ git clone https://gitlab.com/librespacefoundation/polaris/polaris.git
-$ cd polaris
-$ python -m venv .venv
-$ source .venv/bin/activate
-$ pip install -e .
+
+```{admonition} Upgrade <b>pip</b>
+:class: warning
+Be sure to upgrade `pip` itself as we've shown above -- otherwise, you may run into problems installing dependencies.
+```
+
+## Installing the latest Polaris release
+
+From your [polaris dedicated python environment](#how-to-virtual-environment):
+```{code-block} bash
+(.polarisenv) $ pip install --upgrade pip # if not already done
+(.polarisenv) $ pip install polaris-ml
+```
+
+## For developers: Installing the latest changes of Polaris
+
+We push new releases to PyPi as appropriate, but work is continuing on Polaris all the time.  If you want to try out the very latest features (and help us with bug reports :grinning:), you can do that by following these steps.
+
+From your [polaris dedicated python environment](#how-to-virtual-environment):
+```{code-block} bash
+(.polarisenv) $ pip install --upgrade pip # if not already done
+(.polarisenv) $ git clone https://gitlab.com/librespacefoundation/polaris/polaris.git
+(.polarisenv) $ cd polaris
+(.polarisenv) $ pip install -e .
 ```
 
 # Running your first analysis:  LightSail-2
