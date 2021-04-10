@@ -16,7 +16,7 @@ dependency graph (e.g. Bayesian network) -- both for analysis, and to
 allow operators to examine future changes by comparison against older
 versions of the graph.
 
-Polaris is split into three parts:
+Polaris is split into four parts:
 
 - `polaris fetch` will download and normalize satellite telemetry from
   the SatNOGS network (or you can import your own).
@@ -27,3 +27,5 @@ Polaris is split into three parts:
 
 - `polaris viz` is an interactive, browser-based 3D visualization of
   that dependency graph.
+
+- `polaris convert` will convert graph output from `polaris learn` to another file format (like `.gexf`).
