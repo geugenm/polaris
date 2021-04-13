@@ -5,6 +5,7 @@ const nodeslist_elt = document.getElementById("nodeslist");
 const search_elt = document.getElementById("graph-search-input");
 const toast_elt = document.getElementById("toast");
 const modal_elt = document.getElementById("modal-help");
+let mode = "viewing"; // values will be one of "searching" and "viewing"
 
 let isModalVisible = false;
 const isModalVisibleClass = "is-visible";
@@ -53,9 +54,11 @@ function hud_update(action, node) {
   if (action) {
     action_header = "<tiny>" + action + "</tiny>";
   }
+  let mode_header = "mode: " + mode;
   let br = "<br/>";
   let info = node_to_html(node);
-  hud_elt.innerHTML = metadata_header + br + action_header + br + info + br;
+  hud_elt.innerHTML =
+    metadata_header + br + mode_header + br + action_header + br + info + br;
 }
 
 // A zoom and fly to node function
@@ -284,6 +287,7 @@ function searchInputCallback(evt) {
     // Stop processing of the event here.
     evt.stopPropagation();
     evt.preventDefault();
+    search_elt.blur();
   } // Otherwise, default browser behavior should continue
 }
 
@@ -398,6 +402,16 @@ search_elt.addEventListener("click", function () {
   }
 });
 
+// search: toggle mode whenever search_element goes into focus or out of focus
+search_elt.addEventListener("focus", () => {
+  mode = "searching";
+  hud_update("", "");
+});
+search_elt.addEventListener("blur", () => {
+  mode = "viewing";
+  hud_update("", "");
+});
+
 // Close the modal if any button with data-close paramater is clicked
 const closeEls = document.querySelectorAll("[data-close]");
 for (const el of closeEls) {
@@ -411,8 +425,20 @@ for (const el of closeEls) {
 // search: Keyboard events
 search_elt.addEventListener("keydown", searchInputCallback);
 
-// Detect keydown events in the document space (for eg toggle hidden nodes)
-document.addEventListener("keydown", documentCallback);
+// Detect keydown events in the document space (e.g. toggle hidden nodes)
+document.addEventListener("keydown", (evt) => {
+  // add extra condition of calling callback only if mode === viewing
+  if (mode === "viewing") {
+    documentCallback(evt);
+  }
+});
+
+// make search element out of focus on clicking anywhere else on the document.
+document.addEventListener("click", (evt) => {
+  if (evt.target !== search_elt && search_elt === document.activeElement) {
+    search_elt.blur();
+  }
+});
 
 setTimeout(function () {
   showToast("press h to see all shortcuts");
