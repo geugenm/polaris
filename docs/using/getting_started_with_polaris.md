@@ -181,7 +181,7 @@ Some background:
 
 Run times will depend on your hardware and the amount of data fetched.  On a 12-core, 2.6GHz i7 laptop, with 16 GB of RAM, `polaris learn` takes about two minutes.
 
-## Visualizing the dependency graph with `polaris graph`
+## Visualizing the dependency graph with `polaris viz`
 
 Finally, we're ready to look at our dependency graph.  Run this command:
 
@@ -237,6 +237,23 @@ Looking at the display, we see a number of different things:
 
 The satellite operator, at this point, will be able to examine the graph with an eye toward finding connections between elements that may not have been noticed previously.
 
+## (Optional) Converting dependency graph to another file format using `polaris convert`
+
+Let's say we want to view the dependency graph in another program. This means the dependency graph must be converted into another file format supported by the program we're using. Currently, the dependency graph can be converted into `.gexf` file format which is supported by [Gephi](https://gephi.org/), the open graph tool.
+
+To convert the current dependency graph (`.json`) to `.gexf`, we run this command:
+
+```
+polaris convert /tmp/LightSail2-graph.json /tmp/LightSail2-graph.gexf
+```
+
+Polaris will automatically detect which file format to convert to. In this case, because we specify `/tmp/LightSail2-graph.gexf`, Polaris will convert to GEXF file format.
+
+Now we open the GEXF file in Gephi. After applying certain layouts and styles (Force Atlas, node & edge ranking), it will look something like this:
+
+![gephi](https://gitlab.com/librespacefoundation/polaris/polaris/uploads/dc7032aa0d883a8239c2036a4c1e6382/preview1.png)
+
+
 # Conclusion
 
 Here we've taken you through the basics of the Polaris workflow:
@@ -246,6 +263,8 @@ Here we've taken you through the basics of the Polaris workflow:
 - we've created a model of the connections between the telemetry elements;
 - we've used that model to create a dependency graph;
 - and we've displayed and examined the visualization of that graph.
+
+We've also shown that we can convert the dependency graph to other file formats using `polaris convert`.
 
 # Next Steps
 

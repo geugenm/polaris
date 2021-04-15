@@ -30,6 +30,7 @@ polaris/               - Project source code
     viz/               - Module to visualize the analysis results
     learn/             - Module to perform the data analysis
     batch/             - Module to perform batch operations
+    convert/           - Module to convert graph output from learn to other file formats
     polaris.py         - Polaris entry point
 
 tests/                 - Project unit tests
@@ -78,6 +79,7 @@ Options:
 
 Commands:
   batch     Run polaris commands in batch mode
+  convert   Convert polaris graph file (supported formats: gexf)
   fetch     Download data set(s)
   learn     Analyze data
   viz       Displaying results

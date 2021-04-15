@@ -10,6 +10,7 @@ Polaris has a number of different commands:
 - `polaris fetch` will download and normalize satellite telemetry from the SatNOGS network (or you can import your own).
 - `polaris learn` will analyze the telemetry, produce a model of the connections between telemetry components, and save a dependency graph for visualization.
 - `polaris viz` is an interactive, browser-based 3D visualization of that dependency graph.
+- `polaris convert` will convert graph output from `polaris learn` to another file format (like `.gexf`).
 
 * For more details about how Polaris works, see [Overview](Overview), or watch our presentation at the [2020 Cubesat Developer's Workshop](https://www.youtube.com/watch?v=Jp7GuA_zjlA).
 
