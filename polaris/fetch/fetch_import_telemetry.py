@@ -181,7 +181,11 @@ def data_fetch(norad_id, output_directory, start_date, end_date):
                               frame_modules=None,
                               observer=None,
                               app_source=None,
-                              transmitter=None)
+                              transmitter=None,
+                              archive_end_modules=None,
+                              demoddata_end_modules=None,
+                              waterfall_end_modules=None,
+                              frame_end_modules=None)
 
     # Running glouton data collection
     try:
