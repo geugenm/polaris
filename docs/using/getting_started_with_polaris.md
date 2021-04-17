@@ -147,6 +147,11 @@ polaris fetch \
     /tmp/lightsail2/normalized_frames.json
 ```
 
+**Note 3:** You can also get all the satellites supported by polaris by running command:
+```
+polaris fetch --list_supported_satellites
+``` 
+
 
 Let's take a look at how many frames we have:
 

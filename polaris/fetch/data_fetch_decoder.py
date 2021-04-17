@@ -198,7 +198,7 @@ def data_fetch_decode_normalize(sat,
         satellite = find_satellite(sat, _SATELLITES)
     except Exception as exception:
         LOGGER.error("Can't find satellite or decoder: %s", exception)
-        LOGGER.info("You can check for your satellite 'name' by command "
+        LOGGER.info("You can check for your satellite 'name' by using command "
                     "`polaris fetch --list_supported_satellites` ")
         # Check if there is a satellite with a similar name
         alt_sat = find_alternatives(sat, _SATELLITES)

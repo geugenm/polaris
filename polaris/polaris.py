@@ -2,7 +2,7 @@
 Tool for analyzing satellite telemetry
 """
 import logging
-from json import JSONDecodeError, load
+from json import JSONDecodeError
 from os.path import isfile, splitext
 
 import click
@@ -11,6 +11,7 @@ from polaris import __version__
 from polaris.batch.batch import batch
 from polaris.convert.gexf import GEXFConverter
 from polaris.fetch.data_fetch_decoder import data_fetch_decode_normalize
+from polaris.fetch.list_satellites import list_satellites
 from polaris.learn.analysis import cross_correlate, feature_extraction
 from polaris.viz.server import launch_webserver
 
@@ -104,13 +105,7 @@ def cli_fetch(sat, start_date, end_date, output_file, cache_dir, import_file,
     OUTPUT_FILE (path to the output folder)
     """
     if list_supported_satellites:
-        print("Supported satellites:\n")
-        json_file = open("polaris/fetch/satellites.json", )
-        data = load(json_file)
-        print(f"{'satellite'.ljust(20)}decoder/normalizer\n")
-        for satellite in data:
-            print(f"{satellite['name'].ljust(20)}{satellite['decoder']}")
-
+        list_satellites()
     else:
 
         def argument_error_message(message):

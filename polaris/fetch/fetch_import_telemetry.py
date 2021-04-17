@@ -162,6 +162,7 @@ def data_fetch(norad_id, output_directory, start_date, end_date):
         os.mkdir(cwd_path)
 
     # Preparing glouton command configuration
+    # pylint: disable-msg=unexpected-keyword-arg
     glouton_conf = ProgramCmd(norad_id=norad_id,
                               ground_station_id=None,
                               start_date=start_date,
