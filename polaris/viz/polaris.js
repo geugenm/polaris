@@ -206,6 +206,21 @@ function highlight_nodes(search_str, color, reset_color = false) {
         : node_base_color;
     }
   }
+  Graph.nodeThreeObject((node) => {
+    const sprite = new SpriteText(node.name);
+    if (reset_color) {
+      sprite.color = color;
+    } else if (node.name.match(regex_search)) {
+      sprite.color = color;
+    } else {
+      sprite.color = localStorage.getItem(node.name)
+        ? localStorage.getItem(node.name)
+        : node_base_color;
+    }
+    sprite.textHeight = 5;
+    return sprite;
+  });
+
   Graph.nodeColor((node) => (node.color ? node.color : node_base_color));
   save_color();
 }
