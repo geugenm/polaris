@@ -75,8 +75,10 @@ def test_custom_configuration():
             "objective": "reg:squarederror",
             "n_estimators": 81,
             "learning_rate": 0.3,
-            "n_jobs": 1,
-            "max_depth": 9
+            "n_jobs": -1,
+            "max_depth": 9,
+            "tree_method": "approx",
+            "predictor": "cpu_predictor"
         }
     }
     mock_open = mock.mock_open(read_data=json.dumps(custom_config))
