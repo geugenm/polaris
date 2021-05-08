@@ -237,6 +237,7 @@ def data_merge_and_decode(decoder,
     else:
         LOGGER.info('Starting decoding and merging of the new frames')
         decode_cmd = build_decode_cmd(new_frames_file, decoded_file, decoder)
+        LOGGER.debug('Decode command: %s', decode_cmd)
         try:
             proc3 = subprocess.Popen(decode_cmd,
                                      shell=True,
