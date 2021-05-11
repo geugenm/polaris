@@ -125,6 +125,17 @@ class CrossCorrelationConfigurator():
                 "max_depth": 8
             }
 
+        return self._set_cpu_parameters(model_params)
+
+    def _set_cpu_parameters(self, model_params):
+        """ Set model parameters according to the
+            choosen cpu strategy
+
+            :param model_params: The XCorr model parameters
+            :type model_params: dict
+            :return: XCorr model parameters
+            :rtype: dict
+        """
         if not self._force_cpu:
             try:
                 gpu_ids = GPUtil.getAvailable()
@@ -232,6 +243,7 @@ class CrossCorrelationConfigurator():
                 if not isinstance(model_params[param], list):
                     raise TypeError("Expected {} got {} for key {}".format(
                         list, type(model_params[param]), param))
+        model_params = self._set_cpu_parameters(model_params)
         self._cross_correlation_parameters.model_params = model_params
         self._cross_correlation_parameters.model_cpu_params = model_cpu_params
         feature_cleaner_configurator = CleanerConfigurator(

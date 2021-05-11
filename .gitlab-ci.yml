@@ -7,6 +7,7 @@ stages:
   - static
   - build
   - test
+  - integration
   - deploy
   
 static:
@@ -58,3 +59,16 @@ deploy:
     variables:
       - $PYPI_USERNAME
       - $PYPI_PASSWORD
+integration:
+  stage: integration
+  image: ${GITLAB_CI_IMAGE_PYTHON}
+  before_script:
+    - pip install "$GITLAB_CI_PYPI_TOX"
+  script:
+    - tox -e "robot"
+  artifacts:
+    when: always
+    paths:
+      - robot/output
+      - robot/gl.log
+    expire_in: 1 week
