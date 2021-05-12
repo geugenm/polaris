@@ -151,7 +151,10 @@ polaris fetch \
 ```
 polaris fetch --list_supported_satellites
 ``` 
-
+or 
+```
+polaris fetch -l
+```
 
 Let's take a look at how many frames we have:
 

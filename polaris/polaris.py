@@ -90,6 +90,7 @@ def cli():
               help=' '.join(
                   ['Ignore errors when decoding frames (Default: False)']))
 @click.option('--list_supported_satellites',
+              '-l',
               is_flag=True,
               help='List of supported satellites and corresponding decoders')
 # pylint: disable-msg=too-many-arguments
@@ -114,7 +115,7 @@ Try 'polaris fetch --help' for help.
 Error: Missing argument '{message}'."""
 
         if sat is None:
-            print(argument_error_message('SAT'))
+            LOGGER.error(argument_error_message('SAT'))
         elif output_file is None:
             LOGGER.error(argument_error_message('OUTPUT_FILE'))
 
