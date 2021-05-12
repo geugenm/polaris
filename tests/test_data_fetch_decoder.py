@@ -3,6 +3,7 @@ pytest testing framework for fetch module
 """
 import os
 from contextlib import contextmanager
+from copy import deepcopy
 
 import pytest
 
@@ -121,6 +122,26 @@ def test_write_or_merge_frame_length(strategy, exception_expected,
     with open(fullpath.as_posix()) as f_handle:
         new_obj.from_json(f_handle.read())
     assert len(new_obj.frames) == expected_new_frame_length
+
+
+@pytest.mark.parametrize(
+    "strategy, exception_expected",
+    [('merge', pytest.raises(data_fetch_decoder.SatelliteNamesNotMatching)),
+     ('overwrite', does_not_raise()),
+     ('error', pytest.raises(FileExistsError))])
+def test_write_or_merge_decoder_name(strategy, exception_expected, tmp_path,
+                                     polaris_dataset_obj):
+    """Test write_or_merge data writes with different decoder name
+    """
+    fullpath = tmp_path / 'frames.json'
+    create_fixture_file(polaris_dataset_obj, fullpath)
+
+    decoder_name = 'My Satellite'
+    new_obj = deepcopy(polaris_dataset_obj)
+    new_obj.metadata['satellite_name'] = decoder_name
+    with exception_expected:
+        data_fetch_decoder.write_or_merge(new_obj, fullpath.as_posix(),
+                                          strategy)
 
 
 @pytest.mark.datafiles(os.path.join(FIXTURE_DIR, "test_data"))
