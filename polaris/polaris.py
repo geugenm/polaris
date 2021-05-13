@@ -164,7 +164,7 @@ def cli_learn(input_file,
     else:
         LOGGER.warning(" ".join([
             "You must provide either --col",
-            "or --output-graph-file arguments!"
+            "or --output_graph_file arguments!"
         ]))
 
 
