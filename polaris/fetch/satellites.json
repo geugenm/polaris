@@ -238,5 +238,11 @@
     "name": "Quetzal-1",
     "decoder": "quetzal1",
     "normalizer": "Quetzal1"
+  },
+  {
+    "norad_id": "44878",
+    "name": "Opssat",
+    "decoder": "Opssat1",
+    "normalizer": "Opssat1"
   }
 ]

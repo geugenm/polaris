@@ -8,7 +8,7 @@ import logging
 import pandas as pd
 from dateutil import parser
 from vinvelivaanilai.space_weather import sw_file_fetch
-# from vinvelivaanilai.orbit import tle_fetch, predict_orbit
+from vinvelivaanilai.space_weather.sw_extractor import NoSpaceWeatherForIndex
 from vinvelivaanilai.storage import retrieve, store
 
 from polaris.fetch import fetch_import_telemetry
@@ -65,10 +65,14 @@ def fetch_sw(start_date, end_date, cache_dir, indices=SUPPORTED_INDICES):
         if index not in SUPPORTED_INDICES:
             raise ValueError("Index {} not supported yet!".format(index))
 
-        temp_df = sw_file_fetch.fetch_indices(index, start_date, end_date,
-                                              cache_dir)
-        # To prevent problems for learn
-        data[index] = temp_df.fillna(-1)
+        try:
+            temp_df = sw_file_fetch.fetch_indices(index, start_date, end_date,
+                                                  cache_dir)
+            # To prevent problems for learn
+            data[index] = temp_df.fillna(-1)
+        except NoSpaceWeatherForIndex as err:
+            LOGGER.info(err)
+            continue
 
     return data
 
