@@ -10,8 +10,8 @@ We also suggest that it would be best to try Polaris before contributing to it, 
 ---
 You’ll need to have a few things before we can start:
 
-- You need Linux or Unix-like environment or Windows(7+) with Python 3.6 - 3.8, but support is limited for Windows.
-  
+- You need Linux or Unix-like environment or Windows(7+) with Python 3.6 - 3.9, but support is limited for Windows.
+
 - You’ll need to be comfortable installing Python packages – we strongly recommend using `venv` to create a separate environment for Polaris. If you haven’t done this before, [this guide should help you out.](https://docs.python.org/3.8/library/venv.html)
 - You’ll need to be comfortable with the CLI.
 - You’ll need a good network connection, so you can download telemetry quickly.
@@ -49,7 +49,7 @@ You’ll need to have a few things before we can start:
    ```bash
     origin  https://gitlab.com/<your-user-name>/polaris.git (fetch)
     origin  https://gitlab.com/<your-user-name>/polaris.git (push)
-    ``` 
+    ```
 
    - Now type the command `git remote add upstream https://gitlab.com/librespacefoundation/polaris/polaris.git` this will set upstream as main directory.
    - Again type in command `git remote -v` to check if remote has been set up correctly.
@@ -145,18 +145,18 @@ You’ll need to have a few things before we can start:
     - While submitting a MR to polaris, it is highly recommended that changes are made to a separate branch on your fork rather than on the master branch.
 
     - Click [here](https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging) to learn more about branching
- 
+
  ## How to Report Bugs
  ---
 
- Please open a [new issue in the appropriate GitLab repository](https://gitlab.com/librespacefoundation/polaris/polaris/-/issues) with steps to reproduce the problem you're experiencing. 
+ Please open a [new issue in the appropriate GitLab repository](https://gitlab.com/librespacefoundation/polaris/polaris/-/issues) with steps to reproduce the problem you're experiencing.
 
  Any additional detail you can submit, such as *screenshots*, *text output*, and *both your expected and actual results* will help us to understand your request.
 
  ## How to Request Enhancements
  ---
 
- First, please refer to the applicable [GitLab repository](https://gitlab.com/librespacefoundation/polaris/polaris) and search the [repository's GitLab issues](https://gitlab.com/librespacefoundation/polaris/polaris/-/issues) to make sure your idea has not been (or is not still) considered. 
+ First, please refer to the applicable [GitLab repository](https://gitlab.com/librespacefoundation/polaris/polaris) and search the [repository's GitLab issues](https://gitlab.com/librespacefoundation/polaris/polaris/-/issues) to make sure your idea has not been (or is not still) considered.
 
  Then, please [create a new issue in the Gitlab repository](https://gitlab.com/librespacefoundation/polaris/polaris/-/issues/new?issue%5Bassignee_id%5D=&issue%5Bmilestone_id%5D=) describing your enhancement.
 

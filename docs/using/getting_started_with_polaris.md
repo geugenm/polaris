@@ -10,7 +10,7 @@ Want to get started with Polaris?  Great!  This page will help you do just that.
 
 # Quick install
 
-If you know what you're doing and have a python environment ready (Python version <= 3.8, latest version of `pip`), then you can run this to install the latest polaris release:
+If you know what you're doing and have a python environment ready (Python version <= 3.9, latest version of `pip`), then you can run this to install the latest polaris release:
 
 ```
 pip install polaris-ml
@@ -24,8 +24,7 @@ pip install git+https://gitlab.com/librespacefoundation/polaris/polaris
 # Prerequisites
 
 - (mandatory) A Python 3.x environment
-    - Polaris is known to work with python 3.7 and 3.8
-    - Polaris does not support python 3.9 yet, [we're almost there](https://gitlab.com/librespacefoundation/polaris/polaris/-/issues/124).
+    - Polaris is known to work with python 3.7, 3.8 and 3.9.
     - Python 2 is [not supported](https://www.python.org/doc/sunset-python-2/).
 
 - A Linux or Unix-like operating environment
