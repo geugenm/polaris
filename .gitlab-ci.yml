@@ -14,6 +14,7 @@ static:
   stage: static
   image: ${GITLAB_CI_IMAGE_PYTHON}
   before_script:
+    - apt-get update && apt-get install git-lfs
     - pip install "$GITLAB_CI_PYPI_TOX"
   script:
     - tox -e "flake8,isort,yapf,pylint"
@@ -27,6 +28,7 @@ build:
   stage: build
   image: ${GITLAB_CI_IMAGE_PYTHON}
   before_script:
+    - apt-get update && apt-get install git-lfs
     - pip install "$GITLAB_CI_PYPI_TOX"
   script:
     - rm -rf dist
@@ -40,6 +42,7 @@ test:
   stage: test
   image: ${GITLAB_CI_IMAGE_PYTHON}
   before_script:
+    - apt-get update && apt-get install git-lfs
     - pip install "$GITLAB_CI_PYPI_TOX"
   script:
     - tox -e "pytest"
@@ -62,6 +65,7 @@ deploy:
   stage: deploy
   image: ${GITLAB_CI_IMAGE_PYTHON}
   before_script:
+    - apt-get update && apt-get install git-lfs
     - pip install "$GITLAB_CI_PYPI_TWINE"
   script:
     - rm -rf dist
