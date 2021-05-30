@@ -35,6 +35,30 @@ def test_xcorr():
             correlator.importances_map.shape[0])
 
 
+def test_xcorr_no_feature_columns():
+    """
+    `pytest` entry point
+    """
+
+    test_df = pd.DataFrame({
+        "A": [4, 123, 24.2, 3.14, 1.41],
+        "B": [7, 0, 24.2, 3.14, 8.2]
+    })
+
+    configurator = CrossCorrelationConfigurator()
+    parameters = configurator.get_configuration()
+    metadata = {}
+    correlator = XCorr(metadata, parameters)
+    assert correlator.importances_map is None
+
+    correlator.fit(test_df)
+    assert correlator.importances_map is not None
+    assert isinstance(correlator.importances_map, pd.DataFrame)
+    assert correlator.importances_map.shape[0] == 2
+    assert (correlator.importances_map.shape[1] ==
+            correlator.importances_map.shape[0])
+
+
 def test_xcorr_pipeline():
     """
     `pytest` entry point

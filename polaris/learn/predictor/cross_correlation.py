@@ -41,18 +41,22 @@ class XCorr(BaseEstimator, TransformerMixin):
         self._feature_cleaner = Cleaner(
             dataset_metadata, cross_correlation_params.dataset_cleaning_params)
         self.xcorr_params = {
-            "random_state":
-            cross_correlation_params.random_state,
-            "test_size":
-            cross_correlation_params.test_size,
-            "gridsearch_scoring":
-            cross_correlation_params.gridsearch_scoring,
+            "random_state": cross_correlation_params.random_state,
+            "test_size": cross_correlation_params.test_size,
+            "gridsearch_scoring": cross_correlation_params.gridsearch_scoring,
             "gridsearch_n_splits":
             cross_correlation_params.gridsearch_n_splits,
-            "feature_columns":
-            dataset_metadata['analysis']['feature_columns']
-            if 'feature_columns' in dataset_metadata['analysis'] else []
         }
+        # If we're importing from CSV, the dataset_metadata may not
+        # have the feature_columns key.
+        try:
+            self.xcorr_params['feature_columns'] = dataset_metadata[
+                'analysis']['feature_columns']
+        except KeyError:
+            LOGGER.info(
+                "No feature_columns entry in metatdata, setting to empty array"
+            )
+            self.xcorr_params['feature_columns'] = []
 
         if cross_correlation_params.use_gridsearch:
             self.method = self.gridsearch
