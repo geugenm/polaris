@@ -11,6 +11,7 @@ from polaris import __version__
 from polaris.batch.batch import batch
 from polaris.convert.gexf import GEXFConverter
 from polaris.fetch.data_fetch_decoder import data_fetch_decode_normalize
+from polaris.fetch.list_satellites import list_satellites
 from polaris.learn.analysis import cross_correlate, feature_extraction
 from polaris.viz.server import launch_webserver
 
@@ -41,9 +42,9 @@ def cli():
 @click.command('fetch',
                context_settings={"ignore_unknown_options": True},
                short_help='Download data set(s)')
-@click.argument('sat', nargs=1, required=True)
+@click.argument('sat', nargs=1, required=False)
 @click.argument('output_file',
-                required=True,
+                required=False,
                 type=click.Path(resolve_path=True))
 @click.option('--start_date',
               '-s',
@@ -88,22 +89,44 @@ def cli():
               default=False,
               help=' '.join(
                   ['Ignore errors when decoding frames (Default: False)']))
+@click.option('--list_supported_satellites',
+              '-l',
+              is_flag=True,
+              help='List of supported satellites and corresponding decoders')
 # pylint: disable-msg=too-many-arguments
+# pylint: disable-msg=too-many-locals
 def cli_fetch(sat, start_date, end_date, output_file, cache_dir, import_file,
               existing_output_file_strategy, store_in_influxdb,
-              fetch_from_influxdb, skip_normalizer, ignore_errors):
+              fetch_from_influxdb, skip_normalizer, ignore_errors,
+              list_supported_satellites):
     """ Obtain telemetry data
 
     Retrieve and decode the telemetry corresponding to
     SAT (satellite name or NORAD ID) and stores in
     OUTPUT_FILE (path to the output folder)
     """
-    data_fetch_decode_normalize(
-        sat, start_date, end_date, output_file, cache_dir, import_file,
-        existing_output_file_strategy, skip_normalizer, ignore_errors, **{
-            "store_in_influxdb": store_in_influxdb,
-            "fetch_from_influxdb": fetch_from_influxdb,
-        })
+    if list_supported_satellites:
+        list_satellites()
+    else:
+
+        def argument_error_message(message):
+            return f"""Usage: polaris fetch [OPTIONS] SAT OUTPUT_FILE
+Try 'polaris fetch --help' for help.
+Error: Missing argument '{message}'."""
+
+        if sat is None:
+            LOGGER.error(argument_error_message('SAT'))
+        elif output_file is None:
+            LOGGER.error(argument_error_message('OUTPUT_FILE'))
+
+        else:
+            data_fetch_decode_normalize(
+                sat, start_date, end_date, output_file, cache_dir, import_file,
+                existing_output_file_strategy, skip_normalizer, ignore_errors,
+                **{
+                    "store_in_influxdb": store_in_influxdb,
+                    "fetch_from_influxdb": fetch_from_influxdb,
+                })
 
 
 @click.command('learn', short_help='Analyze data')
