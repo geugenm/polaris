@@ -3,3 +3,7 @@ ignore=_version.py,decoder
 
 [FORMAT]
 good-names=X,Y
+
+[SIMILARITIES]
+# Ignore imports when computing similarities.
+ignore-imports=yes
