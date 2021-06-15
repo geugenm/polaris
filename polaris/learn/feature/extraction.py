@@ -69,8 +69,12 @@ def extract_best_features(data_file,
     # Selecting target data and preparing the predictors
     data_target = None
     if target_column is not None:
-        data_target = data[target_column]
-        data = data.drop(target_column, axis=1)
+        # The following two pylint warnings are disabled until
+        # upstream problems with astroid are resolved.  See
+        # https://gitlab.com/librespacefoundation/polaris/polaris/-/issues/184
+        # for details.
+        data_target = data[target_column]  # pylint: disable=E1136
+        data = data.drop(target_column, axis=1)  # pylint: disable=E1101
     else:
         data_target = data[data.columns[0]]
         data = data.drop(data.columns[0], axis=1)
