@@ -96,12 +96,16 @@ class PolarisGraph(dict, JsonSerializable):
             })
 
     def __repr__(self):
-        return {"metadata": self.metadata, "graph": self.graph}
+        return self.to_json()
 
     def __str__(self):
-        return json.dumps(self.__repr__(), indent=constants.JSON_INDENT)
+        return self.to_json()
 
     def to_json(self):
         """Write a dataset object to JSON.
         """
-        return json.dumps(self.__repr__(), indent=constants.JSON_INDENT)
+        return json.dumps({
+            "metadata": self.metadata,
+            "graph": self.graph
+        },
+                          indent=constants.JSON_INDENT)
