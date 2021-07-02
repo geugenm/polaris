@@ -29,10 +29,10 @@ class PolarisDataset(dict, JsonSerializable):
             self.frames = [PolarisFrame(frames)]
 
     def __repr__(self):
-        return {"metadata": self.metadata, "frames": self.frames}
+        return self.to_json()
 
     def __str__(self):
-        return json.dumps(self.__repr__(), indent=constants.JSON_INDENT)
+        return self.to_json()
 
     def from_json(self, json_string):
         """Load a dataset object from a JSON string.
@@ -49,7 +49,11 @@ class PolarisDataset(dict, JsonSerializable):
     def to_json(self):
         """Write a dataset object to JSON.
         """
-        return json.dumps(self.__repr__(), indent=constants.JSON_INDENT)
+        return json.dumps({
+            "metadata": self.metadata,
+            "frames": self.frames
+        },
+                          indent=constants.JSON_INDENT)
 
     def to_pandas_dataframe(self):
         """Convert Polaris dataset to panda dataframe.
