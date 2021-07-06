@@ -263,10 +263,10 @@ Now we open the GEXF file in Gephi. After applying certain layouts and styles (F
 
 ## Detect Anomalies in Telemetry Data using `polaris behave`
 
-Another cool and useful thing that we can do with data that we fetched with `polaris fetch` is to analyse them and find out which parameters deflected from their predicted values. Run this command:
+Another cool and useful thing that we can do with data that we fetched with `polaris fetch` is to map behaviour and (possible) find anomalies. Traditionally, most satellite operators set out-of-limit (OOL) thresholds to detect anomalies in spacecraft operations. This has the issue that small changes in a large number of parameters, which could affect the spacecraft behaviour, are not detected. `polaris behave` uses an auto-encoder model to accurately map different behaviour of the spacecraft and provide data regarding "breakpoints", places where there is a transition from one expected behaviour to another expected/unexpected behaviour. To see analysis, run this command:
 
 ```
-polaris behave /tmp/LightSail2-graph.json \
+polaris behave /tmp/LightSail2-normalized_frames.json \
     --output_file /tmp/LightSail2-anomaly_analysis.json
 ```
 
@@ -276,16 +276,15 @@ Some background:
 
 - The `--cache_dir` option specifies the directory to store additional files such as models used, normalizer, training data and test data
 
-- The `--save_test_train_data` option decides weather to save test and train data into the cache or not
+- The `--save_test_train_data` is here to give you option to choose whether to store test and train data or not because as sometimes test and train data can be quite large so the you might not want to store the input data
 
-- The `--metrics_dir` option specifies the directory to anomaly metrics
+- The `--metrics_dir` option specifies the directory to save anomaly metrics
 
-- The `--detector_config_file` opiton specifies the path to custom config file to specify the custom config file for parameters of detector 
+- The `--detector_config_file` option specifies the path to custom config file to specify the custom config file for parameters of detector 
 
-- The `--csv_sep` option specifies the separator which will be used when separating the input data if in case the input is in csv format. It's default value is (,) .
+- The `--csv_sep` option specifies the separator when input data is in CSV format.  Its default value is a comma (",").
 
-- The `--output_file` provides the path in which output of the anomaly detector will be stored.
-
+- The `--output_file` provides the path in which output of the anomaly detector will be saved.
 
 # Conclusion
 
