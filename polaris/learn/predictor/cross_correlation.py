@@ -115,7 +115,7 @@ class XCorr(BaseEstimator, TransformerMixin):
                                desc="Columns",
                                unit="columns")
 
-        with start_run(run_name='cross_correlate'):
+        with start_run(run_name='cross_correlate', nested=True):
             self.mlf_logging()
             for column in parameters:
                 LOGGER.info(column)
