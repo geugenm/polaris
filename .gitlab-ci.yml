@@ -10,14 +10,38 @@ stages:
   - integration
   - deploy
 
-static:
+flake8:
   stage: static
   image: ${GITLAB_CI_IMAGE_PYTHON}
   before_script:
     - apt-get update && apt-get install git-lfs
     - pip install "$GITLAB_CI_PYPI_TOX"
   script:
-    - tox -e "flake8,isort,yapf,pylint"
+    - tox -e "flake8"
+isort:
+  stage: static
+  image: ${GITLAB_CI_IMAGE_PYTHON}
+  before_script:
+    - apt-get update && apt-get install git-lfs
+    - pip install "$GITLAB_CI_PYPI_TOX"
+  script:
+    - tox -e "isort"
+yapf:
+  stage: static
+  image: ${GITLAB_CI_IMAGE_PYTHON}
+  before_script:
+    - apt-get update && apt-get install git-lfs
+    - pip install "$GITLAB_CI_PYPI_TOX"
+  script:
+    - tox -e "yapf"
+pylint:
+  stage: static
+  image: ${GITLAB_CI_IMAGE_PYTHON}
+  before_script:
+    - apt-get update && apt-get install git-lfs
+    - pip install "$GITLAB_CI_PYPI_TOX"
+  script:
+    - tox -e "pylint"
 static_js_css:
   stage: static
   image: ${GITLAB_CI_IMAGE_NODE}
