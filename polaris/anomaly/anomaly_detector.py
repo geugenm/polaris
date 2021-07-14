@@ -6,6 +6,7 @@ import json
 import logging
 import math
 import os
+from pathlib import Path
 
 import joblib
 import pandas as pd
@@ -153,8 +154,9 @@ class AnomalyDetector():
 
         return history
 
-    def save_all(self, cache_dir, save_test_train_data=False):
-        """Save all important variables in files
+    def save_artifacts(self, cache_dir, save_test_train_data=False):
+        """Save important artifacts like normalizers,
+            models and test/train data
 
         :param save_test_train_data: weather to save test train data
         :param cache_dir: Path to cache directory
@@ -186,14 +188,16 @@ class AnomalyDetector():
         # Save the normalizer to preprocess data next time
         joblib.dump(normalizer, os.path.join(cache_dir, "normalizer.pkl"))
 
-    # pylint: disable-msg=no-self-use
-    def save_anomaly_metrics(self, cache_dir, anomaly_metrics):
+    @staticmethod
+    def save_anomaly_metrics(cache_dir, anomaly_metrics):
         """Save anomaly_metrics in a single file
 
         :param cache_dir: Path to cache directory
         :param anomaly_metrics: Dictionary containing other metrics
         """
 
+        # Make directory if not exists
+        Path(cache_dir).mkdir(parents=True, exist_ok=True)
         # Save all the anomaly metrics (training history, events)
         with open(os.path.join(cache_dir, "anomaly_metrics.json"),
                   "w") as json_file:
@@ -254,8 +258,11 @@ class AnomalyDetector():
             for row_no in range(len(col_data) - 1):
                 curr_item = abs(col_data[row_no])
                 next_item = abs(col_data[row_no + 1])
-                value_to_append = (curr_item - next_item) / math.sqrt(
-                    curr_item * next_item)
+                if (curr_item == 0 or next_item == 0):
+                    value_to_append = 0
+                else:
+                    value_to_append = (curr_item - next_item) / math.sqrt(
+                        curr_item * next_item)
                 distance_list.append(value_to_append)
 
             # detecting events with distance list
