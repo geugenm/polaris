@@ -14,6 +14,7 @@ from betsi.models import custom_autoencoder
 from betsi.predictors import distance_measure, get_events
 from betsi.preprocessors import convert_from_column, convert_to_column, \
     normalize_all_data
+from mlflow import log_metric, log_param
 from sklearn.model_selection import train_test_split
 
 from polaris.anomaly.anomaly_detector_parameters import \
@@ -149,9 +150,10 @@ class AnomalyDetector():
         test_results = autoencoder_model.evaluate(test_data,
                                                   test_data,
                                                   batch_size=batch_size)
+        log_metric("Test loss", test_results[0])
+        log_metric("Test MSE", test_results[1])
         LOGGER.info("Test loss: %s, Test MSE: %s", str(test_results[0]),
                     str(test_results[1]))
-
         return history
 
     def save_artifacts(self, cache_dir, save_test_train_data=False):
@@ -315,7 +317,7 @@ class AnomalyDetector():
         :return: anomaly_metrics containing history of training Data
         :rtype: dict
         """
-
+        self.mlf_params_logging()
         self.set_data(data)
 
         #  create and compile models
@@ -332,3 +334,9 @@ class AnomalyDetector():
             "history": history.history,
         }
         return anomaly_metrics
+
+    def mlf_params_logging(self):
+        """ Log the test_size and Model in mlflow
+        """
+        log_param('Test size', self.anomaly_detector_params.test_size_fraction)
+        log_param('Model', 'XGBRegressor')
