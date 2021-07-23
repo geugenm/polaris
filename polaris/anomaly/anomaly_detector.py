@@ -45,6 +45,20 @@ class AnomalyDetector():
         self._feature_cleaner = Cleaner(
             dataset_metadata, anomaly_detector_params.dataset_cleaning_params)
 
+    @staticmethod
+    def timeseries_sort_by_timestamp(data):
+        """
+        Function to sort the data according to timestamps indexes
+        :param data: DataFrame to sort
+        :type data: pd.DataFrame
+        :return: sorted data
+        :rtype: pd.DataFrame
+        """
+        sorted_data = data.sort_values(by="time")
+        sorted_data.reset_index(inplace=True)
+        del sorted_data['index']
+        return sorted_data
+
     def clean_data(self, data):
         """
         Function to clean data like
@@ -318,7 +332,8 @@ class AnomalyDetector():
         :rtype: dict
         """
         self.mlf_params_logging()
-        self.set_data(data)
+        sorted_data = self.timeseries_sort_by_timestamp(data)
+        self.set_data(sorted_data)
 
         #  create and compile models
         self.create_models()
