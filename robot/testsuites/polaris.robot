@@ -12,6 +12,7 @@ Library    ${LIBRARY_PATH}FileComparer.py
 ${LIBRARY_PATH}    libraries/
 ${NORMFILE}    normalized_frames_integration_test.json
 ${GRAPHFILE}    graph.json
+${GEXFFILE}    graph.gexf
 ${RESOURCES_PATH}    ${CURDIR}/../resources/
 ${CHECK_FILES_PATH}    ${RESOURCES_PATH}check_files/
 ${SATNOGS_NETWORK_URL}    http://127.0.0.1:56000/
@@ -99,6 +100,15 @@ Polaris batch
     Should Be True    ${FileCmpResult}
     Remove Directory    mlruns    recursive=True
     Remove File    ${NORMFILE}
+
+Polaris convert
+    ${Result}=    Run Process     polaris convert ${GRAPHFILE} ${GEXFFILE}    shell=True
+    Should Be Equal As Integers    ${Result.rc}    0
+    Should Not Contain    ${Result.stderr}    ERROR
+    File Should Exist    ${GEXFFILE}
+    ${FileCmpResult}=    Compare Files   ${GEXFFILE}    ${CHECK_FILES_PATH}convert_graph.gexf
+    Should Be True    ${FileCmpResult}
+    Remove File    ${GEXFFILE}
 
 Polaris viz
     ${Result}=    Run Process    polaris viz ${GRAPHFILE}    shell=True    timeout=10s
