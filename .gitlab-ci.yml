@@ -8,6 +8,7 @@ stages:
   - build
   - test
   - integration
+  - build_report_application
   - deploy
 
 flake8:
@@ -48,6 +49,7 @@ static_js_css:
   script:
     - npm install -g prettier
     - prettier --check "./polaris/**/*.html"
+
 build:
   stage: build
   image: ${GITLAB_CI_IMAGE_PYTHON}
@@ -85,6 +87,28 @@ integration:
       - robot/output
       - robot/gl.log
     expire_in: 1 week
+
+build_report_application:
+  stage: build_report_application
+  image: node:latest
+  script:
+    - cd polaris/reports
+    - git init
+    - git remote add origin https://gitlab.com/librespacefoundation/polaris/polaris-reports.git
+    - git fetch
+    - git branch main origin/main
+    - git checkout main
+    - yarn install
+    - unset CI
+    - yarn build
+    - cd ../../
+  artifacts:
+    paths:
+      - polaris/reports/build/
+  only:
+    refs:
+      - tags
+
 deploy:
   stage: deploy
   image: ${GITLAB_CI_IMAGE_PYTHON}

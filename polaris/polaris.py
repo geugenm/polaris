@@ -14,6 +14,7 @@ from polaris.convert.gexf import GEXFConverter
 from polaris.fetch.data_fetch_decoder import data_fetch_decode_normalize
 from polaris.fetch.list_satellites import list_satellites
 from polaris.learn.analysis import cross_correlate, feature_extraction
+from polaris.reports.server import launch_report_webserver
 from polaris.viz.server import launch_webserver
 
 # Logger configuration
@@ -298,11 +299,24 @@ def cli_behave(input_file, output_file, detector_config_file, cache_dir,
     )
 
 
+@click.command('report',
+               short_help='Show interactive graphs generated from '
+               '`polaris behave` command')
+@click.argument('input_file', nargs=1, required=True)
+def cli_report(input_file):
+    """
+    Launch webserver to show polaris reports
+    """
+    launch_report_webserver(input_file)
+
 # click doesn't automagically add the commands to the group
 # (and thus to the help output); you have to do it manually.
+
+
 cli.add_command(cli_fetch)
 cli.add_command(cli_learn)
 cli.add_command(cli_viz)
 cli.add_command(cli_batch)
 cli.add_command(cli_convert)
 cli.add_command(cli_behave)
+cli.add_command(cli_report)

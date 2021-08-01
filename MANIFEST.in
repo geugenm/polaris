@@ -7,3 +7,4 @@ include polaris/viz/favicon.ico
 include polaris/viz/style_sheet.css
 include polaris/viz/toast.css
 include polaris/viz/modal.css
+graft polaris/reports/build
