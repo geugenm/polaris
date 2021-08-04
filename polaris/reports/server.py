@@ -17,7 +17,6 @@ ANALYSIS_PATH = ""
 
 class CustomHTTPHandler(SimpleHTTPRequestHandler):
     """ HTTP Handler to serve report files
-    
     - Gives JSON input data file when get a request of analysis.json
     """
     def handle(self):
@@ -56,9 +55,9 @@ def launch_report_webserver(json_data_file):
     """
 
     target_dir = os.path.dirname(os.path.abspath(__file__))
-    target_dir = os.path.join(target_dir, "build")
+    target_dir = os.path.join(target_dir, "application/build")
 
-    # # pylint: disable=W0603
+    # pylint: disable-msg=global-statement
     global WWW_DIR
     WWW_DIR = target_dir
 

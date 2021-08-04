@@ -309,9 +309,9 @@ def cli_report(input_file):
     """
     launch_report_webserver(input_file)
 
+
 # click doesn't automagically add the commands to the group
 # (and thus to the help output); you have to do it manually.
-
 
 cli.add_command(cli_fetch)
 cli.add_command(cli_learn)

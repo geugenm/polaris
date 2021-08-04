@@ -91,20 +91,17 @@ integration:
 build_report_application:
   stage: build_report_application
   image: node:latest
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
   script:
-    - cd polaris/reports
-    - git init
-    - git remote add origin https://gitlab.com/librespacefoundation/polaris/polaris-reports.git
-    - git fetch
-    - git branch main origin/main
-    - git checkout main
+    - cd polaris/reports/application
     - yarn install
     - unset CI
     - yarn build
-    - cd ../../
+    - cd ../../../
   artifacts:
     paths:
-      - polaris/reports/build/
+      - polaris/reports/application/build/
   only:
     refs:
       - tags

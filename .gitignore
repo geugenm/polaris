@@ -23,6 +23,3 @@ polaris_ml.egg-info/
 .coverage.*
 /docs/_build/
 /.vscode
-/polaris/reports/*
-!/polaris/reports/server.py
-!/polaris/reports/__init__.py
