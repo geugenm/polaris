@@ -98,7 +98,7 @@ We push new releases to PyPi as appropriate, but work is continuing on Polaris a
 From your [polaris dedicated python environment](#how-to-virtual-environment):
 ```{code-block} bash
 (.polarisenv) $ pip install --upgrade pip # if not already done
-(.polarisenv) $ git clone https://gitlab.com/librespacefoundation/polaris/polaris.git
+(.polarisenv) $ git clone --recurse-submodules https://gitlab.com/librespacefoundation/polaris/polaris.git
 (.polarisenv) $ cd polaris
 (.polarisenv) $ pip install -e .
 ```
