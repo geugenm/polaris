@@ -33,7 +33,7 @@ You’ll need to have a few things before we can start:
    - Type the command git clone <your-fork-url>.git and hit enter.
    - Wait for few seconds till the project gets copied.
    ```bash
-      $ git clone https://gitlab.com/librespacefoundation/polaris/polaris.git
+      $ git clone https://gitlab.com/librespacefoundation/polaris/polaris.git --recurse-submodules
       Cloning into 'polaris'...
       remote: Counting objects: 179, done.
       remote: Total 179 (delta 0), reused 0 (delta 0), pack-reused 179
@@ -69,7 +69,7 @@ You’ll need to have a few things before we can start:
 
    ```bash
    # Clone the repo
-   $ git clone https://gitlab.com/librespacefoundation/polaris/polaris.git
+   $ git clone https://gitlab.com/librespacefoundation/polaris/polaris.git --recurse-submodules
 
    # Activate the virtual environment:
    $ source .venv/bin/activate
@@ -139,6 +139,16 @@ You’ll need to have a few things before we can start:
    ```
 
    You can learn more about tox [here](https://tox.readthedocs.io/en/latest/).
+
+   If you want to develop polaris reports, then you have to install the dependencies with yarn. To do that run the following:
+   ```
+   cd polaris/reports/application
+   yarn build
+   ```
+   To know more about installation of yarn, you can refer to [yarn installation page](https://classic.yarnpkg.com/en/docs/install).
+
+   For more info on setup and developing `polaris reports`, you can checkout [https://gitlab.com/librespacefoundation/polaris/polaris-reports/-/blob/main/README.md](https://gitlab.com/librespacefoundation/polaris/polaris-reports/-/blob/main/README.md)
+
 
 5. ### **Creating a branch**:
 
