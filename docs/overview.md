@@ -29,3 +29,7 @@ Polaris is split into four parts:
   that dependency graph.
 
 - `polaris convert` will convert graph output from `polaris learn` to another file format (like `.gexf`).
+
+- `polaris behave` will detect anomalies in telemetry data and produce a json report of all the data and anomaly produced.
+
+- `polaris report` will show the results obtained by `polaris behave` in web-based interactive formats like anomaly visualisation, individual telemetry comparison etc.

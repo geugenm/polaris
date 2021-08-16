@@ -12,6 +12,7 @@ Polaris has a number of different commands:
 - `polaris viz` is an interactive, browser-based 3D visualization of that dependency graph.
 - `polaris convert` will convert graph output from `polaris learn` to another file format (like `.gexf`).
 - `polaris behave` will detect anomalies in telemetry data and produce a json report of all the data and anomaly produced.
+- `polaris report` will show the results obtained by `polaris behave` in web-based interactive formats like anomaly visualisation, individual telemetry comparison etc.
 
 * For more details about how Polaris works, see [Overview](Overview), or watch our presentation at the [2020 Cubesat Developer's Workshop](https://www.youtube.com/watch?v=Jp7GuA_zjlA).
 

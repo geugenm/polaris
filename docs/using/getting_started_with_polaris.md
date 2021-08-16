@@ -101,6 +101,9 @@ From your [polaris dedicated python environment](#how-to-virtual-environment):
 (.polarisenv) $ git clone --recurse-submodules https://gitlab.com/librespacefoundation/polaris/polaris.git
 (.polarisenv) $ cd polaris
 (.polarisenv) $ pip install -e .
+(.polarisenv) $ cd polaris/reports/application
+(.polarisenv) $ yarn
+(.polarisenv) $ yarn build
 ```
 
 # Running your first analysis:  LightSail-2
@@ -285,6 +288,23 @@ Some background:
 - The `--csv_sep` option specifies the separator when input data is in CSV format.  Its default value is a comma (",").
 
 - The `--output_file` provides the path in which output of the anomaly detector will be saved.
+
+## Visualisation of anomaly detection using `polaris report`
+Now, we're ready to look our detected anomalies and satellite graphs. Run this command:
+```
+polaris report /tmp/LightSail2-anomaly_analysis.json
+```
+This will open up a web server on your machine. Open your browser and navigate to http://localhost:8080. Here's what you should be seeing:
+
+![](https://gitlab.com/librespacefoundation/polaris/polaris/uploads/c98be754570383f7306900eae23ca9e4/ezgif.com-gif-maker.gif)
+
+There are really a lot of cool feature in it. 
+- You can see the highlights/summary of the input telemetry.
+- You can also look at the stacked graph of all the telemetry including the anomalies as annotations.
+- There is support for both light and dark theme.
+- You can compare the data of individual telemetry with each other in side-by-side and merged mode.
+- You can also export the stacked graph in pnt/svg format.
+
 
 # Conclusion
 
