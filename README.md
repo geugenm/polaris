@@ -30,9 +30,9 @@ polaris/               - Project source code
     common/            - Modules common to all of Polaris
     convert/           - Module to convert graph output from learn to other file formats
     fetch/             - Module to fetch and prepare data for the analysis
-    learn/             - Module to perform the data analysis
-    reports/           - Module to visualize the anomaly detection results
-    viz/               - Module to visualize the analysis results
+    learn/             - Module to generate the dependency graph
+    reports/           - Module to visualize the anomaly detection
+    viz/               - Module to visualize the dependency graph
     polaris.py         - Polaris entry point
 
 tests/                 - Project unit tests
@@ -133,40 +133,40 @@ It is possible to override the default parameters used in the ai processes of Po
 
 - configuration for Learn cross correlation process (generating graph) :
 
-  ``` JSON
-  {
-    "use_gridsearch": false,
-    "random_state": 43,
-    "test_size": 0.2,
-    "gridsearch_scoring": "neg_mean_squared_error",
-    "gridsearch_n_splits": 6,
-    "dataset_cleaning_params": {
-      "col_max_na_percentage": 100,
-      "row_max_na_percentage": 100
-      },
-    "model_cpu_params": {
-      "objective": "reg:squarederror",
-      "n_estimators": 81,
-      "learning_rate": 0.1,
-      "n_jobs": 1,
-      "predictor": "cpu_predictor",
-      "tree_method": "auto",
-      "max_depth": 8
-      },
-    "model_params": {
-      "objective": "reg:squarederror",
-      "n_estimators": 80,
-      "learning_rate": 0.1,
-      "n_jobs": 1,
-      "max_depth": 8
-      }
-  }
-  ```
+``` JSON
+{
+  "use_gridsearch": false,
+  "random_state": 43,
+  "test_size": 0.2,
+  "gridsearch_scoring": "neg_mean_squared_error",
+  "gridsearch_n_splits": 6,
+  "dataset_cleaning_params": {
+    "col_max_na_percentage": 100,
+    "row_max_na_percentage": 100
+    },
+  "model_cpu_params": {
+    "objective": "reg:squarederror",
+    "n_estimators": 81,
+    "learning_rate": 0.1,
+    "n_jobs": 1,
+    "predictor": "cpu_predictor",
+    "tree_method": "auto",
+    "max_depth": 8
+    },
+  "model_params": {
+    "objective": "reg:squarederror",
+    "n_estimators": 80,
+    "learning_rate": 0.1,
+    "n_jobs": 1,
+    "max_depth": 8
+    }
+}
+```
 
-  To use it, add the `-l` or `learn_config_file` command line parameter when calling learn:
+To use it, add the `-l` or `learn_config_file` command line parameter when calling learn:
 
-  ```bash
-  $ polaris learn -g /tmp/graph.json /tmp/normalized_frames -l ../xcorr_cfg.json
+```bash
+$ polaris learn -g /tmp/graph.json /tmp/normalized_frames -l ../xcorr_cfg.json
 
 - configuration for detect anomalies
   ```

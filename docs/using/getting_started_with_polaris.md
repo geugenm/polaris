@@ -298,13 +298,12 @@ This will open up a web server on your machine. Open your browser and navigate t
 
 ![](https://gitlab.com/librespacefoundation/polaris/polaris/uploads/c98be754570383f7306900eae23ca9e4/ezgif.com-gif-maker.gif)
 
-There are really a lot of cool feature in it. 
+There are really a lot of cool features in it. 
 - You can see the highlights/summary of the input telemetry.
 - You can also look at the stacked graph of all the telemetry including the anomalies as annotations.
 - There is support for both light and dark theme.
 - You can compare the data of individual telemetry with each other in side-by-side and merged mode.
-- You can also export the stacked graph in pnt/svg format.
-
+- You can also export the stacked graph in png/svg format.
 
 # Conclusion
 
