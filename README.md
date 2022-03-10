@@ -25,12 +25,14 @@ If you are a developer, and want to contribute to Polaris check out [CONTRIBUTE.
 contrib/               - code that is not directly dependent on Polaris, but is used in the project
 docs/                  - Some documentation on the project (though more is in the wiki)
 polaris/               - Project source code
-    common/            - Modules common to all of Polaris
-    fetch/             - Module to fetch and prepare data for the analysis
-    viz/               - Module to visualize the analysis results
-    learn/             - Module to perform the data analysis
+    anomaly/           - modules to detect anomaly in telemetry
     batch/             - Module to perform batch operations
+    common/            - Modules common to all of Polaris
     convert/           - Module to convert graph output from learn to other file formats
+    fetch/             - Module to fetch and prepare data for the analysis
+    learn/             - Module to generate the dependency graph
+    reports/           - Module to visualize the anomaly detection
+    viz/               - Module to visualize the dependency graph
     polaris.py         - Polaris entry point
 
 tests/                 - Project unit tests
@@ -77,10 +79,12 @@ Options:
 
 Commands:
   batch     Run polaris commands in batch mode
+  behave    Detect anomalies and output reports of it
   convert   Convert polaris graph file (supported formats: gexf)
   fetch     Download data set(s)
   learn     Analyze data
-  viz       Displaying results
+  report    Show interactive graphs generated from `polaris behave` command
+  viz       Display results
 
 # To fetch and decode data from the SatNOGS network and space weather sources, run:
 $ (.venv) polaris fetch -s 2019-08-10 -e 2019-10-5 --cache_dir /tmp/LightSail_2 LightSail-2 /tmp/normalized_frames.json
@@ -127,7 +131,7 @@ $ (.venv) polaris viz /tmp/new_graph.json
 
 It is possible to override the default parameters used in the ai processes of Polaris by your own using configuration files.
 
-- Learn cross correlation process (generating graph) :
+- configuration for Learn cross correlation process (generating graph) :
 
 ``` JSON
 {
@@ -163,6 +167,27 @@ To use it, add the `-l` or `learn_config_file` command line parameter when calli
 
 ```bash
 $ polaris learn -g /tmp/graph.json /tmp/normalized_frames -l ../xcorr_cfg.json
+
+- configuration for detect anomalies
+  ```
+  {
+    "window_size": 2,
+    "stride": 1,
+    "optimizer": "adam",
+    "loss": "mean_squared_error",
+    "metrics": ["MSE"],
+    "test_size_fraction": 0.2,
+    "number_of_epochs": 20,
+    "noise_margin_per": 50,
+    "batch_size": 128,
+    "network_dimensions": [64, 32],
+    "activations": ["relu"],
+    "dataset_cleaning_params": {
+        "col_max_na_percentage": 100,
+        "row_max_na_percentage": 100
+    },
+  }
+  ```
 
 ## Batch operations
 
