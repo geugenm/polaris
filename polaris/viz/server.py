@@ -19,6 +19,7 @@ WWW_DIR = "/tmp/"
 
 class CustomHTTPHandler(http.server.SimpleHTTPRequestHandler):
     """ HTTP Handler to serve viz directory """
+
     def handle(self):
         # pylint: disable=W0603
         global WWW_DIR
