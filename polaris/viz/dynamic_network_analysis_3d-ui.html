@@ -1,82 +1,74 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WINDOW_TITLE_HERE</title>
-    <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
-    <script src="https://unpkg.com/d3@5.0.0/dist/d3.min.js"></script>
-    <link href="style_sheet.css" rel="stylesheet" type="text/css"/>
-    <link href="toast.css" rel="stylesheet" type="text/css"/>
-    <link href="modal.css" rel="stylesheet" type="text/css"/>
-
-    <script src="https://unpkg.com/three"></script>
-    <script src="https://unpkg.com/three-spritetext"></script>
-    <script src="https://unpkg.com/3d-force-graph"></script>
-    <link href="favicon.ico" rel="shortcut icon" type="image/jpg"/>
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="style_sheet.css">
+    <link rel="stylesheet" href="toast.css">
+    <link rel="stylesheet" href="modal.css">
+    <script src="https://unpkg.com/d3@5.0.0/dist/d3.min.js" defer></script>
+    <script src="https://unpkg.com/three" defer></script>
+    <script src="https://unpkg.com/three-spritetext" defer></script>
+    <script src="https://unpkg.com/3d-force-graph" defer></script>
 </head>
-
-<body onresize="set_size()">
+<body>
 <div id="graph-hud"></div>
 <div id="graph-search">
-    <input
-            id="graph-search-input"
-            list="nodeslist"
-            placeholder="search"
-            type="text"
-    />
+    <label for="graph-search-input">Search:</label>
+    <input id="graph-search-input" type="search" placeholder="search"
+           list="nodeslist">
 </div>
 <div id="toast"></div>
-
-<div class="modal" id="modal-help">
-    <div class="modal-dialog" id="modal-help">
+<div id="modal-help" class="modal">
+    <div class="modal-dialog" role="dialog" aria-labelledby="modal-help-title">
         <header class="modal-header">
-            <strong>List of All shortcuts:</strong>
-            <button
-                    aria-label="close modal"
-                    class="close-modal"
-                    data-close="modal-help"
-            >
-                ✕
+            <h2 id="modal-help-title">List of All shortcuts:</h2>
+            <button class="close-modal" data-close="modal-help"
+                    aria-label="close modal">✕
             </button>
         </header>
         <section class="modal-content">
-            <p><strong>Ctrl + / :</strong> Toggle unconnected node visibility
-            </p>
-            <p><strong>H :</strong> Open the shortcuts menu</p>
-            <p><strong>Esc :</strong> Close the menu</p>
-            <p><strong>L :</strong> Toggles the label of nodes</p>
-            <br/>
-            <header style="text-align: center">
-                <strong>Searching shortcuts:</strong>
-            </header>
-            <br/>
-            <p>
-                <strong>Ctrl + Enter :</strong> highlights node and cycles
-                through
-                colours
-            </p>
-            <p>
-                <strong>Ctrl + Shift + Enter :</strong> reset colour
-                highlighting
-            </p>
-            <p><strong>Enter :</strong> zoom in to selected node</p>
+            <h3>General shortcuts:</h3>
+            <ul>
+                <li><strong>Ctrl + / :</strong> Toggle unconnected node
+                    visibility
+                </li>
+                <li><strong>H :</strong> Open the shortcuts menu</li>
+                <li><strong>Esc :</strong> Close the menu</li>
+                <li><strong>L :</strong> Toggles the label of nodes</li>
+            </ul>
+            <h3>Searching shortcuts:</h3>
+            <ul>
+                <li><strong>Ctrl + Enter :</strong> highlights node and cycles
+                    through colours
+                </li>
+                <li><strong>Ctrl + Shift + Enter :</strong> reset colour
+                    highlighting
+                </li>
+                <li><strong>Enter :</strong> zoom in to selected node</li>
+            </ul>
         </section>
     </div>
 </div>
-
 <datalist id="nodeslist"></datalist>
 <div id="3d-graph">
-    <div style="position: relative">
-        <div>
-            <div class="scene-nav-info">
-                Left-click: rotate, Mouse-wheel/middle-click: zoom, Right-click:
-                pan, Shift-Click on node: MoveAt node
-            </div>
-        </div>
+    <div class="scene-nav-info">
+        <p>Interactions:</p>
+        <ul>
+            <li>Left-click: rotate</li>
+            <li>Mouse-wheel/middle-click: zoom</li>
+            <li>Right-click: pan</li>
+            <li>Shift-Click on node: MoveAt node</li>
+        </ul>
     </div>
 </div>
-
-<script src="polaris.js"></script>
-<script language="javascript">
-    createGraph("JSON_DATA_FILE_HERE");
+<script src="polaris.js" defer></script>
+<script defer>
+    document.addEventListener('DOMContentLoaded', function () {
+        createGraph("JSON_DATA_FILE_HERE");
+    });
 </script>
 </body>
 </html>
