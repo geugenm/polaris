@@ -1,5 +1,5 @@
 include versioneer.py
-include polaris/_version.py
+include polaris/__version__.py
 include polaris/fetch/satellites.json
 include polaris/viz/dynamic_network_analysis_3d-ui.html
 include polaris/viz/polaris.js

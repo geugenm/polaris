@@ -1,5 +1,5 @@
 [MASTER]
-ignore=_version.py,decoder
+ignore=__version__.py,decoder
 
 [FORMAT]
 good-names=X,Y

@@ -1,4 +1,4 @@
-polaris/_version.py
+polaris/__version__.py
 .tox
 build
 versioneer.py
