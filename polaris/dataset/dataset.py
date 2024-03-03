@@ -62,7 +62,11 @@ class PolarisDataset(dict, JsonSerializable):
         for frame in self.frames:
             fields = {}
             for field in frame['fields']:
-                fields[field] = frame['fields'][field]['value']
+                try:
+                    fields[field] = frame['fields'][field]['value']
+                except Exception as e:
+                    print("Exception: {}, field: {}".format(e, field))
+                    continue
 
             if "time" not in fields:
                 fields['time'] = pd.to_datetime(frame['time']).timestamp()
