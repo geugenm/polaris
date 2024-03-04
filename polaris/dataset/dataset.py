@@ -14,6 +14,7 @@ from polaris.dataset.metadata import PolarisMetadata
 class PolarisDataset(dict, JsonSerializable):
     """Class for dataset frames
     """
+
     def __init__(self, metadata=None, frames=None):
         """Initialize a PolarisDataset object
 
@@ -53,7 +54,7 @@ class PolarisDataset(dict, JsonSerializable):
             "metadata": self.metadata,
             "frames": self.frames
         },
-                          indent=constants.JSON_INDENT)
+            indent=constants.JSON_INDENT)
 
     def to_pandas_dataframe(self):
         """Convert Polaris dataset to panda dataframe.
@@ -66,6 +67,8 @@ class PolarisDataset(dict, JsonSerializable):
                     fields[field] = frame['fields'][field]['value']
                 except Exception as e:
                     print("Exception: {}, field: {}".format(e, field))
+                    print("frame['fields'][field]: {}".format(
+                        frame['fields'][field]))
                     continue
 
             if "time" not in fields:
