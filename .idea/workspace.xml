@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1a518196-6172-4abb-aef2-cc97c87fea79" name="Changes" comment="Fixed html, more prettier">
-      <change beforePath="$PROJECT_DIR$/contrib/normalizers/grifex.py" beforeDir="false" afterPath="$PROJECT_DIR$/contrib/normalizers/grifex.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/dataset/dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/polaris/dataset/dataset.py" afterDir="false" />
-    </list>
+    <list default="true" id="1a518196-6172-4abb-aef2-cc97c87fea79" name="Changes" comment="Fixed html, more prettier" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
