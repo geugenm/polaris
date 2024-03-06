@@ -1,0 +1,24 @@
+"""
+Normalizer class for <satellite_name> satellite
+
+Converts raw digit values, decoded by satnogs-decoders,  into
+normalized ("Si") units using the equations provided in the telemetry
+documentation.
+"""
+from contrib.normalizers.common import Field, Normalizer
+
+
+class <satellite_name>(Normalizer):
+    """
+    The class providing equations for the satellite telemetry
+    """
+
+    def __init__(self):
+        super(<satellite_name>, self).__init__()
+        self.normalizers = [  # pylint: disable=R0801
+            <fields>
+        ]
+
+    def validate_frame(self, frame):
+        """ Validate frames for <satellite_name> """
+        pass

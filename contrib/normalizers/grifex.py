@@ -14,7 +14,7 @@ class Grifex(Normalizer):
     """
     def __init__(self):
         super(Grifex, self).__init__()
-        self.normalizers = [
+        self.normalizers = [  # pylint: disable=R0801
             Field('dest_callsign', lambda x: x, None, 'Dest Callsign'),
             Field('src_callsign', lambda x: x, None, 'Src Callsign'),
             Field('src_ssid', lambda x: x, None, 'Src Ssid'),
@@ -199,14 +199,4 @@ class Grifex(Normalizer):
             Field('variable_8', lambda x: x, None, 'Variable 8'),
             Field('variable_9', lambda x: x, None, 'Variable 9'),
             Field('variable_10', lambda x: x, None, 'Variable 10'),
-        ]  # pylint: disable=R0801
-
-    def validate_frame(self, frame):
-        """ Validate frames for LightSail-2
-
-            The source callsign for this satellite is KK6HIT. [citation needed]
-        """
-        try:
-            return frame['fields']['spacecraft']['value'].lower() == 'grifex'
-        except (KeyError, AttributeError):
-            return False
+        ]
