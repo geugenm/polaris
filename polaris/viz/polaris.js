@@ -456,7 +456,7 @@ document.addEventListener("click", (evt) => {
 });
 
 setTimeout(function () {
-    showToast("press h to see all shortcuts");
+    showToast("press 'ctrl + h' to see all shortcuts");
 }, 1000);
 
 // Close the modal if clicked outside of it
