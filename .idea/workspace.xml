@@ -4,122 +4,292 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1a518196-6172-4abb-aef2-cc97c87fea79" name="Changes" comment="Fixed html, more prettier" />
+    <list default="true" id="be201a56-bd43-47a4-8c53-eb2fb600b445" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/polaris-ml-sandbox.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/3/f/3f5d3169edaa6e46c6cd4e6f781bbf256ad36ee0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/4/5/45be532082b22a33bd85f5e951fc3d3b24163654" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/5/f/5f245e4132974304a09817ea7eee5a4ddb9be9db" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/6/1/613f7bd5ec4f4cbbe0691d78473c02614dfdb7ee" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/6/a/6aa65dd073ed41e0011ec747306e973229e5179c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/7/1/71ff5dc7d19ee7a6ccfad37adae1e8f702aeb878" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/7/2/72ca696ee5c93359d193235b35b5fae12c1237f8" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/9/0/90a59f9535032ea1610acc50d6e6b5bd2baf2d93" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/9/c/9c4b1c7e47c2b23c858403a97d1e969e23054c49" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/b/a/ba27ef81fc38dcb50c508500ac7c193c746b8f39" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/e/c/ecb049d29b018a6a6f7143b96daa7eafee4bfd98" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/3/f/3f5d3169edaa6e46c6cd4e6f781bbf256ad36ee0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/4/5/45be532082b22a33bd85f5e951fc3d3b24163654" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/5/f/5f245e4132974304a09817ea7eee5a4ddb9be9db" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/6/1/613f7bd5ec4f4cbbe0691d78473c02614dfdb7ee" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/6/a/6aa65dd073ed41e0011ec747306e973229e5179c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/7/1/71ff5dc7d19ee7a6ccfad37adae1e8f702aeb878" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/7/2/72ca696ee5c93359d193235b35b5fae12c1237f8" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/9/0/90a59f9535032ea1610acc50d6e6b5bd2baf2d93" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/9/c/9c4b1c7e47c2b23c858403a97d1e969e23054c49" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/b/a/ba27ef81fc38dcb50c508500ac7c193c746b8f39" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/e/c/ecb049d29b018a6a6f7143b96daa7eafee4bfd98" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/code_flow_diagram/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/code_flow_diagram/polaris_code_flow.plantuml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_static/.keep" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/conf.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/index.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/overview.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/using/getting_started_with_polaris.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/robot/resources/44420-266-20210409T074243Z-all.csv" beforeDir="false" afterPath="$PROJECT_DIR$/robot/resources/44420-266-20210409T074243Z-all.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.cfg" beforeDir="false" afterPath="$PROJECT_DIR$/setup.cfg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/conftest.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_anomaly_detector.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_anomaly_detector_configurator.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_anomaly_detector_parameters.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_anomaly_output.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_batch.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_cleaner_configurator.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_configuration.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_contrib_normalizers_common.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_convert/graph_empty.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_convert/graph_graph_key_missing.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_convert/graph_links_key_missing.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_convert/graph_nodes_key_missing.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_convert/graph_ok.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_convert/graph_ok_min.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_convert_gexf.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/2020Q1_DGD.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/2020Q1_DPD.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/2020Q1_DSD.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836373_2020-03-10T00-56-43" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836373_2020-03-10T00-56-43.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836373_2020-03-10T00-56-57" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836373_2020-03-10T00-56-57.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836373_2020-03-10T00-57-04" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836373_2020-03-10T00-57-04.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836373_2020-03-10T00-57-11" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836373_2020-03-10T00-57-11.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836373_2020-03-10T00-58-00" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836373_2020-03-10T00-58-00.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836373_2020-03-10T00-59-17" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836373_2020-03-10T00-59-17.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836373_2020-03-10T00-59-52" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836373_2020-03-10T00-59-52.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836373_2020-03-10T01-00-06" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836373_2020-03-10T01-00-06.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836373_2020-03-10T01-00-55" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836373_2020-03-10T01-00-55.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836373_2020-03-10T01-01-02" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836373_2020-03-10T01-01-02.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836374_2020-03-10T06-10-11" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836374_2020-03-10T06-10-11.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836374_2020-03-10T06-10-18" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836374_2020-03-10T06-10-18.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836374_2020-03-10T06-11-00" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836374_2020-03-10T06-11-00.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836374_2020-03-10T06-11-07" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836374_2020-03-10T06-11-07.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836374_2020-03-10T06-11-14" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836374_2020-03-10T06-11-14.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836374_2020-03-10T06-11-21" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836374_2020-03-10T06-11-21.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836374_2020-03-10T06-11-28" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836374_2020-03-10T06-11-28.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836383_2020-03-10T15-49-25" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836383_2020-03-10T15-49-25.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836383_2020-03-10T15-49-32" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836383_2020-03-10T15-49-32.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836383_2020-03-10T15-49-39" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836383_2020-03-10T15-49-39.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836383_2020-03-10T15-50-07" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836383_2020-03-10T15-50-07.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836383_2020-03-10T15-50-14" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836383_2020-03-10T15-50-14.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836383_2020-03-10T15-50-21" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836383_2020-03-10T15-50-21.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836383_2020-03-10T15-50-28" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836383_2020-03-10T15-50-28.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836383_2020-03-10T15-50-35" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836383_2020-03-10T15-50-35.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836428_2020-03-10T16-18-31" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836428_2020-03-10T16-18-31.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836430_2020-03-10T19-47-18" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836430_2020-03-10T19-47-18.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836431_2020-03-10T21-35-08" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836431_2020-03-10T21-35-08.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836432_2020-03-10T23-24-48" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836432_2020-03-10T23-24-48.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836445_2020-03-10T09-00-43" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836445_2020-03-10T09-00-43.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836446_2020-03-10T10-45-20" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836446_2020-03-10T10-45-20.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836446_2020-03-10T10-45-41" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836446_2020-03-10T10-45-41.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836448_2020-03-10T16-02-36" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836448_2020-03-10T16-02-36.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836469_2020-03-10T06-19-31" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836469_2020-03-10T06-19-31.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836469_2020-03-10T06-20-55" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836469_2020-03-10T06-20-55.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836469_2020-03-10T06-21-02" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836469_2020-03-10T06-21-02.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836469_2020-03-10T06-21-09" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836469_2020-03-10T06-21-09.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836469_2020-03-10T06-21-16" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836469_2020-03-10T06-21-16.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836469_2020-03-10T06-21-23" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836469_2020-03-10T06-21-23.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836469_2020-03-10T06-21-30" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836469_2020-03-10T06-21-30.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836469_2020-03-10T06-21-37" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836469_2020-03-10T06-21-37.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836469_2020-03-10T06-21-44" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836469_2020-03-10T06-21-44.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836469_2020-03-10T06-21-51" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836469_2020-03-10T06-21-51.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836469_2020-03-10T06-21-58" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836469_2020-03-10T06-21-58.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836469_2020-03-10T06-22-12" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836469_2020-03-10T06-22-12.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836469_2020-03-10T06-22-40" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836469_2020-03-10T06-22-40.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836470_2020-03-10T18-44-10" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836470_2020-03-10T18-44-10.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836470_2020-03-10T18-44-17" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836470_2020-03-10T18-44-17.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836470_2020-03-10T18-44-24" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836470_2020-03-10T18-44-24.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836470_2020-03-10T18-45-48" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836470_2020-03-10T18-45-48.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836470_2020-03-10T18-45-55" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836470_2020-03-10T18-45-55.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836470_2020-03-10T18-46-02" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836470_2020-03-10T18-46-02.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836470_2020-03-10T18-46-09" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836470_2020-03-10T18-46-09.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836470_2020-03-10T18-46-16" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836470_2020-03-10T18-46-16.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836470_2020-03-10T18-46-51" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836470_2020-03-10T18-46-51.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836470_2020-03-10T18-47-01" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836470_2020-03-10T18-47-01.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836493_2020-03-10T19-39-54" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1836493_2020-03-10T19-39-54.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842834_2020-03-10T19-48-38" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842834_2020-03-10T19-48-38.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842834_2020-03-10T19-48-45" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842834_2020-03-10T19-48-45.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842834_2020-03-10T19-50-09" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842834_2020-03-10T19-50-09.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842834_2020-03-10T19-50-16" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842834_2020-03-10T19-50-16.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842834_2020-03-10T19-50-23" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842834_2020-03-10T19-50-23.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842834_2020-03-10T19-50-30" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842834_2020-03-10T19-50-30.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842834_2020-03-10T19-53-11" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842834_2020-03-10T19-53-11.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842834_2020-03-10T19-53-25" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842834_2020-03-10T19-53-25.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842834_2020-03-10T19-53-32" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842834_2020-03-10T19-53-32.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842835_2020-03-10T21-31-56" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842835_2020-03-10T21-31-56.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842835_2020-03-10T21-32-03" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842835_2020-03-10T21-32-03.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842835_2020-03-10T21-32-10" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842835_2020-03-10T21-32-10.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842835_2020-03-10T21-32-17" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842835_2020-03-10T21-32-17.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842835_2020-03-10T21-32-31" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842835_2020-03-10T21-32-31.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842835_2020-03-10T21-34-44" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842835_2020-03-10T21-34-44.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842835_2020-03-10T21-35-12" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842835_2020-03-10T21-35-12.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842835_2020-03-10T21-35-19" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842835_2020-03-10T21-35-19.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842836_2020-03-10T23-23-56" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842836_2020-03-10T23-23-56.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842836_2020-03-10T23-24-03" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/data_2020-03-10_00-00-00/demoddata__03-10-2020T00-00-00__03-11-2020T00-00-00/data_1842836_2020-03-10T23-24-03.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/decoded_frames.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/merged_frames.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data/normalized_frames.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data_fetch_decoder.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_dataset.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_extraction.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_fetch_import_sw.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_fetch_import_sw/2019_DGD.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_fetch_import_sw/2019_DPD.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_fetch_import_sw/2019_DSD.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_fetch_import_telemetry.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_graph.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_invocation.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_learn_configurator.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_learn_data.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_predictor_xcorr.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_selection.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_tagging.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/versioneer.py" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Python Script" />
-      </list>
-    </option>
-  </component>
-  <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
-    <envs>
-      <env key="FLASK_APP" value="app" />
-    </envs>
-    <option name="myCustomStartScript" value="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))" />
-    <option name="myEnvs">
-      <map>
-        <entry key="FLASK_APP" value="app" />
-      </map>
-    </option>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-    <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
-  <component name="GitLabMergeRequestFiltersHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPENED&quot;,
-    &quot;assignee&quot;: {
-      &quot;type&quot;: &quot;org.jetbrains.plugins.gitlab.mergerequest.ui.filters.GitLabMergeRequestsFiltersValue.MergeRequestsMemberFilterValue.MergeRequestsAssigneeFilterValue&quot;,
-      &quot;username&quot;: &quot;geugenm&quot;,
-      &quot;fullname&quot;: &quot;Eugene Gleba&quot;
+  <component name="GitLabMergeRequestFiltersHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPENED",
+    "assignee": {
+      "type": "org.jetbrains.plugins.gitlab.mergerequest.ui.filters.GitLabMergeRequestsFiltersValue.MergeRequestsMemberFilterValue.MergeRequestsAssigneeFilterValue",
+      "username": "geugenm",
+      "fullname": "Eugene Gleba"
     }
   }
-}</component>
-  <component name="GitLabMergeRequestsSettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;first&quot;: &quot;https://gitlab.com/geugenm/polaris-ml-sandbox.git&quot;,
-    &quot;second&quot;: &quot;6507d4df-3ef9-4567-befd-9274267fa13c&quot;
+}]]></component>
+  <component name="GitLabMergeRequestsSettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "first": "https://gitlab.com/geugenm/polaris-ml-sandbox.git",
+    "second": "e517d40f-6d1e-42a7-ab8c-4ea369daaceb"
   }
-}</component>
-  <component name="MarkdownSettingsMigration">
-    <option name="stateVersion" value="1" />
-  </component>
-  <component name="ProjectColorInfo">{
-  &quot;customColor&quot;: &quot;&quot;,
-  &quot;associatedIndex&quot;: 8
-}</component>
-  <component name="ProjectId" id="2cSwaC0d7bOBtCklpTeWo2kOCnT" />
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 8
+}]]></component>
+  <component name="ProjectId" id="2gE1FkbLvvoW8rqFfLDTesww6yw" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Python.generate_fields.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "master",
+    "last_opened_file_path": "S:/3/polaris-ml-sandbox",
     "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "npm.start.executor": "Run",
-    "vue.rearranger.settings.migration": "true"
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
 }]]></component>
-  <component name="RunManager">
-    <configuration name="start" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/polaris/reports/application/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="start" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
-    </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="npm.start" />
-      </list>
-    </recent_temporary>
-  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-5a2391486177-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13763.11" />
+        <option value="bundled-python-sdk-0509580d9d50-28c9f5db9ffe-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.14494.241" />
       </set>
     </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fixed html, more prettier" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed html, more prettier" />
-  </component>
-  <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/polaris_ml_sandbox$generate_fields.coverage" NAME="generate_fields Coverage Results" MODIFIED="1709562342217" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/contrib/normalizers" />
   </component>
 </project>

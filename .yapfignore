@@ -1,6 +1,5 @@
 polaris/__version__.py
 .tox
 build
-versioneer.py
 playground
 .venv
