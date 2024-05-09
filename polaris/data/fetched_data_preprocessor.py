@@ -13,8 +13,7 @@ class FetchedDataPreProcessor:
         # which a column will be tagged containing status
         # or variable values
         self.__status_limit_percentage = 1
-        self.__analysis = {}
-        self.__analysis['feature_columns'] = None
+        self.__analysis = {'feature_columns': None}
 
     def tag_columns(self, dataset):
         """
@@ -79,9 +78,4 @@ class FetchedDataPreProcessor:
 
     @property
     def analysis(self):
-        """
-        Return the analysis value as dict.
-
-        """
-
         return self.__analysis
