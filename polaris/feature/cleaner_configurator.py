@@ -1,6 +1,3 @@
-"""Module for CleanerConfigurator class
-"""
-
 import logging
 import warnings
 
@@ -10,10 +7,7 @@ LOGGER = logging.getLogger(__name__)
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
-# pylint: disable=too-few-public-methods
-class CleanerConfigurator():
-    """Class for model used in cleaner
-    """
+class CleanerConfigurator:
     def __init__(self, json_configuration=None):
         """Initialize model configuration
         """

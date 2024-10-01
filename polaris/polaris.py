@@ -15,7 +15,6 @@ from polaris.fetch.data_fetch_decoder import data_fetch_decode_normalize
 from polaris.fetch.list_satellites import list_satellites
 from polaris.learn.analysis import cross_correlate, feature_extraction
 from polaris.reports.server import launch_report_webserver
-from polaris.viz.server import launch_webserver
 
 # Logger configuration
 
@@ -174,7 +173,7 @@ def cli_learn(input_file,
     """ Analyze telemetry data
 
     Apply machine learning and feature engineering
-    to analyse data from INPUT_FILE (path to input json or CSV file)
+    to analyze data from INPUT_FILE (path to input json or CSV file)
     """
     if col is not None:
         feature_extraction(input_file, col)
@@ -191,17 +190,6 @@ def cli_learn(input_file,
             "You must provide either --col",
             "or --output_graph_file arguments!"
         ]))
-
-
-@click.command('viz', short_help='Display results')
-@click.argument('graph_file', nargs=1, required=True)
-def cli_viz(graph_file):
-    """ Visualize the results of the learn command
-
-    Serves HTML5 visualization of GRAPH_FILE (JSON data
-    file with graph information about nodes and edges)
-    """
-    launch_webserver(graph_file)
 
 
 @click.command('batch', short_help='Run polaris commands in batch mode')
@@ -315,7 +303,6 @@ def cli_report(input_file):
 
 cli.add_command(cli_fetch)
 cli.add_command(cli_learn)
-cli.add_command(cli_viz)
 cli.add_command(cli_batch)
 cli.add_command(cli_convert)
 cli.add_command(cli_behave)

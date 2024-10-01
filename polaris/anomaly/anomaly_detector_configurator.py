@@ -1,6 +1,3 @@
-"""Module for AnomalyDetectorConfigurator class
-"""
-
 import json
 import logging
 import warnings
@@ -13,11 +10,7 @@ LOGGER = logging.getLogger(__name__)
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
-# pylint: disable=too-few-public-methods
-# pylint: disable=too-many-instance-attributes
-class AnomalyDetectorConfigurator():
-    """Class for configurator for model used in detector
-    """
+class AnomalyDetectorConfigurator:
     def __init__(self, detector_configuration_file=None):
         """ Initialize model configuration
 
@@ -32,7 +25,7 @@ class AnomalyDetectorConfigurator():
     def get_configuration(self):
         """ Turn Detector configuration file to Detector parameters
 
-            :return: If there is an Detector configuration file, the parameters
+            :return: If there is a Detector configuration file, the parameters
                 for the Detector configuration are returned. Otherwise, the
                 default Detector parameters are returned
         """

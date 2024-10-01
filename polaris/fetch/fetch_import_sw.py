@@ -1,6 +1,3 @@
-"""
-Module for fetching and decoding space weather data
-"""
 import datetime
 import importlib
 import logging

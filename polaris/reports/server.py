@@ -55,7 +55,7 @@ def launch_report_webserver(json_data_file):
     """
 
     target_dir = os.path.dirname(os.path.abspath(__file__))
-    target_dir = os.path.join(target_dir, "application/build")
+    target_dir = os.path.join(target_dir, "app/build")
 
     # pylint: disable-msg=global-statement
     global WWW_DIR

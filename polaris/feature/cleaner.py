@@ -1,6 +1,3 @@
-"""Module for cleaning data
-"""
-
 import logging
 
 LOGGER = logging.getLogger(__name__)
@@ -8,8 +5,6 @@ LOGGER = logging.getLogger(__name__)
 
 # pylint: disable=R0903
 class Cleaner:
-    """Class for cleaning features.
-    """
     def __init__(self, metadata, cleaning_params):
         # in percent, maximum na rows in a column
         self._col_threshold = cleaning_params.col_max_na_percentage

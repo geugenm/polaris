@@ -34,7 +34,6 @@ class PolarisConfig():
             'batch': {
                 'learn': True,
                 'fetch': True,
-                'viz': False,
             }
         }
     }

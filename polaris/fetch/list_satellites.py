@@ -1,7 +1,3 @@
-"""
-Module for showing the list of satellites
-"""
-
 from polaris.fetch.data_fetch_decoder import _SATELLITES
 
 

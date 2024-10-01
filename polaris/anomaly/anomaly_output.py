@@ -1,8 +1,3 @@
-"""
-Anomaly Output class
-It is used for output the result of AnomalyDetector in json
-"""
-
 import json
 
 import pandas as pd
@@ -15,8 +10,6 @@ from polaris.dataset.metadata import PolarisMetadata
 
 
 class AnomalyOutput(dict, JsonSerializable):
-    """Class for Output the result of AnomalyDetector
-    """
     def __init__(self, metadata=None):
         """Initialize a new object
         """

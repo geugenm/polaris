@@ -1,21 +1,22 @@
-"""Module for AnomalyDetectorParameters class
-"""
-
-
-# pylint: disable=too-many-instance-attributes
 # placeholder class for parameters. Hence,
 # only one method and large number of parameters
-class AnomalyDetectorParameters():
-    """Anomaly Detector parameters class
-    """
+class AnomalyDetectorParameters:
     def __init__(self):
-        pass
+        self._dataset_cleaning_params = None
+        self._activations = None
+        self._network_dimensions = None
+        self._noise_margin_per = None
+        self._number_of_epochs = None
+        self._batch_size = None
+        self._test_size_fraction = None
+        self._metrics = None
+        self._loss = None
+        self._optimizer = None
+        self._stride = None
+        self._window_size = None
 
     @property
     def window_size(self):
-        """
-        return window size for preprocessing
-        """
         return self._window_size
 
     @window_size.setter
@@ -24,9 +25,6 @@ class AnomalyDetectorParameters():
 
     @property
     def stride(self):
-        """
-        return stride for preprocessing
-        """
         return self._stride
 
     @stride.setter
