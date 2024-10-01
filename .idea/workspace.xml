@@ -4,51 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="be201a56-bd43-47a4-8c53-eb2fb600b445" name="Changes" comment="returned docs, small readme fixes and removed some useless files">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/polaris-ml-sandbox.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/polaris-ml-sandbox.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/license" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MANIFEST.in" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/docker/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/readme.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_static/.keep" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/index.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/index.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/overview.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/overview.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/using/getting_started_with_polaris.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/getting_started_with_polaris.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/anomaly/anomaly_detector.py" beforeDir="false" afterPath="$PROJECT_DIR$/polaris/anomaly/anomaly_detector.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/anomaly/anomaly_detector_configurator.py" beforeDir="false" afterPath="$PROJECT_DIR$/polaris/anomaly/anomaly_detector_configurator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/anomaly/anomaly_detector_parameters.py" beforeDir="false" afterPath="$PROJECT_DIR$/polaris/anomaly/anomaly_detector_parameters.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/anomaly/anomaly_output.py" beforeDir="false" afterPath="$PROJECT_DIR$/polaris/anomaly/anomaly_output.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/batch/batch.py" beforeDir="false" afterPath="$PROJECT_DIR$/polaris/batch/batch.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/common/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/polaris/common/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/common/polaris_config.json.EXAMPLE" beforeDir="false" afterPath="$PROJECT_DIR$/polaris/common/polaris_config.json.template" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/data/fetched_data_preprocessor.py" beforeDir="false" afterPath="$PROJECT_DIR$/polaris/data/fetched_data_preprocessor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/data/graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/polaris/data/graph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/dataset/dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/polaris/dataset/dataset.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/dataset/frame.py" beforeDir="false" afterPath="$PROJECT_DIR$/polaris/dataset/frame.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/dataset/metadata.py" beforeDir="false" afterPath="$PROJECT_DIR$/polaris/dataset/metadata.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/feature/cleaner.py" beforeDir="false" afterPath="$PROJECT_DIR$/polaris/feature/cleaner.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/feature/cleaner_configurator.py" beforeDir="false" afterPath="$PROJECT_DIR$/polaris/feature/cleaner_configurator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/feature/cleaner_parameters.py" beforeDir="false" afterPath="$PROJECT_DIR$/polaris/feature/cleaner_parameters.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/fetch/data_fetch_decoder.py" beforeDir="false" afterPath="$PROJECT_DIR$/polaris/fetch/data_fetch_decoder.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/fetch/fetch_import_sw.py" beforeDir="false" afterPath="$PROJECT_DIR$/polaris/fetch/fetch_import_sw.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/fetch/list_satellites.py" beforeDir="false" afterPath="$PROJECT_DIR$/polaris/fetch/list_satellites.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/learn/predictor/cross_correlation.py" beforeDir="false" afterPath="$PROJECT_DIR$/polaris/learn/predictor/cross_correlation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/polaris.py" beforeDir="false" afterPath="$PROJECT_DIR$/polaris/polaris.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/reports/application" beforeDir="false" afterPath="$PROJECT_DIR$/polaris/reports/application" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/reports/application/.gitlab-ci.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/viz/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/viz/dynamic_network_analysis_3d-ui.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/viz/favicon.ico" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/viz/modal.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/viz/polaris.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/viz/sample_data_fimps.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/viz/server.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/viz/style_sheet.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/polaris/viz/toast.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/setup.cfg" beforeDir="false" afterPath="$PROJECT_DIR$/setup.cfg" afterDir="false" />
+    <list default="true" id="be201a56-bd43-47a4-8c53-eb2fb600b445" name="Changes" comment="removed gitmodules, will use raw repo inside">
+      <change beforePath="$PROJECT_DIR$/polaris/reports/application" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/polaris/reports/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/polaris/reports/server.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,6 +31,7 @@
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
   <component name="GitHubPullRequestSearchHistory"><![CDATA[{
   "lastFilter": {
@@ -154,7 +113,23 @@
       <option name="project" value="LOCAL" />
       <updated>1727788679977</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="returned docs, small readme fixes and removed some useless files">
+      <option name="closed" value="true" />
+      <created>1727792620636</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1727792620636</updated>
+    </task>
+    <task id="LOCAL-00003" summary="removed gitmodules, will use raw repo inside">
+      <option name="closed" value="true" />
+      <created>1727792742591</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1727792742591</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -173,7 +148,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="returned docs, small readme fixes and removed some useless files" />
-    <option name="LAST_COMMIT_MESSAGE" value="returned docs, small readme fixes and removed some useless files" />
+    <MESSAGE value="removed gitmodules, will use raw repo inside" />
+    <option name="LAST_COMMIT_MESSAGE" value="removed gitmodules, will use raw repo inside" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/polaris_ml_sandbox$setup.coverage" NAME="setup Coverage Results" MODIFIED="1715249002113" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
