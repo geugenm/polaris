@@ -28,7 +28,7 @@ class FetchedDataPreProcessor:
             has_unit = False
             if column in dataset.frames[0]['fields']:
                 has_unit = dataset.frames[0]['fields'][column][
-                    'unit'] is not None
+                               'unit'] is not None
             tag = self.__compute_tag(unique, total_frames, has_unit,
                                      column_type)
             self.__analysis['column_tags'][column] = tag
@@ -65,7 +65,7 @@ class FetchedDataPreProcessor:
             return "variable"
 
         if (unique / total_frames * 100 <
-                self.__status_limit_percentage) and column_type == np.int64:
+            self.__status_limit_percentage) and column_type == np.int64:
             return "status"
 
         return "variable"

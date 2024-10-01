@@ -51,12 +51,12 @@ def cli():
               '-s',
               is_flag=False,
               help='Start date of the fetching period.'
-              ' Default: set to 1h ago from now.')
+                   ' Default: set to 1h ago from now.')
 @click.option('--end_date',
               '-e',
               is_flag=False,
               help='End date of fetching period.'
-              ' Default: 1h period from start date.')
+                   ' Default: 1h period from start date.')
 @click.option('--cache_dir',
               '-c',
               required=False,
@@ -75,7 +75,7 @@ def cli():
               default='merge',
               show_default=True,
               help='How to handle already-existing output file: ' +
-              'merge with it, overwrite it, or exit with an error.')
+                   'merge with it, overwrite it, or exit with an error.')
 @click.option('--fetch_from_influxdb',
               is_flag=True,
               help='Fetch space weather data from influxdb')
@@ -214,7 +214,7 @@ def cli_batch(config_file, dry_run):
 
 @click.command('convert',
                short_help='Convert polaris graph file '
-               '(supported formats: gexf)')
+                          '(supported formats: gexf)')
 @click.argument('input_file', nargs=1, required=True)
 @click.argument('output_file', nargs=1, required=True)
 def cli_convert(input_file, output_file):
@@ -289,7 +289,7 @@ def cli_behave(input_file, output_file, detector_config_file, cache_dir,
 
 @click.command('report',
                short_help='Show interactive graphs generated from '
-               '`polaris behave` command')
+                          '`polaris behave` command')
 @click.argument('input_file', nargs=1, required=True)
 def cli_report(input_file):
     """

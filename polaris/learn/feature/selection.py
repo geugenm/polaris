@@ -18,6 +18,7 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
     augmentation (or distribution flattening).
 
     """
+
     def __init__(self, list_of_transformers):
         """ The constructor will help parameterize all options of this
         transformer
@@ -142,7 +143,7 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
                     lst_dif.append(dif)
                     average_dif = np.mean(lst_dif, dtype=np.float64)
                     if (dif > (average_dif * 0.5) and idx > 5) or \
-                       (imp < upper_limit):
+                        (imp < upper_limit):
                         return lst_name.index(lst_name[idx - 1])
                 idx = idx + 1
             return idx
@@ -173,7 +174,7 @@ class FeatureImportanceOptimization(BaseEstimator, TransformerMixin):
         all_chosen_features = []
 
         if list_of_fimp is None \
-           or (isinstance(list_of_fimp, list) and not list_of_fimp):
+            or (isinstance(list_of_fimp, list) and not list_of_fimp):
             return all_chosen_features
 
         if method is None:

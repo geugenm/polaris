@@ -19,6 +19,7 @@ class CustomHTTPHandler(SimpleHTTPRequestHandler):
     """ HTTP Handler to serve report files
     - Gives JSON input data file when get a request of analysis.json
     """
+
     def handle(self):
         self.directory = WWW_DIR
         super().handle()

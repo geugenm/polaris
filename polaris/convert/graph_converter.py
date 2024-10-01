@@ -19,6 +19,7 @@ class GraphConverter(metaclass=abc.ABCMeta):
     save_to_disk function to ensure the conversion output is
     actually being saved into disk.
     """
+
     def __init__(self, graph_file_path: str):
         """
         Constructor method. Every polaris graph must be loaded

@@ -59,6 +59,7 @@ def write_or_merge(dataset, file, strategy):
     strategy: overwrite, merge or error.
 
     """
+
     def write_dataset(dataset, file):
         with open(file, 'w') as f_handle:
             f_handle.write(dataset.to_json())
@@ -85,13 +86,13 @@ def write_or_merge(dataset, file, strategy):
                 # Verify that fetch encoder matches
                 # existing encoder in the output file.
                 if (existing_dataset['metadata']['satellite_name'] !=
-                        dataset.metadata['satellite_name']):
+                    dataset.metadata['satellite_name']):
                     raise SatelliteNamesNotMatching(' '.join([
                         'Satellite name used does not match satellite_name',
                         'in the existing output file, refusing to merge'
                     ]))
                 dataset_for_writing.frames = existing_dataset[
-                    'frames'] + dataset.frames
+                                                 'frames'] + dataset.frames
             except json.JSONDecodeError:
                 LOGGER.info("File exists but cannot parse it")
         write_dataset(dataset_for_writing, file)

@@ -8,6 +8,7 @@
 class CrossCorrelationParameters():
     """Cross Correlation parameters class
     """
+
     def __init__(self):
         pass
 

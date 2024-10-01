@@ -315,8 +315,8 @@ class AnomalyDetector:
         self.preprocessed_data = converted_data
 
         self.anomaly_detector_params.network_dimensions = [
-            converted_data.shape[1]
-        ] + layer_dims
+                                                              converted_data.shape[1]
+                                                          ] + layer_dims
 
     def train_predict_output(self, data):
         """

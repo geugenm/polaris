@@ -1,5 +1,6 @@
 from polaris.common.json_serializable import JsonSerializable
 
+
 class PolarisMetadata(dict, JsonSerializable):
     DATA_FORMAT_VERSION = 1
 

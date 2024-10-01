@@ -15,6 +15,7 @@ class GEXFConverter(GraphConverter):
     """
     GEXFConverter converts polaris graph file to GEXF file format.
     """
+
     def __init__(self, graph_file_path: str, output_file_path: str):
         """ Constructor method. Note that all attributes will be initialized
             to None at the beginning and the actual conversion process does

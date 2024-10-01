@@ -8,6 +8,7 @@
 class LearnParameters():
     """Learn parameters class
     """
+
     def __init__(self,
                  input_file=None,
                  output_graph_file=None,

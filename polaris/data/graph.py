@@ -66,16 +66,16 @@ class PolarisGraph(dict, JsonSerializable):
                 if target == source:
                     continue
                 if (np.isnan(mdict[source][target])
-                        or isinstance(mdict[source][target], str)):
+                    or isinstance(mdict[source][target], str)):
                     continue
                 if mdict[source][target] >= graph_link_threshold:
                     self.graph[self._links_key].append({
                         self._source_key:
-                        source,
+                            source,
                         self._target_key:
-                        target,
+                            target,
                         self._value_key:
-                        mdict[source][target]
+                            mdict[source][target]
                     })
 
     def _add_nodes(self, heatmap):
@@ -101,4 +101,4 @@ class PolarisGraph(dict, JsonSerializable):
             "metadata": self.metadata,
             "graph": self.graph
         },
-                          indent=constants.JSON_INDENT)
+            indent=constants.JSON_INDENT)

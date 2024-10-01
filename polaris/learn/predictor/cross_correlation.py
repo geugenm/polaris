@@ -23,6 +23,7 @@ np.seterr(divide='ignore', invalid='ignore')
 class XCorr(BaseEstimator, TransformerMixin):
     """ Cross Correlation predictor class
     """
+
     def __init__(self, dataset_metadata, cross_correlation_params):
         """ Initialize an XCorr object
 
@@ -40,7 +41,7 @@ class XCorr(BaseEstimator, TransformerMixin):
             "test_size": cross_correlation_params.test_size,
             "gridsearch_scoring": cross_correlation_params.gridsearch_scoring,
             "gridsearch_n_splits":
-            cross_correlation_params.gridsearch_n_splits,
+                cross_correlation_params.gridsearch_n_splits,
         }
         # If we're importing from CSV, the dataset_metadata may not
         # have the feature_columns key.
@@ -120,7 +121,7 @@ class XCorr(BaseEstimator, TransformerMixin):
                                     self.model_params['current']))
                 except Exception as err:  # pylint: disable-msg=broad-except
                     if self.model_params['current'].get(
-                            "predictor") == "gpu_predictor":
+                        "predictor") == "gpu_predictor":
                         LOGGER.info(" ".join([
                             "Encountered error using GPU.",
                             "Trying with CPU parameters now!"

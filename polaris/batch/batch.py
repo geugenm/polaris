@@ -61,6 +61,7 @@ def build_date_arg(last_fetch_date=None):
 
     :param last_fetch_date: Date of last successful fetch.
     """
+
     def tformat(timestamp):
         """Standard format for time arguments
         """
