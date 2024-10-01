@@ -2,22 +2,13 @@
 
 ![Polaris logo](img/polaris_logo_small.png "Polaris")
 
-[![pipeline status](https://gitlab.com/librespacefoundation/polaris/polaris/badges/master/pipeline.svg)](https://gitlab.com/librespacefoundation/polaris/polaris/commits/master)
-[![coverage report](https://gitlab.com/librespacefoundation/polaris/polaris/badges/master/coverage.svg)](https://gitlab.com/librespacefoundation/polaris/polaris/commits/master)
-
 Python3 tool to analyze a satellite set of telemetry to understand links/dependencies among different subsystems. The telemetry is currently retrieved from the [SatNOGS Network](https://network.satnogs.org/).
 
 If you want to **know more**:
 
-- join our [Matrix room](https://riot.im/app/#/room/#polaris:matrix.org)
-
 - read the [project wiki](https://gitlab.com/librespacefoundation/polaris/polaris/wikis/Home)
 
 - read the blog post [Analyzing Lightsail-2 Telemetry with Polaris](https://blog.crespum.eu/analyzing-lightsail-2-telemetry-with-polaris/)
-
-- look at the [demo site](https://polarisml.space/demo)
-
-If you are a developer, and want to contribute to Polaris check out [CONTRIBUTE.md](CONTRIBUTE.md).
 
 ## Project structure
 
