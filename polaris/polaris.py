@@ -173,7 +173,7 @@ def cli_learn(input_file,
     """ Analyze telemetry data
 
     Apply machine learning and feature engineering
-    to analyse data from INPUT_FILE (path to input json or CSV file)
+    to analyze data from INPUT_FILE (path to input json or CSV file)
     """
     if col is not None:
         feature_extraction(input_file, col)
