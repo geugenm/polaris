@@ -1,12 +1,7 @@
-"""Module for CleanerParameters class
-"""
-
-
 class CleanerParameters():
-    """Cleaner parameters class
-    """
     def __init__(self):
-        pass
+        self._row_max_na_percentage = None
+        self._col_max_na_percentage = None
 
     @property
     def col_max_na_percentage(self):

@@ -23,17 +23,13 @@ polaris/               - Project source code
     fetch/             - Module to fetch and prepare data for the analysis
     learn/             - Module to generate the dependency graph
     reports/           - Module to visualize the anomaly detection
-    viz/               - Module to visualize the dependency graph
     polaris.py         - Polaris entry point
-
-tests/                 - Project unit tests
-playground/            - Exploratory tests
 ```
 
 ## Installation
 
 ```bash
-pip3 install polaris-ml
+pip3 install .
 ```
 
 We recommend to install it inside a Python virtual environment:
@@ -75,7 +71,6 @@ Commands:
   fetch     Download data set(s)
   learn     Analyze data
   report    Show interactive graphs generated from `polaris behave` command
-  viz       Display results
 
 # To fetch and decode data from the SatNOGS network and space weather sources, run:
 $ (.venv) polaris fetch -s 2019-08-10 -e 2019-10-5 --cache_dir /tmp/LightSail_2 LightSail-2 /tmp/normalized_frames.json
@@ -112,10 +107,6 @@ $ (.venv) polaris learn -g /tmp/new_graph.json /tmp/normalized_frames.json
 # Note: `polaris learn` uses your dedicated (CUDA enabled) GPU by default
 #       to suppress this behaviour, you can utilise the --force-cpu flag.
 $ (.venv) polaris learn -g /tmp/new_graph.json /tmp/normalized_frames.json --force_cpu
-
-# To see a visualization of these results, run:
-$ (.venv) polaris viz /tmp/new_graph.json
-# Then visit http://localhost:8080 in your browser
 ```
 
 ## Configuring Polaris
@@ -186,7 +177,7 @@ Batch operations allow automation of repeated steps.  For example:
 
 - running `polaris fetch` so that it fetches the latest data for a particular satellite, then running `polaris learn` to update the model
 
-- running `polaris fetch`, `polaris learn` and `polaris viz` as part of an integration test
+- running `polaris fetch` and `polaris learn` as part of an integration test
 
 The `polaris batch` command is controlled by a JSON configuration file; an example can be found at `polaris/common/polaris_config.json.EXAMPLE`.
 

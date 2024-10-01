@@ -1,13 +1,7 @@
-"""
-Tagging module
-"""
 import numpy as np
 
 
-# pylint: disable=R0903
 class FetchedDataPreProcessor:
-    """Class for tagging dataset columns
-    """
     def __init__(self):
         # variable that defines the limit under
         # which a column will be tagged containing status

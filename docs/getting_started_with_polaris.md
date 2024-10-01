@@ -153,8 +153,8 @@ polaris fetch \
 **Note 3:** You can also get all the satellites supported by polaris by running command:
 ```
 polaris fetch --list_supported_satellites
-``` 
-or 
+```
+or
 ```
 polaris fetch -l
 ```
@@ -191,63 +191,7 @@ Some background:
 
 Run times will depend on your hardware and the amount of data fetched.  On a 12-core, 2.6GHz i7 laptop, with 16 GB of RAM, `polaris learn` takes about two minutes.
 
-## Visualizing the dependency graph with `polaris viz`
-
-Finally, we're ready to look at our dependency graph.  Run this command:
-
-```
-polaris viz /tmp/LightSail2-graph.json
-```
-
-This will download some JavaScript dependencies, then open up a web server on your machine.  Open your browser and navigate to [http://localhost:8080](http://localhost:8080).  Here's what you should be seeing:
-
-![Screenshot_2020-09-13_Polaris_-_tmp_LightSail2-graph_json](https://gitlab.com/librespacefoundation/polaris/polaris/-/wikis/uploads/f7be647ac8dbffcd6e758647bfe4102f/Screenshot_2020-09-13_Polaris_-_tmp_LightSail2-graph_json.png)
-
-Let's examine the screen:
-
-- The name of the satellite, `LightSail-2`, is in the top right-hand corner.
-
-- The search bar is in the top left-hand corner.  We'll come back to this in a moment.
-
-- The circles in the middle are the _nodes_ of the dependency graph.  Each one represents an element of telemetry.  The name of that element is displayed beside it.
-
-- The lines connecting the nodes represent connections between those nodes -- that is, the model constructed by polaris learn has these two nodes varying in concert with each other.
-
-You can navigate this graph:
-
-- The scroll wheel on your mouse will zoom in or out.
-
-- If you click-and-drag on empty space with your left mouse button, you can rotate the graph.
-
-- If you click-and-drag on a node with your left mouse button, you can drag that node around.
-
-- If you click-and-drag with your middle mouse button, you can drag the whole graph around.
-
-- If you left-click on a particular node, you will zoom into that node.
-
-When you're zoomed into a node, you'll see the lines connecting it to other nodes (unless it's a node that doesn't have a connection to anything else!).  You'll also see dots moving along those lines.  Those dots represent the _strength_ of the connection:  a faster-moving dot means a stronger connection.
-
-Zoom back out again.  Click on the search bar, and type `py_tmp`.  You should see a list of node names come up as you type; you should end up with just `py_tmp:py_tmp/0` as a candidate.  Click on that, and you should zoom into that node.
-
-Zoom back out again.  Click on the search bar, and type `tmp`.  Pause for a moment, and scroll through the list of nodes: these are all the nodes that have `tmp` somewhere in their name.  Now hit `Ctrl-enter` (that is, the control and enter key at the same time).  You should now see all of those nodes -- the ones with `tmp` in their name -- higlighted in the same colour.
-
-Click on the search bar again, and go through that same process with each of the following:
-
-- `mag`
-- `cam`
-- `pwr`
-
-Make sure you hit `Ctrl-enter` after each one, but this time hit it a few times.  Note how each group is being highlighted in different colours, changing each time you hit `Ctrl-enter`.  This allows you to pick colours that work for you.
-
-Looking at the display, we see a number of different things:
-
-- There are different collections of nodes, each with their own colours.
-- The groups of nodes have similar names; we can guess that they probably have similar functions.
-- The groups are clustered in different ways, showing connections between these groups; this suggests that our model has found connections between different groups of functions.
-
-The satellite operator, at this point, will be able to examine the graph with an eye toward finding connections between elements that may not have been noticed previously.
-
-## (Optional) Converting dependency graph to another file format using `polaris convert`
+## Converting dependency graph to another file format using `polaris convert`
 
 Let's say we want to view the dependency graph in another program. This means the dependency graph must be converted into another file format supported by the program we're using. Currently, the dependency graph can be converted into `.gexf` file format which is supported by [Gephi](https://gephi.org/), the open graph tool.
 
@@ -283,7 +227,7 @@ Some background:
 
 - The `--metrics_dir` option specifies the directory to save anomaly metrics
 
-- The `--detector_config_file` option specifies the path to custom config file to specify the custom config file for parameters of detector 
+- The `--detector_config_file` option specifies the path to custom config file to specify the custom config file for parameters of detector
 
 - The `--csv_sep` option specifies the separator when input data is in CSV format.  Its default value is a comma (",").
 
@@ -298,7 +242,7 @@ This will open up a web server on your machine. Open your browser and navigate t
 
 ![](https://gitlab.com/librespacefoundation/polaris/polaris/uploads/c98be754570383f7306900eae23ca9e4/ezgif.com-gif-maker.gif)
 
-There are really a lot of cool features in it. 
+There are really a lot of cool features in it.
 - You can see the highlights/summary of the input telemetry.
 - You can also look at the stacked graph of all the telemetry including the anomalies as annotations.
 - There is support for both light and dark theme.

@@ -25,9 +25,6 @@ Polaris is split into the following parts based on function:
   connections between telemetry components, and save a dependency
   graph for visualization.
 
-- `polaris viz` is an interactive, browser-based 3D visualization of
-  that dependency graph.
-
 - `polaris convert` will convert graph output from `polaris learn` to
   another file format (like `.gexf`).
 

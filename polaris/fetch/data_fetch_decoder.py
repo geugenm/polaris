@@ -46,7 +46,7 @@ def get_times_from_frames_list(list_of_frames, key='time'):
 
     :param list_of_frames: List containing the decoded frames
     :type list_of_frames: list
-    :param key: Name of the time key in the dictionares, defaults to 'time'
+    :param key: Name of the time key in the dictionaries, defaults to 'time'
     :type key: str, optional
     :return: List of timestamps taken from list_of_frames
     :rtype: list

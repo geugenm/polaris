@@ -1,7 +1,3 @@
-"""
-Cross Correlation module
-"""
-
 import logging
 import warnings
 
@@ -14,7 +10,6 @@ from mlflow import log_metric, log_param, log_params, start_run
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import GridSearchCV, KFold, train_test_split
-# eXtreme Gradient Boost algorithm
 from xgboost import XGBRegressor
 
 from polaris.feature.cleaner import Cleaner

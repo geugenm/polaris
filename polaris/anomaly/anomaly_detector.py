@@ -1,7 +1,3 @@
-"""
-Anomaly Detector module
-"""
-
 import json
 import logging
 import math
@@ -24,9 +20,7 @@ from polaris.feature.cleaner import Cleaner
 LOGGER = logging.getLogger(__name__)
 
 
-class AnomalyDetector():
-    """ Anomaly Detector class
-    """
+class AnomalyDetector:
     def __init__(self, dataset_metadata,
                  anomaly_detector_params: AnomalyDetectorParameters):
         """ Initialize an AnomalyDetector object
@@ -274,7 +268,7 @@ class AnomalyDetector():
             for row_no in range(len(col_data) - 1):
                 curr_item = abs(col_data[row_no])
                 next_item = abs(col_data[row_no + 1])
-                if (curr_item == 0 or next_item == 0):
+                if curr_item == 0 or next_item == 0:
                     value_to_append = 0
                 else:
                     value_to_append = (curr_item - next_item) / math.sqrt(

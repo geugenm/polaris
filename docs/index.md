@@ -2,14 +2,13 @@
 
 **Polaris** is an open source (LGPLv3) project that analyzes satellite telemetry using machine learning.  It is a project of the Libre Space Foundation.
 
-**Want to get started quickly?** Have a look at [Getting started with Polaris](using/getting_started_with_polaris).
+**Want to get started quickly?** Have a look at [Getting started with Polaris](getting_started_with_polaris.md).
 
 
 Polaris has a number of different commands:
 
 - `polaris fetch` will download and normalize satellite telemetry from the SatNOGS network (or you can import your own).
 - `polaris learn` will analyze the telemetry, produce a model of the connections between telemetry components, and save a dependency graph for visualization.
-- `polaris viz` is an interactive, browser-based 3D visualization of that dependency graph.
 - `polaris convert` will convert graph output from `polaris learn` to another file format (like `.gexf`).
 - `polaris behave` will detect anomalies in telemetry data and produce a json report of all the data and anomaly produced.
 - `polaris report` will show the results obtained by `polaris behave` in web-based interactive formats like anomaly visualisation, individual telemetry comparison etc.

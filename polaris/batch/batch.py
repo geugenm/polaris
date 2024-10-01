@@ -13,13 +13,8 @@ from polaris.common.config import InvalidConfigurationFile, PolarisConfig
 LOGGER = logging.getLogger(__name__)
 
 
-def log_batch_operation(config, command, retcode):
-    """Log batch operations
-
-    :param command: command that was run
-    :param retcode: exit code from that command
-    """
-    LOGGER.info("%s Command: %s Retcode: %d", config.name, command, retcode)
+def log_batch_operation(config, command, return_code):
+    LOGGER.info("%s Command: %s return_code: %d", config.name, command, return_code)
 
 
 def find_last_fetch_date(config):
@@ -135,15 +130,6 @@ def build_learn_args(config):
     return args
 
 
-def build_viz_args(config):
-    """Build arguments for viz command when invoked from batch
-
-    :param config: polaris configuration for satellite
-    """
-    output_graph_file = config.output_graph_file
-    return '--graph_file {}'.format(output_graph_file)
-
-
 def maybe_run(cmd=None, config=None, dry_run=False):
     """Run polaris command for a particular satellite
 
@@ -158,10 +144,7 @@ def maybe_run(cmd=None, config=None, dry_run=False):
 
     LOGGER.info('Running polaris %s for %s', cmd, config.name)
 
-    arg_builder = {}
-    arg_builder['fetch'] = build_fetch_args
-    arg_builder['learn'] = build_learn_args
-    arg_builder['viz'] = build_viz_args
+    arg_builder = {'fetch': build_fetch_args, 'learn': build_learn_args}
 
     args = arg_builder[cmd](config)
     full_cmd = 'polaris {} {}'.format(cmd, args)
@@ -195,5 +178,5 @@ def batch(config_file, dry_run):
         LOGGER.critical("Configuration file %s is invalid", config_file)
         sys.exit(1)
 
-    for cmd in ['fetch', 'learn', 'viz']:
+    for cmd in ['fetch', 'learn']:
         maybe_run(cmd=cmd, config=config, dry_run=dry_run)
