@@ -247,7 +247,7 @@ def dataframe_to_decoded(dataframe):
             "time": value['Date'],
             "fields": {
                 key: value[key]
-                for key in set(list(value.keys())) - set(['Date'])
+                for key in set(list(value.keys())) - {'Date'}
             }
         })
     return decoded_data
