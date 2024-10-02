@@ -4,9 +4,9 @@ import logging
 
 import pandas as pd
 from dateutil import parser
-from vinvelivaanilai.space_weather import sw_file_fetch
-from vinvelivaanilai.space_weather.sw_extractor import NoSpaceWeatherForIndex
-from vinvelivaanilai.storage import retrieve, store
+from polaris.swpc.space_weather import sw_file_fetch
+from polaris.swpc.space_weather.sw_extractor import NoSpaceWeatherForIndex
+from polaris.swpc.storage import retrieve, store
 
 from polaris.fetch import fetch_import_telemetry
 
@@ -219,8 +219,7 @@ def fetch_nearest_sw(sw_data, time_list):
     """
     LOGGER.info("Finding the nearest space weather data")
     # Convert the list of times to pd.DatetimeIndex
-    time_df = pd.to_datetime(time_list,
-                             infer_datetime_format=True).sort_values()
+    time_df = pd.to_datetime(time_list).sort_values()
     processed_data = {}
     for index in sw_data:
         # Fetch the nearest data for each index

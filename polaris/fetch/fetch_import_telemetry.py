@@ -8,14 +8,12 @@ import importlib
 import json
 import logging
 import os
+import pathlib
 import subprocess
 import sys
 
 import pandas as pd
 # import glouton dependencies
-from glouton.domain.parameters.programCmd import ProgramCmd
-from glouton.services.observation.observationsService import ObservationsService
-
 NORMALIZER_LIB = "contrib.normalizers."
 
 LOGGER = logging.getLogger(__name__)
@@ -99,102 +97,38 @@ def build_start_and_end_dates(start_date, end_date):
     return start_date, end_date
 
 
-def merge_csv_files(output_directory, path):
+def data_fetch(norad_id: int, output_directory: str, start_date: datetime, end_date: datetime) -> pathlib.Path:
     """
-    Merge all the CSV files inside path into a single file.
-
-    :returns: path of the merged file.
-    """
-    LOGGER.info("Merging all the csv files into one CSV file.")
-    merged_file = os.path.join(output_directory, "merged_frames.csv")
-    for filename in glob.glob(os.path.join(path, "demod*/*.csv")):
-        with open(filename, "r") as source:
-            content = source.read()
-            with open(merged_file + ".tmp", "a") as target:
-                target.write(content)
-
-    if os.path.exists(merged_file + ".tmp"):
-        pass
-    else:
-        LOGGER.warning(
-            " ".join(
-                [
-                    "There are no CSV files to merge.  This can happen",
-                    "if the time range specified had no frames to download,"
-                    "or if the downloaded files were deleted or modified",
-                    "during exeution.",
-                ]
-            )
-        )
-        raise NoCSVFilesToMerge
-
-    with open(merged_file + ".tmp", "r") as source:
-        with open(merged_file, "w") as target:
-            for line in sorted(source):
-                target.write(line)
-    os.remove(merged_file + ".tmp")
-    LOGGER.info("Merge Completed")
-
-    return merged_file
-
-
-def data_fetch(
-    norad_id: int, output_directory: str, start_date: datetime, end_date: datetime
-) -> str:
-    """
-    Fetch data of the sat with the given Norad ID gathered between start_date
+    Fetch data of the satellite with the given Norad ID gathered between start_date
     and end_date. Data is retrieved from SatNOGS database using Glouton.
 
-    :returns: path of the file that contains the fetched data.
+    :param norad_id: The NORAD ID of the satellite.
+    :param output_directory: Directory where the CSV files are stored.
+    :param start_date: Start date for fetching data.
+    :param end_date: End date for fetching data.
+    :returns: Path of the file that contains the fetched data.
     """
 
-    # Creating a new subdirectory to output directory
-    # to collect glouton's data. Using start date to name it.
-    cwd_path = os.path.join(output_directory, f"data_{start_date:%Y-%m-%d_%H-%M-%S}")
-    os.makedirs(cwd_path, exist_ok=True)
+    output_dir = pathlib.Path(output_directory)
 
-    # Preparing glouton command configuration
-    # pylint: disable-msg=unexpected-keyword-arg
-    glouton_conf = ProgramCmd(
-        norad_id=norad_id,
-        ground_station_id=None,
-        start_date=start_date,
-        end_date=end_date,
-        observation_status=None,
-        working_dir=cwd_path,
-        archives=False,
-        waterfalls=False,
-        demoddata=True,
-        archive_modules=None,
-        demoddata_modules=["CSV"],
-        waterfall_modules=None,
-        user=None,
-        transmitter_uuid=None,
-        transmitter_mode=None,
-        transmitter_type=None,
-        frame_modules=None,
-        observer=None,
-        app_source=None,
-        transmitter=None,
-        archive_end_modules=None,
-        demoddata_end_modules=None,
-        waterfall_end_modules=None,
-        frame_end_modules=None,
-    )
+    all_filenames = list(output_dir.glob("*.csv"))
+
+    if not all_filenames:
+        LOGGER.warning("No CSV files found in the specified directory.")
+        raise FileNotFoundError("No CSV files found to combine.")
 
     try:
-        ObservationsService(glouton_conf).extract()
-    except Exception as exc:
-        LOGGER.error("Data collection failed: %s", exc)
-        return ""
+        combined_csv = pd.concat([pd.read_csv(f) for f in all_filenames], ignore_index=True)
+        combined_file_path = output_dir / "combined_csv.csv"
+        combined_csv.to_csv(combined_file_path, index=False, encoding='utf-8-sig')
 
-    LOGGER.info("Data saved in directory: %s", output_directory)
+        LOGGER.info(f"Combined CSV saved at: {combined_file_path}")
 
-    try:
-        return merge_csv_files(output_directory, cwd_path)
-    except NoCSVFilesToMerge:
-        LOGGER.exception(NoCSVFilesToMerge)
-        return ""
+        return combined_file_path
+
+    except Exception as e:
+        LOGGER.error(f"Error while combining CSV files: {e}")
+        raise
 
 
 def build_decoded_file_path(directory):

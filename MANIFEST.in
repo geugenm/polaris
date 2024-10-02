@@ -1,0 +1,4 @@
+include polaris/__version__.py
+include polaris/fetch/satellites.json
+include polaris/swpc/_version.py
+graft polaris/reports/application/build
